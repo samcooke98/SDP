@@ -1,0 +1,16 @@
+.stack {}
+
+p.title {
+    font-family: "Roboto";
+    font-weight: bold;
+    font-size: 32px;
+    margin: 0;
+    color: #333333;
+}
+
+p.caption {
+    font-family: "Roboto";
+    font-size: 16px;
+    margin: 0;
+    color: #333333;
+}

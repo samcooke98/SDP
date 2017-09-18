@@ -1,0 +1,39 @@
+.journalbtn { 
+
+    display:flex;
+    flex-direction:column;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    background-color: rgb(230,233,237);
+
+
+    width: 300px;
+    height: 244px; 
+
+    box-shadow: 0px 4px 4px rgba(0,0,0,0.25);
+    border-radius: 5px;
+}
+
+.journalbtn img { 
+    margin-top: 24px;
+    height: 140px;
+    width: auto;    
+}
+
+.journalTitle{ 
+    font-family: "Ralway";
+    font-weight: bold;
+    font-size: 36px;
+    text-align:center;
+
+    margin:0;
+    margin-top: 8px;
+}
+
+.caption { 
+        text-align:center;
+    margin: 0;
+    font-family: "Raleway";
+    font-size: 20px;
+}

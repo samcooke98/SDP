@@ -1,0 +1,13 @@
+{
+    "presets": [
+        "env",
+        "react"
+    ],
+    "plugins":[
+        "react-hot-loader/babel", 
+        "syntax-async-functions",
+        "transform-regenerator",
+         "transform-class-properties",
+          "transform-object-rest-spread"
+    ]
+}

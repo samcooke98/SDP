@@ -1,0 +1,48 @@
+/* Button Reset */
+
+button {
+    background-color: #f0f0f0;
+    border: 1px solid rgb(0, 0, 0);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    line-height: 1em;
+    margin: 0.25em;
+    box-sizing: border-box;
+    display: inline-block;
+    display:flex;
+    align-items: center;
+
+    font-family: "Raleway";
+}
+
+button > * { margin: 0; }
+
+.baseBtn {
+    text-transform: uppercase;
+    border-radius: 100px;
+    margin: 0
+}
+
+.primary {
+    background-color: #2F80ED;
+    color: #F8F8F8;
+    letter-spacing: 3.6px;
+}
+
+.secondary {
+    background-color: #F8F8F8;
+    color: #2F80ED;
+    letter-spacing: 3.6px;
+}
+
+
+.clear {
+    background-color: rgba(0, 0, 0, 0);
+    border-color: #000000;
+    color: #000000;
+}
+
+button h1 {
+    margin: 0;
+}
+
+button h3 {}
