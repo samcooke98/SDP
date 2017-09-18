@@ -1,8 +1,9 @@
 /*
-* Basic Container Component Template
+*   This renders the Entry List, and then whatever route is required (/, /new, /:id) 
+    TODO: Should '/' just redirect to the latest entry? 
 */
 import React from "react";
-import { withRouter, Switch } from "react-router-dom";
+import { withRouter, Switch, Route } from "react-router-dom";
 import { connect } from "react-redux";
 import { getJournal, getEntry, selectControl } from "../redux/actions.js";
 
@@ -36,18 +37,23 @@ class FooterContainer extends React.Component {
         let journalID = this.props.match.params.id;
         let journal = this.props.journalObjs[journalID] || {};
         console.log(this.props.routes);
-   
+        console.log(this.props.match);
+
 
         return (
             <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
                 <JournalBar colour={journal.colour} title={journal.title} arrowClick={() => this.props.history.push("/home")} />
                 <div style={{ display: 'flex', flexGrow: 1 }}>
                     <EntryList />
-                    
-                    <EditorContainer ref={(editor) => { console.log(editor); this.editor = editor }} />
+                    <Switch>
+                        {this.props.routes.map((route, i) => (
+                            <RouteWithSubRoutes key={i} {...route} />
+                        ))}
+                    </Switch>
+                    {/* <EditorContainer ref={(editor) => { this.editor = editor }} />
                     <div style={{ flexGrow: 0, width: "100px" }}>
                         <ControlButton label="Bold" onClick={() => this.editor.toggleCommand("BOLD")} />
-                    </div>
+                    </div> */}
                 </div>
             </div>
         )
@@ -79,3 +85,17 @@ const mapDispatchToProps = (dispatch) => {
 //withRouter connects to react-router: (https://reacttraining.com/react-router/web/guides/redux-integration) 
 //Connect connects to the redux store: (redux.js.org/docs/basics/UsageWithReact.html) 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(FooterContainer));
+
+
+const NoMatch = ({ location }) => (
+    <div>
+        <h3>No match for <code>{location.pathname}</code></h3>
+    </div>
+)
+
+
+const ID = ({ location }) => (
+    <div>
+        <h3>Page ID: <code>{location.pathname}</code></h3>
+    </div>
+)

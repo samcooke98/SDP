@@ -1,0 +1,248 @@
+{
+	"variables": [],
+	"info": {
+		"name": "SDP - Scriptum",
+		"_postman_id": "7ebe4f3f-c057-9115-73e2-2ae122bd3328",
+		"description": "Scriptum JS API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:3000/api/register",
+			"request": {
+				"url": "http://localhost:3000/api/register",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Sam Cooke",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "sam",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "sam@samcooke.com.au",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": "# Register \nAccepts three params, \nName, email, password. Creates an account. \n\nReturns an error message, or the new user object. \n"
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"url": "http://localhost:3000/api/login",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "sam@samcooke.com.au",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "sam",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Journal: CREATE",
+			"request": {
+				"url": "http://localhost:3000/api/journal/59b9cc97a2cf161f388a625c",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "title",
+							"value": "Internship v1",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "colour",
+							"value": "green",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": "Creates a new journal\t\t"
+			},
+			"response": []
+		},
+		{
+			"name": "Journal: UPDATE",
+			"request": {
+				"url": "http://localhost:3000/api/journal/59b9cc97a2cf161f388a625c",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "archive",
+							"value": "true",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "colour",
+							"value": "blue ",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": "Set archive or colour\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Journal: GET",
+			"request": {
+				"url": "http://localhost:3000/api/journal/59b9cc97a2cf161f388a625c/entry",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "Gets entries for journal\n"
+			},
+			"response": []
+		},
+		{
+			"name": "GET: User",
+			"request": {
+				"url": "http://localhost:3000/api/user",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Entry: CREATE",
+			"request": {
+				"url": "http://localhost:3000/api/journal/59b9ccde84f0113660edc4d1/entry",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "title",
+							"value": "Hello",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "content",
+							"value": "Testing v3",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Entry: GET (ID) ",
+			"request": {
+				"url": "http://localhost:3000/api/entry/59b9f14f706bc836aca76a95",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Entry: Update",
+			"request": {
+				"url": "http://localhost:3000/api/entry/59b9f14f706bc836aca76a95",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "isHidden",
+							"value": "false",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "isDeleted",
+							"value": "true",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

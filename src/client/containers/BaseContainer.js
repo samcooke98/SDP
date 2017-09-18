@@ -1,5 +1,5 @@
 /*
-* Basic Container Component Template
+* Base Container - This renders the titlebar, and whatever route should be active. 
 */
 import React from "react";
 import { withRouter,Switch, Link } from "react-router-dom";

@@ -55,6 +55,11 @@ var functionalReducers = {
     },
     [actionTypes.SELECT_CONTROL]: {
         onSuccess: (state, {payload}) => ({ ...state, misc: {...state.misc, controls: [...(state.misc.controls || []), payload.control]}})
+    },
+    [actionTypes.CREATE_JOURNAL]: { 
+        onSuccess: (state, {payload}) => ({
+            
+        })
     }
 }
 

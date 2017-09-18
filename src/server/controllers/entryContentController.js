@@ -7,3 +7,7 @@ export async function createEntryContent( title, content ) {
     console.log('here');
     return content; 
 }
+
+export async function getById( id ) {
+    return EntryContent.findById(id);
+}

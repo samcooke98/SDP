@@ -14,8 +14,11 @@ const userEntity = new schema.Entity("users", { journals: [journalEntity] }, { i
 export const normalizeUser = (data) => normalize(data, userEntity);
 
 export const normalizeJournal = (data) => normalize(data, journalEntity)
+
 export const normalizeEntry = (data) => {
     console.log('data')
     console.log(data);
     return normalize(data, entryEntity)
 };
+
+export const normalizeRevision = (data) => normalize(data, revisionEntity);

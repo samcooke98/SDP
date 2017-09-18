@@ -8,6 +8,8 @@ import TextInput from "../components/TextInput/TextInput.js";
 import Button from "../components/Button/Button.js";
 import Modal from "../components/Modal/Modal.js";
 
+import { createUser } from "../redux/actions.js"
+
 class RegisterContainer extends React.Component {
     constructor(props) {
         super(props);
@@ -16,19 +18,27 @@ class RegisterContainer extends React.Component {
             name: "",
             password: "",
             passwordConfirm: "",
-            email: ""
+            email: "",
+            success: '',
         }
     }
 
     submit = (evt) => {
         evt.preventDefault();
-        this.props.register()
+        this.props.register(this.state.name, this.state.email, this.state.password)
     }
 
     handleChange = (evt) => {
         const name = evt.target.name;
         const value = evt.target.value;
         this.setState({ [name]: value })
+    }
+
+    componentWillReceiveProps( nextProps ) { 
+        console.log(nextProps);
+        if(nextProps.success != undefined && this.state.success == '') {
+            this.setState({success: nextProps.success})
+        }
     }
 
     render() {
@@ -47,6 +57,7 @@ class RegisterContainer extends React.Component {
                 <Modal label='REGISTRATION' onClick={() => this.props.history.push('/')}>
                     
                 <form onSubmit={this.submit}>
+                    {this.state.success && <p>Success</p>}
                         <TextInput type='text' label="Name" name='name' value={this.state.name} onChange={this.handleChange} />
 
                         <TextInput type='text' label="Email" name='email' value={this.state.email} onChange={this.handleChange} />
@@ -65,13 +76,14 @@ class RegisterContainer extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-
+        success: state.ui.registrationSuccess,
+        message: state.ui.registrationFail
     }
 }
 //Typically would implement actions
 const mapDispatchToProps = (dispatch) => {
     return {
-
+        register: (name, email, password) => dispatch(createUser(name,email,password))
     }
 }
 

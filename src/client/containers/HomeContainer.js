@@ -4,21 +4,28 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { getJournal } from "../redux/actions.js";
+import { getJournal, createJournal } from "../redux/actions.js";
 
 import JournalButton from "../components/JournalButton/JournalButton.js"
 import FloatingButton from "../components/FloatingButton/FloatingButton.js"
+import Button from "../components/Button/Button.js";
+import TextInput from "../components/TextInput/TextInput.js"
 
 import Add from "react-icons/lib/md/add.js"
 
+//TODO: Change Button to be a link 
+//TODO: Make Colour Work
 class HomeContainer extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            newJournal: ''
+        }
 
     }
 
     componentWillMount() {
-        //Do we need to get the journals? 
+        //Load the Journals if they don't already exist
         console.log(this.props);
         for (var id of this.props.user.journals) {
             if (!this.props.journalsObjs[id])
@@ -29,6 +36,11 @@ class HomeContainer extends React.Component {
     openJournal = (id) => {
         console.log("here");
         this.props.history.push(`/journal/${id}`)
+    }
+
+    createJournal = (evt) => {
+        //Reset State
+        this.props.createJournal(this.state.newJournal);
     }
 
     render() {
@@ -42,7 +54,9 @@ class HomeContainer extends React.Component {
                         maxWidth: '1200px',
                         marginLeft: 'auto',
                         marginRight: 'auto',
-                        justifyContent: 'space-evenly'
+                        justifyContent: 'space-evenly',
+                        alignItems: 'space-evenly',
+                        flexWrap: 'wrap'
                     }}>
                     {this.props.user.journals.map((journalID) => {
                         if (this.props.journalsObjs[journalID]) {
@@ -54,10 +68,12 @@ class HomeContainer extends React.Component {
                                 />)
                         }
                     })}
-                    <FloatingButton>
-                        <Add/>
-                    </FloatingButton>
                 </div>
+                <TextInput name='newJournal' onChange={TextInput.onChange.bind(this)} type='text' />
+                <Button onClick={this.createJournal} label="Create Journal (TEMP)" width={100} />
+                <FloatingButton>
+                    <Add />
+                </FloatingButton>
             </div>
         )
     }
@@ -73,7 +89,8 @@ const mapStateToProps = (state) => {
 //Typically would implement actions
 const mapDispatchToProps = (dispatch) => {
     return {
-        getJournal: (id) => dispatch(getJournal(id))
+        getJournal: (id) => dispatch(getJournal(id)),
+        createJournal: (journalName) => dispatch(createJournal(journalName))
     }
 }
 

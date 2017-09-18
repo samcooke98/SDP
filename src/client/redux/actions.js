@@ -32,6 +32,9 @@ export const getEntry = createAction( actionTypes.GET_ENTRY, async(id) =>
     get(`entry/${id}`).then( (val) => normalize(normalizr.normalizeEntry, val))
 )
 
+export const createRevision = createAction( actionTypes.CREATE_REVISION, async (entryID, title, content) => { 
+    return post(`entry/${entryID}/revision`, {title, content}).then((val) => normalize(normalizr.normalizeEntry, val) )
+})
 
 export const selectEntry = createAction( actionTypes.SELECT_ENTRY, 
     (entryID, journalID) => ({ 
@@ -43,9 +46,22 @@ export const selectControl = createAction( actionTypes.SELECT_CONTROL, (control)
     control
 }) )
 
-// export const register = createAction(actionTypes.REGISTER, async (username, password, firstName, lastName, teamName, description, category) => {
-//     return post("register", { username, password, firstName, lastName, teamName, description, category })
-// })
+export const createJournal = createAction( actionTypes.CREATE_JOURNAL, async (title, colour) =>  
+    post("journal", {title,colour}).then( (val) => normalize(normalizr.normalizeUser, val)) 
+)
+
+
+export const createUser = createAction(actionTypes.REGISTER, async (name, password, username) => {
+    return post("register", { username, name, password }).then( (val) => normalize(normalizr.normalizeUser, val))
+})
+
+export const createEntry = createAction( actionTypes.CREATE_ENTRY, async (title, content, journalID) => 
+    post(`journal/${journalID}/entry`, {title,content}).then( (val) => normalize(normalizr.normalizeJournal, val)) 
+)
+
+export const getRevision = createAction( actionTypes.GET_REVISION, async (id) => 
+    get(`revision/${id}`).then( (val) => normalize(normalizr.normalizeRevision, val))
+)
 
 // export const getUserDetails = createAction(actionTypes.GET_USER, async () => {
 //     return get("user").then( (val) => normalize(normalizr.normalizeUser, val ))

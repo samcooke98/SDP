@@ -8,7 +8,8 @@ import RegisterContainer from "./containers/RegisterContainer.js";
 import HomeContainer from "./containers/HomeContainer.js";
 import EntryContainer from "./containers/EntryContainer.js";
 import IndexPageContainer from "./containers/IndexPageContainer/IndexPageContainer.js";
-
+import EditorContainer from "./containers/EditorContainer.js";
+import NewEntryContainer from "./containers/NewEntryContainer.js"
 export const routes = [
 
     {
@@ -29,6 +30,23 @@ export const routes = [
             {
                 path: "/journal/:id",
                 component: EntryContainer,
+                routes: [
+                    {
+                        path: "/journal/:id",
+                        exact: true, strict: true,
+                        component: () => <div> Pick an entry to the left </div>,
+                    }, 
+                    { 
+                        path: "/journal/:id/new",
+                        exact: true, 
+                        component: NewEntryContainer
+                    },
+                    {
+                        path: "/journal/:id/:entry",
+                        exact:true,
+                        component: EditorContainer,
+                    }
+                ]
             },
             {
                 exact: true, strict: true,

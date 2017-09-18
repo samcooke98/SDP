@@ -1,5 +1,5 @@
 /*
-* Basic Container Component Template
+* Container that renders the List of Entries
 */
 import React from "react";
 import { withRouter } from "react-router-dom";
@@ -11,6 +11,8 @@ import ListItem from "../components/ListItem/ListItem.js";
 
 import Search from "react-icons/lib/md/search.js"
 
+//TODO: Change to use Link Components
+//TODO: New Entry -> Link to /new
 class EntryList extends React.Component {
     constructor(props) {
         super(props);
@@ -19,18 +21,15 @@ class EntryList extends React.Component {
     }
 
     componentWillMount() {
-        console.log("MOUNT");
-        console.log(this.props);
-
         let journalID = this.props.match.params.id;
         this.props.getJournal(journalID);
     }
 
     generateList = () => {
+        console.log(this.props)
         if (!this.journal.entries) {
             return <div> LOADING  </div>
         } else {
-            console.log(this.journal.entries);
             //Load entries (If we haven't already)
             for (var entryID of this.journal.entries) {
                 if (!this.props.entries[entryID] && this.dispatched.indexOf(entryID) == -1) {
@@ -41,20 +40,15 @@ class EntryList extends React.Component {
             }
 
             let result = (this.journal.entries || []).map((id) => {
-                console.log(id); console.log(this.props.entries)
                 var entry = this.props.entries[id]; if(!entry) return null;
                 var revisionID = entry.revisions[entry.revisions.length - 1];
                 let revision = this.props.revisions[revisionID] || {}
-                console.log(revision);
-                console.log(revisionID);
                 return <ListItem 
                     key={id} 
                     title={revision.title || ''} 
                     caption={revision.createdAt || ''} 
-                    onClick={this.props.selectEntry.bind(this, id, this.props.journalID)} />
+                    onClick={() => this.props.history.push(`${this.props.match.url}/${id}`)} />
             })
-            
-            console.log(result);
             return result;
         }
 
@@ -73,7 +67,7 @@ class EntryList extends React.Component {
                 <div style={{ flexGrow: 1, marginTop: "12px" }}>
                     {this.generateList()}
                 </div>
-                <Button label="New Entry" colour={this.journal.colour} width="100%" />
+                <Button label="New Entry" colour={this.journal.colour} width="100%" onClick={() => this.props.history.push(`${this.props.match.url}/new`)} />
             </div>
         )
     }
