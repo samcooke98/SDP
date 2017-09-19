@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import Button from "../../components/Button/Button.js"
 
 import styles from "./web.css";
+import { RouteWithSubRoutes } from "../../Routes.js"
 
 class BaseContainer extends React.Component {
     constructor(props) {
@@ -20,20 +21,22 @@ class BaseContainer extends React.Component {
                 flex: 1,
                 backgroundImage: 'url(' + require('./kelly-jean-200248.jpg') + ')',
                 backgroundSize: 'cover',
-                padding: "96px",
+                paddingLeft: "96px",
                 display: 'flex',
                 flexDirection: "column"
             }} >
                 <div className={styles.content}>
                     <h1> The Best Online Journal </h1>
-                    <hr/> 
+                    <hr />
                     <p className={styles.home}>Take your journal to the cloud</p>
-                    <div style={{height: '109px'}} />
-                    <Button style={{marginLeft: "auto", marginRight: "auto", marginBottom: "36"}} height={80} width={282} variant='primary' label="Join Now" size='large' onClick={() => this.props.history.push('/register')} />
-                    <hr style={{width: "200px"}}/>
-                    <Button style={{marginLeft: "auto", marginRight: "auto", marginTop: "36", fontSize: "36px"}} height={55} width={263} variant='secondary' label="Login" size='medium' onClick={() => this.props.history.push('/login')} />
-
+                    <div style={{ height: '109px' }} />
+                    <Button style={{ marginLeft: "auto", marginRight: "auto", marginBottom: "36" }} height={80} width={282} variant='primary' label="Join Now" size='large' onClick={() => this.props.history.push('/register')} />
+                    <hr style={{ width: "200px" }} />
+                    <Button style={{ marginLeft: "auto", marginRight: "auto", marginTop: "36", fontSize: "36px" }} height={55} width={263} variant='secondary' label="Login" size='medium' onClick={() => this.props.history.push('/login')} />
                 </div>
+                {this.props.routes.map(((route, i) => (
+                    <RouteWithSubRoutes key={i} {...route} />
+                )))}
             </div>
         )
     }

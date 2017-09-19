@@ -34,41 +34,29 @@ class RegisterContainer extends React.Component {
         this.setState({ [name]: value })
     }
 
-    componentWillReceiveProps( nextProps ) { 
+    componentWillReceiveProps(nextProps) {
         console.log(nextProps);
-        if(nextProps.success != undefined && this.state.success == '') {
-            this.setState({success: nextProps.success})
+        if (nextProps.success != undefined && this.state.success == '') {
+            this.setState({ success: nextProps.success })
         }
     }
 
     render() {
         return (
-            <div style={{
-                flex: 1,
-                backgroundImage: 'url(' + require('./IndexPageContainer/kelly-jean-200248.jpg') + ')',
-                backgroundSize: 'cover',
-                paddingLeft: "96px",
-                paddingRight: "96px",
-                display: 'flex',
-                flexDirection: "column",
-                justifyContent: 'center',
-                
-            }} >
-                <Modal label='REGISTRATION' onClick={() => this.props.history.push('/')}>
-                    
+            <Modal label='REGISTRATION' onClick={() => this.props.history.push('/')}>
+
                 <form onSubmit={this.submit}>
                     {this.state.success && <p>Success</p>}
-                        <TextInput type='text' label="Name" name='name' value={this.state.name} onChange={this.handleChange} />
+                    <TextInput type='text' label="Name" name='name' value={this.state.name} onChange={this.handleChange} />
 
-                        <TextInput type='text' label="Email" name='email' value={this.state.email} onChange={this.handleChange} />
+                    <TextInput type='text' label="Email" name='email' value={this.state.email} onChange={this.handleChange} />
 
-                        <TextInput type='text' label="Password" name='password' value={this.state.password} onChange={this.handleChange} />
-                        <TextInput type='text' label="Confirm Password" name='passwordConfirm' value={this.state.passwordConfirm} onChange={this.handleChange} />
+                    <TextInput type='text' label="Password" name='password' value={this.state.password} onChange={this.handleChange} />
+                    <TextInput type='text' label="Confirm Password" name='passwordConfirm' value={this.state.passwordConfirm} onChange={this.handleChange} />
 
-                        <Button label="Submit" width="260px" height="54px" variant='primary' />
-                    </form>
-                </Modal>
-            </div>
+                    <Button label="Submit" width="260px" height="54px" variant='primary' />
+                </form>
+            </Modal>
         )
     }
 }
@@ -83,7 +71,7 @@ const mapStateToProps = (state) => {
 //Typically would implement actions
 const mapDispatchToProps = (dispatch) => {
     return {
-        register: (name, email, password) => dispatch(createUser(name,email,password))
+        register: (name, email, password) => dispatch(createUser(name, email, password))
     }
 }
 

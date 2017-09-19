@@ -12,18 +12,12 @@ import EditorContainer from "./containers/EditorContainer.js";
 import NewEntryContainer from "./containers/NewEntryContainer.js"
 export const routes = [
 
+
     {
         component: BaseContainer,
         routes: [
             {
-                path: '/login',
-                component: LoginContainer
-            },
-            {
-                path: '/register',
-                component: RegisterContainer
-            },
-            {
+                exact: true,
                 path: '/home',
                 component: HomeContainer
             },
@@ -35,24 +29,41 @@ export const routes = [
                         path: "/journal/:id",
                         exact: true, strict: true,
                         component: () => <div> Pick an entry to the left </div>,
-                    }, 
-                    { 
+                    },
+                    {
                         path: "/journal/:id/new",
-                        exact: true, 
+                        exact: true,
                         component: NewEntryContainer
                     },
                     {
                         path: "/journal/:id/:entry",
-                        exact:true,
+                        exact: true,
                         component: EditorContainer,
                     }
                 ]
             },
             {
-                exact: true, strict: true,
-                path: '/',
+                path: "/",
                 component: IndexPageContainer,
+                routes: [
+                    {
+                        path: "/login",
+                        exact: true,
+                        component: LoginContainer
+                    },
+                    {
+                        path: "/register",
+                        exact: true,
+                        component: RegisterContainer
+                    }
+                ]
             },
+
+            // {
+            //     exact: true, strict: true,
+            //     path: '/',
+            //     component: IndexPageContainer,
+            // },
         ]
     },
 
@@ -66,3 +77,8 @@ export const RouteWithSubRoutes = (route) => (
         <route.component {...props} routes={route.routes} />
     )} />
 )
+const map = (routes) => routes.map((route, i) => (<RouteWithSubRoutes key={i} {...route} />))
+
+{/* {this.props.routes.map((route, i) => (
+                        <RouteWithSubRoutes key={i} {...route} />
+                    ))} */}

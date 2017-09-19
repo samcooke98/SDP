@@ -12,7 +12,6 @@ import ListItem from "../components/ListItem/ListItem.js";
 import Search from "react-icons/lib/md/search.js"
 
 //TODO: Change to use Link Components
-//TODO: New Entry -> Link to /new
 class EntryList extends React.Component {
     constructor(props) {
         super(props);

@@ -10,12 +10,23 @@ import Modal from "../components/Modal/Modal.js";
 
 import { login } from "../redux/actions.js";
 
+
+//TODO: Handle redirecting to original location! 
+
 class LoginContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             email: '',
             password: '',
+        }
+    }
+
+    componentDidMount() {
+        console.log("here 2");
+        if (this.props.loggedIn) {
+            //TODO: Handle redirecting to original location! 
+            this.props.history.push("/home");
         }
     }
 
@@ -30,28 +41,24 @@ class LoginContainer extends React.Component {
         this.props.login(this.state.email, this.state.password)
     }
 
+    //Handle Errors and Success
+    componentWillReceiveProps(nextProps) {
+        console.log("Received Props");
+        if (nextProps.loggedIn)
+            this.props.history.push("/home");
+    }
+
     render() {
-        //Ideally, these would be all componenets, and this would have no control on the visuals
+        console.log(this.props);
         return (
-            <div style={{
-                flex: 1,
-                backgroundImage: 'url(' + require('./IndexPageContainer/kelly-jean-200248.jpg') + ')',
-                backgroundSize: 'cover',
-                paddingLeft: "96px",
-                paddingRight: "96px",
-                display: 'flex',
-                flexDirection: "column",
-                justifyContent: 'center',
-            }} >
-                <Modal label="LOGIN">
-                    <form onSubmit={this.submitForm}>
-                        <TextInput label="Email:" name="email" value={this.state.email} onChange={this.handleChange} />
-                        <TextInput label="Password: " name="password" type='password' value={this.state.password} onChange={this.handleChange} />
-                        <Button label='login' />
-                    </form>
-                    {this.props.loggedIn && <Link to="/home">Go to home </Link>}
-                </Modal>
-            </div >
+            <Modal label="LOGIN" onClose={() => console.log("TODO - Close modal")} >
+                <form onSubmit={this.submitForm}>
+                    <TextInput label="Email:" name="email" value={this.state.email} onChange={this.handleChange} />
+                    <TextInput label="Password: " name="password" type='password' value={this.state.password} onChange={this.handleChange} />
+                    <Button label='login' />
+                </form>
+                {this.props.loggedIn && <Link to="/home">Go to home </Link>}
+            </Modal>
         )
     }
 }
