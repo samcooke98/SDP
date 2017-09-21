@@ -5,10 +5,15 @@ export default class ControlButton extends React.Component {
     render() {
         return (
             <div
-                onClick={this.props.onClick}
+                onMouseDown={(evt) => {
+                    evt.preventDefault();
+                    this.props.onClick(evt); 
+
+                }
+                }
                 className={styles.controlBtn}
             >
-                <p> {this.props.label}</p>
+                {this.props.children}
             </div>
         )
 

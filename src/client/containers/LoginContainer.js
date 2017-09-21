@@ -23,7 +23,6 @@ class LoginContainer extends React.Component {
     }
 
     componentDidMount() {
-        console.log("here 2");
         if (this.props.loggedIn) {
             //TODO: Handle redirecting to original location! 
             this.props.history.push("/home");
@@ -51,7 +50,7 @@ class LoginContainer extends React.Component {
     render() {
         console.log(this.props);
         return (
-            <Modal label="LOGIN" onClose={() => console.log("TODO - Close modal")} >
+            <Modal label="LOGIN" onClose={() => this.props.history.push("/")} >
                 <form onSubmit={this.submitForm}>
                     <TextInput label="Email:" name="email" value={this.state.email} onChange={this.handleChange} />
                     <TextInput label="Password: " name="password" type='password' value={this.state.password} onChange={this.handleChange} />

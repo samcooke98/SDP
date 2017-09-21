@@ -3,19 +3,16 @@ import styles from "./web.css";
 
 export default class Text extends React.Component {
     render() {
+        console.log(this.props)
         return (
-            <p> {this.props.text} </p>
+            <this.props.tag style={{fontFamily: "Raleway, sans-serif"}}> {this.props.text || this.props.children} </this.props.tag>
         )
 
     }
-
-    someFunc = () => {
-        //'This' is automatically bound when writing functions like this
-        return JSON.stringify(this.props);
-    }
 }
 
-TextInput.defaultProps = { 
-    type: "text" 
+Text.defaultProps = { 
+    type: "text",
+    tag: 'p'
 }
 

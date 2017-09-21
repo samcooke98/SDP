@@ -1,0 +1,14 @@
+/* @import url('https://fonts.googleapis.com/css?family=Raleway'); */
+@import url('https://fonts.googleapis.com/css?family=Raleway:400,700');
+
+h3 { 
+    font-size: 30px;
+    font-weight: bold;
+    margin: 12px;
+}
+
+
+p { 
+    font-size: 16px; 
+    letter-spacing: 2px;
+}

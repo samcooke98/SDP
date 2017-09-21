@@ -19,7 +19,7 @@ class BaseContainer extends React.Component {
     render() {
         console.log(this.props);
         return (
-            <div style={{ minHeight: '100vh', minWidth: '100vw', display: 'flex', flexDirection: 'column' }} >
+            <div style={{ minHeight: '100vh', maxHeight: '100vh', minWidth: '100vw', display: 'flex', flexDirection: 'column' }} >
                 <Titlebar />
                 <Switch>
                     {this.props.routes.map((route, i) => (

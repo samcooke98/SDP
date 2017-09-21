@@ -1,26 +1,33 @@
 import React from "react";
 import styles from "./web.css";
-
+import moment from 'moment';
 
 import Menu from "react-icons/lib/fa/ellipsis-v";
 
+import Text from "../Text/Text.js";
 import SVG from "./MyComponent.js";
 
 export default class JournalButton extends React.Component {
 
 
     render() {
+        console.log(this.props);
         return (
-            <div onClick={this.props.onPress} className={styles.journalbtn}>
-                {/* <object data={require("./book.svg")} style={{fill: 'red'}}/>  */}
-                <SVG height="140" width="100" colour="Red" />
-                <div style={{ display: 'flex' }}>
-                    <span>
-                        <h3 className={styles.journalTitle}> {this.props.title} </h3>
-                        <p className={styles.caption}>Last Edited: {this.props.date}</p>
-                    </span>
-                    <Menu />
-
+            <div className={styles.journalWrap}>
+                <div onClick={this.props.onPress} className={styles.journalbtn}>
+                    {/* <object data={require("./book.svg")} style={{fill: 'red'}}/>  */}
+                    <SVG height="140" width="100" colour={this.props.colour} />
+                    <div style={{ display: 'flex', width: '100%', justifyContent: "center", alignItems: "center" }}>
+                        <span style={{ textAlign: 'center', flexGrow: 1 }}>
+                            <Text tag='h3'> {this.props.title} </Text>
+                            <Text>Created: {moment(this.props.date).format("DD/MM/YYYY")} </Text>
+                        </span>
+                        <span style={{ width: 0, overflow: 'visible' }}>
+                            <Menu height={32} width={32} onClick={(evt) => { console.log("OPEN MENU TODO"); evt.stopPropagation() }}
+                                style={{ position: 'relative', right: "32px" }}
+                            />
+                        </span>
+                    </div>
                 </div>
             </div>
 

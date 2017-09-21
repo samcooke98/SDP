@@ -43,16 +43,15 @@ class RegisterContainer extends React.Component {
 
     render() {
         return (
-            <Modal label='REGISTRATION' onClick={() => this.props.history.push('/')}>
-
+            <Modal label='REGISTRATION' onClose={() => this.props.history.push('/')}>
                 <form onSubmit={this.submit}>
                     {this.state.success && <p>Success</p>}
                     <TextInput type='text' label="Name" name='name' value={this.state.name} onChange={this.handleChange} />
 
                     <TextInput type='text' label="Email" name='email' value={this.state.email} onChange={this.handleChange} />
 
-                    <TextInput type='text' label="Password" name='password' value={this.state.password} onChange={this.handleChange} />
-                    <TextInput type='text' label="Confirm Password" name='passwordConfirm' value={this.state.passwordConfirm} onChange={this.handleChange} />
+                    <TextInput type='password' label="Password" name='password' value={this.state.password} onChange={this.handleChange} />
+                    <TextInput type='password' label="Confirm Password" name='passwordConfirm' value={this.state.passwordConfirm} onChange={this.handleChange} />
 
                     <Button label="Submit" width="260px" height="54px" variant='primary' />
                 </form>

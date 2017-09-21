@@ -8,10 +8,10 @@ import { connect } from "react-redux";
 import { getJournal, getEntry, selectControl } from "../redux/actions.js";
 
 import EntryList from "./EntryList.js";
-import EditorContainer from "./EditorContainer.js";
 import JournalBar from "../components/JournalBar";
 import ControlButton from "../components/ControlButton";
 import { RouteWithSubRoutes } from "../Routes.js";
+import Colour from "color";
 
 
 class FooterContainer extends React.Component {
@@ -33,16 +33,17 @@ class FooterContainer extends React.Component {
                 this.props.getEntry(entry);
     }
 
+    calcColour = ( _bgColor ) =>  Colour(_bgColor).light() ? "#333333" : "#F8F8F8";        
+
     render() {
         let journalID = this.props.match.params.id;
         let journal = this.props.journalObjs[journalID] || {};
         console.log(this.props.routes);
         console.log(this.props.match);
 
-
         return (
             <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-                <JournalBar colour={journal.colour} title={journal.title} arrowClick={() => this.props.history.push("/home")} />
+                <JournalBar textColor={this.calcColour(journal.colour)} colour={journal.colour} title={journal.title} arrowClick={() => this.props.history.push("/home")} />
                 <div style={{ display: 'flex', flexGrow: 1 }}>
                     <EntryList />
                     <Switch>
@@ -50,10 +51,7 @@ class FooterContainer extends React.Component {
                             <RouteWithSubRoutes key={i} {...route} />
                         ))}
                     </Switch>
-                    {/* <EditorContainer ref={(editor) => { this.editor = editor }} />
-                    <div style={{ flexGrow: 0, width: "100px" }}>
-                        <ControlButton label="Bold" onClick={() => this.editor.toggleCommand("BOLD")} />
-                    </div> */}
+                   
                 </div>
             </div>
         )

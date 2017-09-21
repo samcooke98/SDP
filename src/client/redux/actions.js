@@ -51,7 +51,7 @@ export const createJournal = createAction( actionTypes.CREATE_JOURNAL, async (ti
 )
 
 
-export const createUser = createAction(actionTypes.REGISTER, async (name, password, username) => {
+export const createUser = createAction(actionTypes.REGISTER, async (name, username, password) => {
     return post("register", { username, name, password }).then( (val) => normalize(normalizr.normalizeUser, val))
 })
 

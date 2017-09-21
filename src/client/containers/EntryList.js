@@ -8,15 +8,22 @@ import { getJournal, getEntry, selectEntry } from "../redux/actions.js";
 import TextInput from "../components/TextInput/TextInput.js";
 import Button from "../components/Button/Button.js"
 import ListItem from "../components/ListItem/ListItem.js";
+import FilterOptions from "../components/FilterOptions.js";
+
+import moment from "moment";
 
 import Search from "react-icons/lib/md/search.js"
 
-//TODO: Change to use Link Components
+//TODO: Add active state
+//TODO: Add Filter 
 class EntryList extends React.Component {
     constructor(props) {
         super(props);
 
         this.dispatched = []
+        this.state = {
+            isFilterOpen: false
+        }
     }
 
     componentWillMount() {
@@ -39,13 +46,13 @@ class EntryList extends React.Component {
             }
 
             let result = (this.journal.entries || []).map((id) => {
-                var entry = this.props.entries[id]; if(!entry) return null;
+                var entry = this.props.entries[id]; if (!entry) return null;
                 var revisionID = entry.revisions[entry.revisions.length - 1];
                 let revision = this.props.revisions[revisionID] || {}
-                return <ListItem 
-                    key={id} 
-                    title={revision.title || ''} 
-                    caption={revision.createdAt || ''} 
+                return <ListItem
+                    key={id}
+                    title={revision.title || ''}
+                    caption={moment(revision.createdAt).local().format("DD/MM/YYYY - hh:mm") || ''}
                     onClick={() => this.props.history.push(`${this.props.match.url}/${id}`)} />
             })
             return result;
@@ -60,13 +67,26 @@ class EntryList extends React.Component {
         console.log(this.journal);
 
         return (
-            <div style={{ width: "300px", display: "flex", flexDirection: "column", padding: "12px", boxShadow: "blur", boxShadow: "4px 0px 4px -2px rgba(0,0,0,.25)", zIndex: 1 }}>
+            <div style={{
+                width: "300px",
+                display: "flex",
+                flexDirection: "column",
+                padding: "12px", boxShadow: "blur", boxShadow: "4px 0px 4px -2px rgba(0,0,0,.25)", zIndex: 1, 
+            }}>
                 <TextInput right={<Search />} style={{ marginTop: "19px", marginBottom: "12px" }} />
-                <Button label="Filter Options" variant="clear" width="100%" height="48px" />
+                {this.state.isFilterOpen && 
+                    <FilterOptions/>
+                
+                }
+                <Button label="Filter Options" variant="clear" width="100%" height="48px" onClick={() => this.setState({isFilterOpen: !this.state.isFilterOpen})} />
                 <div style={{ flexGrow: 1, marginTop: "12px" }}>
                     {this.generateList()}
                 </div>
-                <Button label="New Entry" colour={this.journal.colour} width="100%" onClick={() => this.props.history.push(`${this.props.match.url}/new`)} />
+                <Button 
+                    label="New Entry" colour={this.journal.colour} 
+                    width="100%" height="70px"
+                    onClick={() => this.props.history.push(`${this.props.match.url}/new`)} 
+                />
             </div>
         )
     }
@@ -91,7 +111,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getJournal: (id) => dispatch(getJournal(id)),
         getEntry: (id) => dispatch(getEntry(id)),
-        selectEntry: (entryID, journalID) => {console.log("here"); dispatch(selectEntry(entryID, journalID))}
+        selectEntry: (entryID, journalID) => { console.log("here"); dispatch(selectEntry(entryID, journalID)) }
 
     }
 }

@@ -13,6 +13,7 @@ import * as JournalController from "./journalController.js";
  * Expects username, password, firstName, lastName, teamName, description, category in the body of the request
  */
 export function registerUser(req, res) {
+    console.log( req.body ); 
     let username = req.body.username;
     let name = req.body.name
     let password = req.body.password

@@ -8,7 +8,7 @@ import RegisterContainer from "./containers/RegisterContainer.js";
 import HomeContainer from "./containers/HomeContainer.js";
 import EntryContainer from "./containers/EntryContainer.js";
 import IndexPageContainer from "./containers/IndexPageContainer/IndexPageContainer.js";
-import EditorContainer from "./containers/EditorContainer.js";
+import EntryViewContainer from "./containers/EntryViewContainer.js";
 import NewEntryContainer from "./containers/NewEntryContainer.js"
 export const routes = [
 
@@ -38,12 +38,13 @@ export const routes = [
                     {
                         path: "/journal/:id/:entry",
                         exact: true,
-                        component: EditorContainer,
+                        component: EntryViewContainer,
                     }
                 ]
             },
             {
                 path: "/",
+                // exact: true,
                 component: IndexPageContainer,
                 routes: [
                     {

@@ -2,14 +2,20 @@
 .controlBtn { 
     width:100px;
     height:100px;
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: 0;
     padding: 0;
 
     width: 100px;
     height: 100px;
     vertical-align: middle;
-    background-color: grey;
+    background-color: #E6E9ED;
     box-sizing: border-box;
-    border: 1px solid black;
+}
+
+.controlBtn * { 
+    height: 24px;
+    width: 24px; 
 }

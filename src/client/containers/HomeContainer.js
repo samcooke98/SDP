@@ -11,6 +11,8 @@ import FloatingButton from "../components/FloatingButton/FloatingButton.js"
 import Button from "../components/Button/Button.js";
 import TextInput from "../components/TextInput/TextInput.js"
 
+import Modal from "../components/Modal/Modal.js";
+
 import Add from "react-icons/lib/md/add.js"
 
 //TODO: Change Button to be a link 
@@ -19,7 +21,9 @@ class HomeContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            newJournal: ''
+            name: '',
+            colour: "",
+            dialog: false
         }
 
     }
@@ -39,10 +43,10 @@ class HomeContainer extends React.Component {
     }
 
     createJournal = (evt) => {
-        //Reset State
-        this.props.createJournal(this.state.newJournal);
+        this.setState({ dialog: false });
+        this.props.createJournal(this.state.name, this.state.colour);
     }
-
+    //TODO: This doesn't render as per design, because it is flex - Should be grid or table 
     render() {
         return (
             <div>
@@ -54,26 +58,38 @@ class HomeContainer extends React.Component {
                         maxWidth: '1200px',
                         marginLeft: 'auto',
                         marginRight: 'auto',
-                        justifyContent: 'space-evenly',
+                        justifyContent: 'left',
                         alignItems: 'space-evenly',
                         flexWrap: 'wrap'
                     }}>
                     {this.props.user.journals.map((journalID) => {
                         if (this.props.journalsObjs[journalID]) {
+                            console.log(this.props.journalsObjs[journalID])
                             return (
                                 <JournalButton
+                                    colour={this.props.journalsObjs[journalID].colour}
                                     key={journalID}
                                     onPress={this.openJournal.bind(this, journalID)}
                                     title={this.props.journalsObjs[journalID].title}
+                                    date={this.props.journalsObjs[journalID].createdAt}
                                 />)
                         }
                     })}
                 </div>
-                <TextInput name='newJournal' onChange={TextInput.onChange.bind(this)} type='text' />
-                <Button onClick={this.createJournal} label="Create Journal (TEMP)" width={100} />
-                <FloatingButton>
+                <FloatingButton onClick={() => this.setState({ dialog: !this.state.dialog })}>
                     <Add />
                 </FloatingButton>
+                {this.state.dialog &&
+                    <Modal label="Create Journal" onClose={() => this.setState({ dialog: false })}>
+                        <form onSubmit={this.createJournal}> 
+                        <TextInput label="Name:" name="name" onChange={TextInput.onChange.bind(this)} />
+                        <TextInput label="Colour:" name="colour" onChange={TextInput.onChange.bind(this)} />
+                        <Button onClick={this.createJournal}
+                            label="Create"
+                        />
+                        </form>
+                    </Modal>
+                }
             </div>
         )
     }
@@ -90,7 +106,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         getJournal: (id) => dispatch(getJournal(id)),
-        createJournal: (journalName) => dispatch(createJournal(journalName))
+        createJournal: (journalName, colour) => dispatch(createJournal(journalName, colour))
     }
 }
 

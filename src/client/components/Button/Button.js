@@ -23,11 +23,6 @@ export default class Button extends React.Component {
         )
 
     }
-
-    someFunc = () => {
-        //'This' is automatically bound when writing functions like this
-        return JSON.stringify(this.props);
-    }
 }
 
 Button.defaultProps  = { 

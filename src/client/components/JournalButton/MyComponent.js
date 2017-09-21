@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function MyComponent(props) {
   return (
-    <svg width={props.width} height={props.height} viewBox="0 0 129 169" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" {...props}>
+    <svg width={props.width} height={props.height} viewBox="0 0 129 169" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
       <title>Group</title>
       <desc>Created using Figma</desc>
       <g id="Canvas" transform="translate(-1563 1483)">
