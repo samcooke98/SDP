@@ -15,16 +15,29 @@ import Modal from "../components/Modal/Modal.js";
 
 import Add from "react-icons/lib/md/add.js"
 
-//TODO: Change Button to be a link 
-//TODO: Make Colour Work
+//Want more colours? add them here
+const colours = [
+    "#333333",
+    "#4F4F4F",
+    "#EB5757",
+    "#2F80ED",
+    "#F2994A",
+    "#219653",
+    "#9B51E0",
+    "#E0E0E0",
+    "#F2F2F2"
+]
+
+
 class HomeContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             name: '',
             colour: "",
-            dialog: false
+            dialog: false,
         }
+        colours.map((color) => this.state[color] = true)
 
     }
 
@@ -64,7 +77,6 @@ class HomeContainer extends React.Component {
                     }}>
                     {this.props.user.journals.map((journalID) => {
                         if (this.props.journalsObjs[journalID]) {
-                            console.log(this.props.journalsObjs[journalID])
                             return (
                                 <JournalButton
                                     colour={this.props.journalsObjs[journalID].colour}
@@ -81,12 +93,27 @@ class HomeContainer extends React.Component {
                 </FloatingButton>
                 {this.state.dialog &&
                     <Modal label="Create Journal" onClose={() => this.setState({ dialog: false })}>
-                        <form onSubmit={this.createJournal}> 
-                        <TextInput label="Name:" name="name" onChange={TextInput.onChange.bind(this)} />
-                        <TextInput label="Colour:" name="colour" onChange={TextInput.onChange.bind(this)} />
-                        <Button onClick={this.createJournal}
-                            label="Create"
-                        />
+                        <form onSubmit={this.createJournal}>
+                            <TextInput label="Name:" name="name" onChange={TextInput.onChange.bind(this)} />
+                            {/* <TextInput label="Colour:" name="colour" onChange={TextInput.onChange.bind(this)} /> */}
+                            <p style={{ margin: '0', color: "#333333", fontFamily: "Raleway", fontWeight: 'bold', fontSize: "28px", marginBottom: "5px" }}> 
+                                Colour: 
+                            </p>
+                            <div style={{ display: 'flex', flexWrap: "wrap", justifyContent: 'left' }}>
+                                {colours.map((colour) => {
+                                    return <ColorInput key={colour} color={colour} selected={this.state.colour == colour} onClick={
+                                        (evt) => {
+                                            this.setState({ colour: colour })
+                                        }
+                                    } />
+                                })}
+                            </div>
+                            <div style={{height: "32px"}}/>
+                            <Button onClick={this.createJournal}
+                                label="Create"
+                                width="100%"
+                                height="32px"
+                            />
                         </form>
                     </Modal>
                 }
@@ -94,7 +121,6 @@ class HomeContainer extends React.Component {
         )
     }
 }
-
 
 const mapStateToProps = (state) => {
     return {
@@ -113,3 +139,21 @@ const mapDispatchToProps = (dispatch) => {
 //withRouter connects to react-router: (https://reacttraining.com/react-router/web/guides/redux-integration) 
 //Connect connects to the redux store: (redux.js.org/docs/basics/UsageWithReact.html) 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(HomeContainer));
+
+
+const ColorInput = ({ color, selected, onClick }) => {
+    return (
+        <div style={{
+            margin: "3px",
+            width: "48px",
+            height: "48px",
+            backgroundColor: color,
+            borderRadius: "10px",
+            cursor: "hand",
+            boxSizing: 'border-box',
+            border: selected ? "3px solid aliceblue" : ""
+        }}
+            onClick={onClick}
+        />
+    )
+}
