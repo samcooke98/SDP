@@ -77,7 +77,7 @@ export default class Editor extends React.Component {
                     maxWidth: "600px", marginLeft: "auto", marginRight: "auto", paddingTop: '60px',
                     fontFamily: "Raleway",
                 }}>
-                    <TextInput type='text' name='title' onChange={TextInput.onChange.bind(this)} />
+                    <TextInput placeholder="Entry title" type='text' name='title' onChange={TextInput.onChange.bind(this)} />
                     <p> {date} </p>
                     <DraftEditor
                         editorState={this.state.editor}
