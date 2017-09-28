@@ -4,9 +4,19 @@ import styles from "./web.css";
 import Close from "react-icons/lib/md/close"
 
 export default class Modal extends React.Component {
+    componentWillMount() { 
+        console.log("add event listener");
+        document.addEventListener("keydown", this.handleEscape);
+    }
+
+
+    componentWillUnmount() { 
+        document.removeEventListener("keydown", this.handleEscape);
+    }
+
     render() {
         return (
-            <div className={styles.modal}>
+            <div className={styles.modal} onKeyPress={this.handleEscape}>
                 <div className={styles.container}>
                     <div className={styles.title}>
                         <h2>{this.props.label}</h2>
@@ -16,15 +26,16 @@ export default class Modal extends React.Component {
                     </div>
                 </div>
             </div>
-
         )
-
     }
 
-    someFunc = () => {
-        //'This' is automatically bound when writing functions like this
-        return JSON.stringify(this.props);
+    handleEscape = (evt) => { 
+        if(evt.keyCode === 27) { 
+            this.props.onClose();
+        }
     }
+
+
 }
 
 

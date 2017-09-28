@@ -22,14 +22,17 @@ export function registerUser(req, res) {
         console.log(err);
         if  (err) {
             res.json(sendError(err));
+            return;
         }
         passport.authenticate('local')(req, res, function () {
             req.session.save(function (err) {
                 if (err) {
                     console.log(err);
                     res.json(sendError("Internal Server Error"));
+                    return;
                 } else {
                     res.json(sendPayload(newUser));
+                    return;
                 }
             });
         });

@@ -30,7 +30,12 @@ class BaseContainer extends React.Component {
                     <hr />
                     <p className={styles.home}>Take your journal to the cloud</p>
                     <div style={{ height: '109px' }} />
-                    <Button style={{ marginLeft: "auto", marginRight: "auto", marginBottom: "36" }} height={80} width={282} variant='primary' label="Join Now" size='large' onClick={() => this.props.history.push('/register')} />
+                    <Button 
+                        style={{ marginLeft: "auto", marginRight: "auto", marginBottom: "36" }} 
+                        height={80} width={282} 
+                        variant='primary' 
+                        label="Join Now" size='large'c fontSize="36px" 
+                        onClick={() => this.props.history.push('/register')} />
                     <hr style={{ width: "200px" }} />
                     <Button style={{ marginLeft: "auto", marginRight: "auto", marginTop: "36", fontSize: "36px" }} height={55} width={263} variant='secondary' label="Login" size='medium' onClick={() => this.props.history.push('/login')} />
                 </div>

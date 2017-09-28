@@ -2,7 +2,7 @@
 * Container for /register
 */
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import TextInput from "../components/TextInput/TextInput.js";
 import Button from "../components/Button/Button.js";
@@ -35,17 +35,17 @@ class RegisterContainer extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps);
-        if (nextProps.success != undefined && this.state.success == '') {
-            this.setState({ success: nextProps.success })
-        }
+        this.setState({ msg: nextProps.message.message, success: nextProps.success })
+
     }
 
     render() {
+
         return (
             <Modal label='REGISTRATION' onClose={() => this.props.history.push('/')}>
+                {this.props.loggedIn && <Redirect to="/home" />}
                 <form onSubmit={this.submit}>
-                    {this.state.success && <p>Success</p>}
+                    {this.state.msg && <p>{this.state.msg}</p>}
                     <TextInput type='text' label="Name" name='name' value={this.state.name} onChange={this.handleChange} />
 
                     <TextInput type='text' label="Email" name='email' value={this.state.email} onChange={this.handleChange} />
@@ -64,7 +64,8 @@ class RegisterContainer extends React.Component {
 const mapStateToProps = (state) => {
     return {
         success: state.ui.registrationSuccess,
-        message: state.ui.registrationFail
+        message: state.ui.registrationFail,
+        loggedIn: state.misc.loggedIn,
     }
 }
 //Typically would implement actions

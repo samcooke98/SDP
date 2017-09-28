@@ -18,7 +18,7 @@ export default class Button extends React.Component {
                     }, this.props.style) }
                 className={ styleClass }
             >
-                <p> {this.props.label}</p>
+                <p style={{fontSize: this.props.fontSize}}> {this.props.label}</p>
             </button>
         )
 
@@ -26,7 +26,8 @@ export default class Button extends React.Component {
 }
 
 Button.defaultProps  = { 
-    variant: "primary"
+    variant: "primary",
+    fontSize: "24px"
 }
 
 //In addition to CSS modules, you may wish to use: https://github.com/gajus/react-css-modules
