@@ -54,7 +54,7 @@ class LoginContainer extends React.Component {
                 <form onSubmit={this.submitForm}>
                     <TextInput label="Email:" name="email" value={this.state.email} onChange={this.handleChange} />
                     <TextInput label="Password: " name="password" type='password' value={this.state.password} onChange={this.handleChange} />
-                    <Button label='login' />
+                    <Button label='login' width="256px" height="48px" />
                 </form>
                 {this.props.loggedIn && <Link to="/home">Go to home </Link>}
             </Modal>

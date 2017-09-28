@@ -43,7 +43,6 @@ class HomeContainer extends React.Component {
 
     componentWillMount() {
         //Load the Journals if they don't already exist
-        console.log(this.props);
         for (var id of this.props.user.journals) {
             if (!this.props.journalsObjs[id])
                 this.props.getJournal(id);
@@ -51,7 +50,6 @@ class HomeContainer extends React.Component {
     }
 
     openJournal = (id) => {
-        console.log("here");
         this.props.history.push(`/journal/${id}`)
     }
 
@@ -151,7 +149,7 @@ const ColorInput = ({ color, selected, onClick }) => {
             borderRadius: "10px",
             cursor: "hand",
             boxSizing: 'border-box',
-            border: selected ? "3px solid aliceblue" : ""
+            border: selected ? "5px solid yellow" : ""
         }}
             onClick={onClick}
         />

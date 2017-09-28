@@ -13,11 +13,6 @@ export default class TextInput extends React.Component {
 
     }
 
-    someFunc = () => {
-        //'This' is automatically bound when writing functions like this
-        return JSON.stringify(this.props);
-    }
-
     onChange(evt) {
         const name = evt.target.name;
         const value = evt.target.value;
