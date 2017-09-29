@@ -15,7 +15,7 @@ class Protector extends React.Component {
     render() {
         //Ideally, these would be all components, and this would have no control on the visuals
         if (!this.props.loggedIn)
-            return <Redirect to={"/login"} />
+            return <Redirect to={{ pathname: "/login", state: { hello: true } }} />
         else
             return this.props.children;
     }
@@ -44,10 +44,16 @@ export function withProtection(WrappedComponent) {
     return withRouter(connect(mapStateToProps, mapDispatchToProps)
         (class extends React.Component {
             render() {
+                console.log("HERE");
+                console.log(this.props.location);
                 if (!this.props.loggedIn)
-                    return <Redirect to={"/login"} />
+                    return <Redirect to={{
+                        pathname: "/login",
+                        state: { referrer: this.props.location }
+                    }}
+                    />
                 else
-                    return <WrappedComponent/>
+                    return <WrappedComponent />
             }
         }))
 

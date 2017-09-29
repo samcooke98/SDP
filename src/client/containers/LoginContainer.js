@@ -44,11 +44,11 @@ class LoginContainer extends React.Component {
     componentWillReceiveProps(nextProps) {
         console.log("Received Props");
         if (nextProps.loggedIn)
-            this.props.history.push("/home");
+            this.props.history.push(this.props.location.state.referrer);
     }
 
     render() {
-        console.log(this.props);
+        console.log(this.props.location);
         return (
             <Modal label="LOGIN" onClose={() => this.props.history.push("/")} >
                 <form onSubmit={this.submitForm}>
