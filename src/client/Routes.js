@@ -10,6 +10,8 @@ import EntryContainer from "./containers/EntryContainer.js";
 import IndexPageContainer from "./containers/IndexPageContainer/IndexPageContainer.js";
 import EntryViewContainer from "./containers/EntryViewContainer.js";
 import NewEntryContainer from "./containers/NewEntryContainer.js"
+import Redirector from "./containers/Redirector.js";
+
 export const routes = [
     {
         path: "/",
@@ -25,11 +27,6 @@ export const routes = [
                 component: EntryContainer,
                 routes: [
                     {
-                        path: "/journal/:id",
-                        exact: true, strict: true,
-                        component: () => <div> Pick an entry to the left </div>,
-                    },
-                    {
                         path: "/journal/:id/new",
                         exact: true,
                         component: NewEntryContainer
@@ -38,7 +35,13 @@ export const routes = [
                         path: "/journal/:id/:entry",
                         exact: true,
                         component: EntryViewContainer,
-                    }
+                    },
+                    {
+                        path: "/journal/:id",
+                        exact: true, strict: true,
+                        component: Redirector,
+                    },
+
                 ]
             },
             {
@@ -58,7 +61,7 @@ export const routes = [
                     },
                     {
                         path: "/",
-                        exact: true, 
+                        exact: true,
                         component: () => null
                     }
                 ]

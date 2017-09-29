@@ -14,7 +14,7 @@ import { RouteWithSubRoutes } from "../Routes.js";
 import Colour from "color";
 
 
-class FooterContainer extends React.Component {
+class EntryContainer extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -82,7 +82,7 @@ const mapDispatchToProps = (dispatch) => {
 
 //withRouter connects to react-router: (https://reacttraining.com/react-router/web/guides/redux-integration) 
 //Connect connects to the redux store: (redux.js.org/docs/basics/UsageWithReact.html) 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(FooterContainer));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EntryContainer));
 
 
 const NoMatch = ({ location }) => (

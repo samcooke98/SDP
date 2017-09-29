@@ -7,7 +7,10 @@ import {
 import TextInput from "./TextInput/TextInput.js";
 import moment from "moment";
 import FloatingButton from "../components/FloatingButton/FloatingButton.js";
+import ControlsContainer from "../containers/ControlsContainer.js";
 
+import Save from "react-icons/lib/md/save"
+import Delete from "react-icons/lib/md/delete"
 
 /**
  * Component for the DraftJS Editor
@@ -32,6 +35,7 @@ export default class Editor extends React.Component {
     };
 
     handleKeyCommand = (command, editorState) => {
+        // this.props.notify(command.toUpperCase()/);
         const newState = RichUtils.handleKeyCommand(editorState, command);
         if (newState) {
             this.onChange(newState);
@@ -43,6 +47,7 @@ export default class Editor extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         console.log("PROPS");
+
         if (this.props != nextProps) {
             if (nextProps.initialText)
                 this.loadEditor(nextProps.initialText)
@@ -71,25 +76,45 @@ export default class Editor extends React.Component {
 
     render() {
         let date = moment().format("DD/MM/YYYY");
+        console.log(this.state.editor.getCurrentInlineStyle().toJS())
         return (
-            <div style={{ overflow: 'auto',  flexGrow: 1, }}>
-                <div style={{
-                    maxWidth: "600px", marginLeft: "auto", marginRight: "auto", paddingTop: '60px',
-                    fontFamily: "Raleway",
-                }}>
-                    <TextInput placeholder="Entry title" type='text' name='title' onChange={TextInput.onChange.bind(this)} />
-                    <p> {date} </p>
-                    <DraftEditor
-                        editorState={this.state.editor}
-                        onChange={this.onChange}
-                        handleKeyCommand={this.handleKeyCommand}
-                    />
-                    <FloatingButton shape='square' right="124px" height="60px" width="60px" onClick={this.props.save}> Save </FloatingButton>
-                    <FloatingButton shape='square' right="196px" height="60px" width="60px" onClick={this.props.delete}> 'Delete' </FloatingButton>
-                    <FloatingButton shape='square' right="268px" height="60px" width="60px" onClick={this.props.hide}> Hide </FloatingButton>
+            <div style={{ flexGrow: 1 }}>
+                <div style={{ display: 'flex', flexDirection: 'row', flexGrow: 1, height: "100%" }}>
+                    <div style={{ overflow: 'auto', flexGrow: 1 }}>
+                        <div style={{
+                            width: "600px", marginLeft: "auto", marginRight: "auto", paddingTop: '24px',
+                            fontFamily: "Raleway",
+                        }}>
+                            <TextInput placeholder="Entry title" type='text' name='title' onChange={TextInput.onChange.bind(this)} />
+                            <p> {date} </p>
+                            <DraftEditor
+                                editorState={this.state.editor}
+                                onChange={this.onChange}
+                                handleKeyCommand={this.handleKeyCommand}
+                            />
 
+                            <FloatingButton shape='square' right="124px" height="60px" width="60px" onClick={this.props.save}>
+                                <Save />
+                            </FloatingButton>
+
+                            <FloatingButton shape='square' right="196px" height="60px" width="60px" onClick={this.props.delete}>
+                                <Delete />
+                            </FloatingButton>
+                            <FloatingButton shape='square' right="268px" height="60px" width="60px" onClick={this.props.hide}>
+                                Hide
+                            </FloatingButton>
+                        </div>
+                    </div>
+
+                    <ControlsContainer
+                        inlineStyles={this.state.editor.getCurrentInlineStyle().toJS()}
+                        toggleControl={(str) => { this.toggleCommand(str) }}
+                    />
                 </div>
+
             </div>
         )
     }
 }
+
+

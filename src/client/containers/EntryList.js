@@ -9,7 +9,9 @@ import TextInput from "../components/TextInput/TextInput.js";
 import Button from "../components/Button/Button.js"
 import ListItem from "../components/ListItem/ListItem.js";
 import FilterOptions from "../components/FilterOptions.js";
+import { withProtection } from "./Protector.js"
 
+import Colour from "color";
 import moment from "moment";
 
 //TODO: Add active state
@@ -58,6 +60,9 @@ class EntryList extends React.Component {
 
     }
 
+    calcColour = (_bgColor) => Colour(_bgColor).light() ? "#333333" : "#F8F8F8";
+
+
     render() {
         this.journal = this.props.journal;
         // this.entries = this.journal.entries;
@@ -69,21 +74,21 @@ class EntryList extends React.Component {
                 width: "300px",
                 display: "flex",
                 flexDirection: "column",
-                padding: "12px", boxShadow: "blur", boxShadow: "4px 0px 4px -2px rgba(0,0,0,.25)", zIndex: 1, 
+                padding: "12px", boxShadow: "blur", boxShadow: "4px 0px 4px -2px rgba(0,0,0,.25)", zIndex: 1,
             }}>
                 <TextInput placeholder="Search..." style={{ marginTop: "00px", marginBottom: "12px" }} />
-                {this.state.isFilterOpen && 
-                    <FilterOptions/>
-                
+                {this.state.isFilterOpen &&
+                    <FilterOptions />
+
                 }
-                <Button label="Filter Options" variant="clear" width="100%" height="48px" onClick={() => this.setState({isFilterOpen: !this.state.isFilterOpen})} />
+                <Button label="Filter Options" variant="clear" width="100%" height="48px" onClick={() => this.setState({ isFilterOpen: !this.state.isFilterOpen })} />
                 <div style={{ flexGrow: 1, marginTop: "12px" }}>
                     {this.generateList()}
                 </div>
-                <Button 
-                    label="New Entry" colour={this.journal.colour} 
+                <Button
+                    label="New Entry" style={{color: this.calcColour(this.journal.colour)}} colour={this.journal.colour} 
                     width="100%" height="70px"
-                    onClick={() => this.props.history.push(`${this.props.match.url}/new`)} 
+                    onClick={() => this.props.history.push(`${this.props.match.url}/new`)}
                 />
             </div>
         )
@@ -116,4 +121,4 @@ const mapDispatchToProps = (dispatch) => {
 
 //withRouter connects to react-router: (https://reacttraining.com/react-router/web/guides/redux-integration) 
 //Connect connects to the redux store: (redux.js.org/docs/basics/UsageWithReact.html) 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EntryList));
+export default withProtection(withRouter(connect(mapStateToProps, mapDispatchToProps)(EntryList)))

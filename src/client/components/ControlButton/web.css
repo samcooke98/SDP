@@ -19,3 +19,7 @@
     height: 24px;
     width: 24px; 
 }
+
+.active { 
+    background-color: #8a8b8e;
+}

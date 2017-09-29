@@ -70,7 +70,6 @@ class EntryViewContainer extends React.Component {
                             ref={(editor) => { this.editor = editor }}
                             initialText={test}
                         />
-                        <ControlsContainer/>
                     </div >
                 )
             else {

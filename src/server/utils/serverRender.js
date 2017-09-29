@@ -31,8 +31,9 @@ const recursive = (url, routes) => {
         }
     })
     return result;
-
 }
+
+
 import React from "react";
 import { StaticRouter } from "react-router-dom";
 import ReactDOMServer from "react-dom/server";

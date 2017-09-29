@@ -7,25 +7,25 @@ export default class Button extends React.Component {
         styleClass += " " + styles[this.props.variant]
 
         return (
-            <button 
-                onClick={this.props.onClick} 
-                style={ Object.assign(
+            <button
+                onClick={this.props.onClick}
+                style={Object.assign(
                     {
-                        display: 'block', marginLeft: "auto", marginRight: 'auto', 
-                        width: this.props.width, 
-                        height: this.props.height, 
+                        display: 'block', marginLeft: "auto", marginRight: 'auto',
+                        width: this.props.width,
+                        height: this.props.height,
                         backgroundColor: this.props.colour || ''
-                    }, this.props.style) }
-                className={ styleClass }
+                    }, this.props.style)}
+                className={styleClass}
             >
-                <p style={{fontSize: this.props.fontSize}}> {this.props.label}</p>
+                <p style={{ fontSize: this.props.fontSize}}> {this.props.label}</p>
             </button>
         )
 
     }
 }
 
-Button.defaultProps  = { 
+Button.defaultProps = {
     variant: "primary",
     fontSize: "24px"
 }
