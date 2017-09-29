@@ -6,7 +6,7 @@ export default class TextInput extends React.Component {
         return (
             <div className={styles.inputContainer} style={this.props.style}>
                 <p> {this.props.label} </p>
-                <input type={this.props.type} onChange={this.props.onChange} name={this.props.name} value={this.props.value} />
+                <input placeholder={this.props.placeholder} type={this.props.type} onChange={this.props.onChange} name={this.props.name} value={this.props.value} />
                 {this.props.right}
             </div>
         )

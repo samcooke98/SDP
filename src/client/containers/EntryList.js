@@ -12,8 +12,6 @@ import FilterOptions from "../components/FilterOptions.js";
 
 import moment from "moment";
 
-import Search from "react-icons/lib/md/search.js"
-
 //TODO: Add active state
 //TODO: Add Filter 
 class EntryList extends React.Component {
@@ -73,7 +71,7 @@ class EntryList extends React.Component {
                 flexDirection: "column",
                 padding: "12px", boxShadow: "blur", boxShadow: "4px 0px 4px -2px rgba(0,0,0,.25)", zIndex: 1, 
             }}>
-                <TextInput right={<Search />} style={{ marginTop: "19px", marginBottom: "12px" }} />
+                <TextInput placeholder="Search..." style={{ marginTop: "00px", marginBottom: "12px" }} />
                 {this.state.isFilterOpen && 
                     <FilterOptions/>
                 
