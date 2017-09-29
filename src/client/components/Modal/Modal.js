@@ -6,12 +6,15 @@ import Close from "react-icons/lib/md/close"
 export default class Modal extends React.Component {
     componentWillMount() { 
         console.log("add event listener");
-        document.addEventListener("keydown", this.handleEscape);
+        try { 
+            document.addEventListener("keydown", this.handleEscape);
+        } catch(err) { 
+            //Do nothing - It errors on the Server, as document isn't defined
+        }
     }
 
-
     componentWillUnmount() { 
-        document.removeEventListener("keydown", this.handleEscape);
+        document && document.removeEventListener("keydown", this.handleEscape);
     }
 
     render() {

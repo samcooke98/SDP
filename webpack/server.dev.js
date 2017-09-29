@@ -23,7 +23,7 @@ module.exports = {
 			'webpack/hot/poll?1000',
 			/^react-toolbox/, //Regex actually works, strings didn't seem to be 
 			/^react-css-themr/,
-			/\.(?!(?:jsx?|json|css|scss)$).{1,5}$/i,
+			/^react-icons/,
 		]
 	}), "./src/server/app.js"],
 	node: {
@@ -48,8 +48,9 @@ module.exports = {
 			},
 			{
 				test: /\.css$/,
-				include: /(node_modules|bower_components)/,
 				use: [
+					// 'isomorphic-style-loader?sourceMap',
+					// 'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]'
 					"isomorphic-style-loader",
 					{
 						loader: "css-loader",
@@ -83,4 +84,4 @@ https://github.com/kriasoft/isomorphic-style-loader/issues/62
 https://medium.com/@mattvagni/server-side-rendering-with-css-modules-6b02f1238eb1 
 https://github.com/gajus/react-css-modules
 
-*/ 
+*/

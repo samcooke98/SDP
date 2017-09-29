@@ -13,14 +13,14 @@ import * as JournalController from "./journalController.js";
  * Expects username, password, firstName, lastName, teamName, description, category in the body of the request
  */
 export function registerUser(req, res) {
-    console.log( req.body ); 
+    console.log(req.body);
     let username = req.body.username;
     let name = req.body.name
     let password = req.body.password
     let newUser = new User({ username, name });
     User.register(newUser, req.body.password, function (err, account) {
         console.log(err);
-        if  (err) {
+        if (err) {
             res.json(sendError(err));
             return;
         }
@@ -39,7 +39,14 @@ export function registerUser(req, res) {
     });
 }
 
-
+export async function getDetails(id) {
+    //Do something? 
+    var user = await User.findOne({ _id: id });
+    var result = await user.populate("journals").execPopulate();
+    console.log("RESULT:");
+    console.log(result);
+    return result;
+}
 
 export async function createJournal(title, colour, user) {
     var journal = await JournalController.createJournal(title, colour);
@@ -51,8 +58,8 @@ export async function createJournal(title, colour, user) {
 }
 
 
-export async function getUserByID( id ) { return await User.findById(id) }
+export async function getUserByID(id) { return await User.findById(id) }
 
-export async function populate(userObj) { 
+export async function populate(userObj) {
     return userObj.populate('journals').execPopulate();
 }

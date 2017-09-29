@@ -11,9 +11,8 @@ import IndexPageContainer from "./containers/IndexPageContainer/IndexPageContain
 import EntryViewContainer from "./containers/EntryViewContainer.js";
 import NewEntryContainer from "./containers/NewEntryContainer.js"
 export const routes = [
-
-
     {
+        path: "/",
         component: BaseContainer,
         routes: [
             {
@@ -56,6 +55,11 @@ export const routes = [
                         path: "/register",
                         exact: true,
                         component: RegisterContainer
+                    },
+                    {
+                        path: "/",
+                        exact: true, 
+                        component: () => null
                     }
                 ]
             },

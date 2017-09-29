@@ -5,6 +5,7 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { getJournal, createJournal } from "../redux/actions.js";
+import {withProtection} from "./Protector.js";
 
 import JournalButton from "../components/JournalButton/JournalButton.js"
 import FloatingButton from "../components/FloatingButton/FloatingButton.js"
@@ -136,7 +137,7 @@ const mapDispatchToProps = (dispatch) => {
 
 //withRouter connects to react-router: (https://reacttraining.com/react-router/web/guides/redux-integration) 
 //Connect connects to the redux store: (redux.js.org/docs/basics/UsageWithReact.html) 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(HomeContainer));
+export default withProtection(withRouter(connect(mapStateToProps, mapDispatchToProps)(HomeContainer)));
 
 
 const ColorInput = ({ color, selected, onClick }) => {

@@ -22,7 +22,8 @@ module.exports = {
 		whitelist: [
 			/^react-toolbox/, //Regex actually works, strings didn't seem to be 
 			/^react-css-themr/,
-			/\.(?!(?:jsx?|json|css|scss)$).{1,5}$/i,
+
+			// /\.(?!(?:jsx?|json|css|scss)$).{1,5}$/i,
 
 		]
 	}), {
@@ -41,10 +42,15 @@ module.exports = {
 				}
 			},
 			{
+				test: /\.(png|svg|jpg|gif)$/,
+				use: [
+					'file-loader'
+				]
+			},
+			{
 				test: /\.css$/,
-				include: /(node_modules|bower_components)/,
 				use: ExtractTextPlugin.extract({
-					fallback: 'style-loader',
+					fallback: 'isomorphic-style-loader',
 					use: [
 						{
 							loader: 'css-loader',
