@@ -10,7 +10,9 @@ export default class FloatingButton extends React.Component {
                 className={ style[this.props.shape] + " " + style.floatBtn}
                 style= {
                     {
+                        cursor: "pointer",
                         backgroundColor: this.props.colour,
+                        color: this.props.color,
                         bottom: this.props.bottom,
                         right: this.props.right,
                         width: this.props.width,
@@ -19,7 +21,9 @@ export default class FloatingButton extends React.Component {
                 }
                 onClick={this.props.onClick}
             >
-            {this.props.children}
+            <span style={{textAlign: "center", verticalAlign: "middle", lineHeight: "55px",fontSize: "40px"}}>
+                {this.props.children}
+            </span>
             </div>
         )
 
