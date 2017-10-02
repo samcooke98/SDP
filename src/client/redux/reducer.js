@@ -11,7 +11,11 @@ const initialState = {
         users: {},
         journals: {},
         entries: {},
-        entryRevisions: {}
+        entryRevisions: {},
+        editor: {
+            title: "",
+            content: null,
+        }
     },
     ui: {
         journalEntry: {}

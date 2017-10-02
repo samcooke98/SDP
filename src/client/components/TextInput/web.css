@@ -20,6 +20,7 @@ input {
     font-size: 32px;
     padding: 3px 3px;
     box-sizing: border-box;
+    text-overflow: ellipsis;
 }
 
 .journal { 

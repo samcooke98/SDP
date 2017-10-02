@@ -9,7 +9,7 @@ export async function createEntry(title, content) {
     entry.revisions.push(content._id);
 
     await entry.save();
-    return entry;
+    return await entry.populate("revisions").execPopulate();
 }
 
 export async function reviseEntry(entryID, title, content) {
@@ -23,7 +23,7 @@ export async function reviseEntry(entryID, title, content) {
     entry.revisions.push(newContent._id);
 
     entry = await entry.save();
-    return entry
+    return await entry.populate("revisions").execPopulate();
 }
 
 export async function getByID(id) {

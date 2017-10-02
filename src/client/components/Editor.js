@@ -15,6 +15,7 @@ import Hide from "react-icons/lib/fa/eye-slash.js";
 import Show from "react-icons/lib/fa/eye";
 
 import { Prompt } from "react-router-dom"
+import equal from "deep-equal"
 
 /**
  * Component for the DraftJS Editor
@@ -34,26 +35,41 @@ export default class Editor extends React.Component {
         this.onChange(RichUtils.toggleInlineStyle(this.state.editor, commandStr));
     };
 
+
+    isSameAsInitial = (editorState) => {
+        const currentContent = convertToRaw(editorState.getCurrentContent())
+        const initialContent = convertToRaw(this.state.initialEditor.getCurrentContent())
+        console.log("COMPARE CONTENTS");
+        console.log(currentContent);
+        console.log(initialContent);
+        // console.log(    JSON.stringify(currentContent) == JSON.stringify(initialContent) )
+        return (equal(currentContent, initialContent));
+        // console.log("---");
+        for(const blockID in currentContent.blockMap) {
+            // console.log(currentContent.blockMap[blockID]);
+            // if(initialContent.key = )
+
+            
+
+        }
+
+
+
+    }
+
     onChange = (editorState) => {
         console.log("Changed");
         const hasChangedContent = editorState.getCurrentContent() != this.state.editor.getCurrentContent()
         if (hasChangedContent) {
             this.props.onContentChange && this.props.onContentChange(); //Notify the Parent that the content has been changed        
         }
-        //TODO: Compare current content to initial Content. If the two are the same, re-hide the save button and stop blocking
-        // console.log(is(editorState.getCurrentContent(), ))
-        // const currentContent = editorState.getCurrentContent()
-        // console.log(currentContent.equals( this.state.initialText))         
-        // console.log(this.state.initialText);
-        // if(this.state.hasChangedContent && is( editorState.getCurrentContent(), this.state.initialText) )
-        //     console.log("Back to original");
+        //if it's back to the original, we reset back to false; 
+        const isSame = this.isSameAsInitial(editorState);
 
         this.setState({
             editor: editorState,
-            contentChanged: this.state.contentChanged || hasChangedContent
+            contentChanged: isSame ? false : this.state.contentChanged || hasChangedContent
         });
-
-
     };
 
     handleKeyCommand = (command, editorState) => {
@@ -71,11 +87,11 @@ export default class Editor extends React.Component {
         console.log("PROPS");
 
         if (this.props != nextProps) {
+            console.log("here");
             if (nextProps.initialText) {
                 console.log("HERE!");
                 console.log(nextProps.initialText);
                 this.loadEditor(nextProps.initialText)
-                this.setState({ initialText: (nextProps.initialText) })
             }
             if (nextProps.initialTitle)
                 this.setState({ title: this.props.initialTitle })
@@ -85,15 +101,13 @@ export default class Editor extends React.Component {
     //We may receive an object of formatted text, or plain text
     loadEditor = (param) => {
         if (typeof (param) === "string")
-            this.setState({ editor: EditorState.createWithContent(ContentState.createFromText(param)) })
+            this.setState({ editor: EditorState.createWithContent(ContentState.createFromText(param)), initialEditor:EditorState.createWithContent(ContentState.createFromText(param)) })
         else if (typeof (param) === "object")
-            this.setState({ editor: EditorState.createWithContent(convertFromRaw(param)) })
+            this.setState({ editor: EditorState.createWithContent(convertFromRaw(param)), initialEditor: EditorState.createWithContent(convertFromRaw(param))  })
         else
             console.warn("Unsure about type given to an Editor Component");
 
     }
-
-
 
     getData = () => {
         return {
@@ -147,7 +161,7 @@ export default class Editor extends React.Component {
                                     <Delete />
                                 </FloatingButton>
                                 <FloatingButton contain shape='square' right="268px" height="60px" width="60px" onClick={this.props.hide}>
-                                    {this.props.isHidden ? <Show/> : <Hide/>}
+                                    {this.props.isHidden ? <Show /> : <Hide />}
                                 </FloatingButton>
                             </div>
                         </div>

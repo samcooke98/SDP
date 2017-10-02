@@ -4,10 +4,9 @@ TODO: Investigate Plugins
 TODO: Error Handling (What happens if the id is invalid?)
 */
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import { withRouter, Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { getJournal, createRevision, getEntry, getRevision, modifyEntry } from "../redux/actions.js";
-
 import EntryList from "./EntryList.js";
 
 import Editor from "../components/Editor.js";
@@ -24,84 +23,175 @@ class EntryViewContainer extends React.Component {
 
         this.state = {
             historyModal: false,
+
             dialog: false,
             dialogTitle: "",
             dialogActions: [],
             dialogMessage: '',
+
+            edited: false,
+            curRevisions: 0,
+
+            waiting: false
         }
     }
 
     componentWillMount() {
         //Get data if it isn't already there! (ie: User Refreshed)
-        let journalID = this.props.match.params.id;
-        this.props.getJournal(journalID);
-        let entryID = this.props.match.params.entry;
-        this.props.getEntry(entryID);
+        const journalID = this.props.match.params.id;
+        if (this.props.journal && !this.props.journal[journalID])
+            this.props.getJournal(journalID);
 
-        const revisionID = this.props.match.params.revision
-        if (revisionID && !this.props.revisions[revisionID])
+        const entryID = this.props.match.params.entry;
+        if (this.props.entries && !this.props.entries[entryID])
+            this.props.getEntry(entryID);
+
+        const revisionID = this.props.match.params.revision;
+        if (revisionID && !this.props.revisions[revisionID]) {
+            console.log("Getting revision ID");
             this.props.getRevision(revisionID);
+        }
+    }
+
+    isPopulated = (props = this.props) => {
+        const journalID = props.match.params.id;
+        const entryID = props.match.params.entry;
+        const revisionID = props.match.params.revision;
+        console.log(props.journal);
+        console.log(props.entry);
+        console.log(props.revisions[revisionID])
+        if (props.journal && props.entry && props.revisions[revisionID])
+            return true;
+        else
+            return false;
+    }
 
 
+    componentWillReceiveProps(nextProps) {
+        const curJournalID = this.props.match.params.id;
+        const curEntryID = this.props.match.params.entry;
+        const curRevisionID = this.props.match.params.revision;
+
+        const nextJournalID = nextProps.match.params.id;
+        const nextEntryID = nextProps.match.params.entry;
+        const nextRevisionID = nextProps.match.params.revision;
+
+        if (curJournalID != nextJournalID
+            || curEntryID != nextEntryID
+            || curRevisionID != nextRevisionID
+            || this.props.revisions != nextProps.revisions
+        ) {
+            //We have changed pages! OR we have updated our entities
+            const isPopulated = this.isPopulated(nextProps);
+            console.log("Populated:");
+            console.log(isPopulated);
+            console.log(nextProps)
+            this.setState({
+                ready: this.isPopulated(nextProps),
+                initialTitle: isPopulated ? nextProps.revisions[nextRevisionID].title : null,
+                initialContent: isPopulated ? nextProps.revisions[nextRevisionID].content : null
+            })
+        }
+
+        if (this.state.waiting) {
+            if (this.props.entry.revisions.length < nextProps.entry.revisions.length) {
+                console.log("Ready to navigate");
+                this.setState({waiting:false})
+                this.props.history.push( 
+                    `/journal/${nextJournalID}/${nextEntryID}/${nextProps.entry.revisions.slice(-1)[0]}`
+                )
+            }
+        }
     }
 
     goToLatest = () => {
-        //Navigates to the latest revision
-        // this.props.history.go(`/journal/${id}/${entry}/${val}`)
+        this.setState({ waiting: true })
     }
+
+
 
     //Still not happy with this function. 
     render() {
-        if (this.props.entry) {
-            //Get last revision
-            const entry = this.props.entry; 
-            let revisionID = this.props.match.params.revision || this.props.entry.revisions.slice(-1)[0];
-            let revision = this.props.revisions[revisionID] || {};
-            let revisionText = JSON.parse(revision.content);
-            console.log(this.props.entry.revisions)
-            if (revision)
-                return (
-                    <div style={{ flexGrow: 1, display: 'flex' }}>
-                        <Editor
-                            ref={(editor) => { this.editor = editor }}
-                            initialTitle={revision.title}
-                            initialText={revisionText}
-                            save={() => {
-                                const { title, content } = this.editor.getData();
-                                this.props.saveRevision(this.props.match.params.entry, title, JSON.stringify(content))
-                                this.goToLatest()
-                            }}
-                            delete={this.openDeleteDialog}
-                            hide={this.openHideDialog}
-                            isHidden={entry.isHidden}
+        const journalID = this.props.match.params.id;
+        const entryID = this.props.match.params.entry;
+        const revisionID = this.props.match.params.revision;
 
-                            showHistory={true} //TODO:  
-                            openHistory={() => this.setState({ historyModal: !this.state.historyModal })}
-                        />
-                        {
-                            this.state.historyModal &&
-                            <RevisionsMenu
-                                onClose={() => this.setState({ historyModal: false })}
-                                revisions={this.props.revisions}
-                                entry={this.props.entry}
-                                journalID={this.props.match.params.id}
-                                entryID={this.props.match.params.entry}
-
-                            />
-                        }
-                        {
-                            this.state.dialog &&
-                            <Dialog
-                                onClose={() => this.setState({ dialog: false })}
-                                text={this.state.dialogMessage}
-                                label={this.state.dialogTitle}
-                                actions={this.state.dialogActions}
-                            />
-                        }
-                    </div >
-                )
+        if (revisionID == null) {
+            if (this.props.entry) {
+                return <Redirect to={`/journal/${journalID}/${entryID}/${this.props.entry.revisions.slice(-1)[0]}`} />
+            }
+            return <div> Loading ... </div>
         }
-        return <div> Loading ... </div>
+
+        if (this.state.changeToLatest) {
+            if (this.props.entry) {
+                this.setState({changeToLatest: false}) //anti-pattern really 
+                return <Redirect to={`/journal/${journalID}/${entryID}/${this.props.entry.revisions.slice(-1)[0]}`} />
+            }
+        }
+
+        return (<div style={{ flexGrow: 1, display: 'flex' }}>
+            <Editor
+                ref={(editor) => { this.editor = editor }}
+                initialTitle={this.state.initialTitle || null}
+                initialText={this.state.initialContent ? JSON.parse(this.state.initialContent) : null}
+                save={() => {
+                    const { title, content } = this.editor.getData();
+                    this.goToLatest()
+                    this.props.saveRevision(this.props.match.params.entry, title, JSON.stringify(content))
+                }}
+                delete={this.openDeleteDialog}
+                hide={this.openHideDialog}
+                isHidden={false}
+
+                showHistory={true} //TODO:  
+                openHistory={() => this.setState({ historyModal: !this.state.historyModal })}
+            />
+
+        </div>)
+
+        // return (
+        //     <div style={{ flexGrow: 1, display: 'flex' }}>
+        //         <Editor
+        //             ref={(editor) => { this.editor = editor }}
+        //             initialTitle={revision.title}
+        //             initialText={revisionText}
+        //             save={() => {
+        //                 const { title, content } = this.editor.getData();
+        //                 this.goToLatest()
+        //                 this.props.saveRevision(this.props.match.params.entry, title, JSON.stringify(content))
+        //             }}
+        //             delete={this.openDeleteDialog}
+        //             hide={this.openHideDialog}
+        //             isHidden={entry.isHidden}
+
+        //             showHistory={true} //TODO:  
+        //             openHistory={() => this.setState({ historyModal: !this.state.historyModal })}
+        //         />
+        //         {
+        //             this.state.historyModal &&
+        //             <RevisionsMenu
+        //                 onClose={() => this.setState({ historyModal: false })}
+        //                 revisions={this.props.revisions}
+        //                 entry={this.props.entry}
+        //                 journalID={this.props.match.params.id}
+        //                 entryID={this.props.match.params.entry}
+
+        //             />
+        //         }
+        //         {
+        //             this.state.dialog &&
+        //             <Dialog
+        //                 onClose={() => this.setState({ dialog: false })}
+        //                 text={this.state.dialogMessage}
+        //                 label={this.state.dialogTitle}
+        //                 actions={this.state.dialogActions}
+        //             />
+        //         }
+        //     </div >
+        // )
+        // }
+        // return <div> Loading ... </div>
     }
 
     openDeleteDialog = () => {
@@ -120,7 +210,7 @@ class EntryViewContainer extends React.Component {
                 {
                     label: deleted ? "Restore" : "Delete", onClick: (evt) => {
                         this.props.modifyEntry(entry._id, !entry.isDeleted, entry.isHidden);
-                        this.setState({dialog: false});
+                        this.setState({ dialog: false });
                     }
                 },
 
@@ -144,7 +234,7 @@ class EntryViewContainer extends React.Component {
                 {
                     label: hidden ? "Unhide" : "Hide", onClick: (evt) => {
                         this.props.modifyEntry(entry._id, entry.isDeleted, !entry.isHidden);
-                        this.setState({dialog: false});
+                        this.setState({ dialog: false });
                     }
                 },
 
