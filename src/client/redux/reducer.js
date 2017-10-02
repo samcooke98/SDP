@@ -31,7 +31,7 @@ const initialState = {
 var functionalReducers = {
     [actionTypes.REGISTER]: {
         onSuccess: (state, action) => ({ //Success returns the same as login 
-            ui: {   
+            ui: {
                 ...state.ui,
                 registrationSuccess: true,
                 registrationFail: ""
@@ -45,20 +45,24 @@ var functionalReducers = {
             }
         }),
     },
-    [actionTypes.GET_JOURNAL]: { 
-        onSuccess: (state,action) => state,
-        onFail: (state,action) => state //TODO: Error handling
+    [actionTypes.GET_JOURNAL]: {
+        onSuccess: (state, action) => state,
+        onFail: (state, action) => state //TODO: Error handling
     },
-    [actionTypes.SELECT_ENTRY]: { 
-        onSuccess: (state, {payload}) => ({ ...state, ui: {...state.ui, journalEntry: { ...state.ui.journalEntry, [payload.journal]: payload.entryID}}}),
-        onFail: (state, action) => {console.log("her")}
+    [actionTypes.SELECT_ENTRY]: {
+        onSuccess: (state, { payload }) => ({ ...state, ui: { ...state.ui, journalEntry: { ...state.ui.journalEntry, [payload.journal]: payload.entryID } } }),
+        onFail: (state, action) => { console.log("her") }
     },
     [actionTypes.SELECT_CONTROL]: {
-        onSuccess: (state, {payload}) => ({ ...state, misc: {...state.misc, controls: [...(state.misc.controls || []), payload.control]}})
+        onSuccess: (state, { payload }) => ({ ...state, misc: { ...state.misc, controls: [...(state.misc.controls || []), payload.control] } })
     },
-    [actionTypes.CREATE_JOURNAL]: { 
+    [actionTypes.CREATE_JOURNAL]: {
+        onSuccess: (state, { payload }) => ({
+
+        })
+    },
+    [actionTypes.MODIFY_ENTRY]: { 
         onSuccess: (state, {payload}) => ({
-            
         })
     }
 }
@@ -70,8 +74,10 @@ export default function rootReducer(state = initialState, action) {
             return loginReducer(state, action)
             break;
         default:
-            if (action.payload && action.payload.payload && action.payload.payload.entities)
+            if (action.payload && action.payload.payload && action.payload.payload.entities) {
                 state = merge({}, state, { data: action.payload.payload.entities })
+                console.log("Merged");
+            }
     }
     if (functionalReducers[action.type]) {
         state = createReducer(state, action, functionalReducers[action.type].onSuccess, functionalReducers[action.type].onFail);

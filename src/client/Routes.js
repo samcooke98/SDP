@@ -37,6 +37,11 @@ export const routes = [
                         component: EntryViewContainer,
                     },
                     {
+                        path: "/journal/:id/:entry/:revision",
+                        exact: true, 
+                        component: EntryViewContainer,
+                    },
+                    {
                         path: "/journal/:id",
                         exact: true, strict: true,
                         component: Redirector,

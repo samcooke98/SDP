@@ -1,0 +1,33 @@
+
+
+.card { 
+    width: 100%;
+    background-color: #F8F8F8;
+    box-sizing: border-box;
+    padding: 4px;
+    margin-bottom: 12px;
+
+    height: 150px; 
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.content { 
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.content > p:first-child { 
+    margin-top: 0;
+    height: 100%; 
+    text-overflow: ellipsis;
+    
+}
+
+.card > a { 
+    margin-top: 3px;
+    margin-bottom: 3px;
+    margin-left: auto; 
+}

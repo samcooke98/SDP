@@ -10,5 +10,8 @@ export const CREATE_REVISION    = "CREATE_REVISION";
 export const CREATE_JOURNAL     = "CREATE_JOURNAL";
 export const CREATE_ENTRY       = "CREATE_ENTRY";
 
+export const MODIFY_ENTRY       = "MODIFY_ENTRY";
+
+
 export const SELECT_ENTRY       = "SELECT_ENTRY";
 export const SELECT_CONTROL     = "SELECT_CONTROL";

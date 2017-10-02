@@ -11,7 +11,7 @@ export default async function serverRender(req, res, next) {
             console.log("----");
             console.log(err);
             console.log("----");
-            res.send(JSON.stringify(err))
+            next(err);
         }
     } else {
         next();
@@ -42,8 +42,10 @@ import { Provider } from 'react-redux'
 import reducer from '../../client/redux/reducer.js'
 import { Helmet } from "react-helmet";
 var userController = require('../controllers/UserController.js')
+import { configureStore} from "../../client/store.js"
 
 const renderApp = async (location, req) => {
+    // const store = configureStore();
     const store = createStore(reducer);
 
     const css = new Set();

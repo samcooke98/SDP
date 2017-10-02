@@ -3,7 +3,7 @@ import {
     Editor as DraftEditor,
     EditorState, RichUtils, ContentState, convertToRaw, convertFromRaw
 } from 'draft-js';
-
+import { is } from "immutable";
 import TextInput from "./TextInput/TextInput.js";
 import moment from "moment";
 import FloatingButton from "../components/FloatingButton/FloatingButton.js";
@@ -11,6 +11,7 @@ import ControlsContainer from "../containers/ControlsContainer.js";
 
 import Save from "react-icons/lib/md/save"
 import Delete from "react-icons/lib/md/delete"
+import { Prompt } from "react-router-dom"
 
 /**
  * Component for the DraftJS Editor
@@ -21,8 +22,8 @@ export default class Editor extends React.Component {
         super(props);
 
         this.state = {
-            editor: EditorState.createEmpty()
-
+            editor: EditorState.createEmpty(),
+            contentChanged: false
         }
     }
 
@@ -31,7 +32,25 @@ export default class Editor extends React.Component {
     };
 
     onChange = (editorState) => {
-        this.setState({ editor: editorState });
+        console.log("Changed");
+        const hasChangedContent = editorState.getCurrentContent() != this.state.editor.getCurrentContent()
+        if (hasChangedContent) {
+            this.props.onContentChange && this.props.onContentChange(); //Notify the Parent that the content has been changed        
+        }
+        //TODO: Compare current content to initial Content. If the two are the same, re-hide the save button and stop blocking
+        // console.log(is(editorState.getCurrentContent(), ))
+        // const currentContent = editorState.getCurrentContent()
+        // console.log(currentContent.equals( this.state.initialText))         
+        // console.log(this.state.initialText);
+        // if(this.state.hasChangedContent && is( editorState.getCurrentContent(), this.state.initialText) )
+        //     console.log("Back to original");
+
+        this.setState({
+            editor: editorState,
+            contentChanged: this.state.contentChanged || hasChangedContent
+        });
+
+
     };
 
     handleKeyCommand = (command, editorState) => {
@@ -49,8 +68,14 @@ export default class Editor extends React.Component {
         console.log("PROPS");
 
         if (this.props != nextProps) {
-            if (nextProps.initialText)
+            if (nextProps.initialText) {
+                console.log("HERE!");
+                console.log(nextProps.initialText);
                 this.loadEditor(nextProps.initialText)
+                this.setState({ initialText: (nextProps.initialText) })
+            }
+            if (nextProps.initialTitle)
+                this.setState({ title: this.props.initialTitle })
         }
     }
 
@@ -85,30 +110,51 @@ export default class Editor extends React.Component {
                             width: "600px", marginLeft: "auto", marginRight: "auto", paddingTop: '24px',
                             fontFamily: "Raleway",
                         }}>
-                            <TextInput placeholder="Entry title" type='text' name='title' onChange={TextInput.onChange.bind(this)} />
+                            <Prompt when={this.state.contentChanged} message={location => (
+                                `You have unsaved changes! Pressing OK will discard your changes!`)}
+                            />
+                            <TextInput
+                                placeholder="Entry title"
+                                type='text'
+                                name='title'
+                                onChange={TextInput.onChange.bind(this)}
+                                value={this.state.title}
+                                variant='journal'
+                                autocomplete='false'
+
+                            />
                             <p> {date} </p>
                             <DraftEditor
                                 editorState={this.state.editor}
                                 onChange={this.onChange}
                                 handleKeyCommand={this.handleKeyCommand}
                             />
+                            <div style={{
+                                position: 'fixed', bottom: "42px", right: "138px",
+                                width: "216px",
+                                display: 'flex', justifyContent: 'right'
+                            }}>
+                                {this.state.contentChanged &&
+                                    <FloatingButton contain shape='square' right="124px" height="60px" width="60px" onClick={this.props.save}>
+                                        <Save />
+                                    </FloatingButton>
+                                }
 
-                            <FloatingButton shape='square' right="124px" height="60px" width="60px" onClick={this.props.save}>
-                                <Save />
-                            </FloatingButton>
-
-                            <FloatingButton shape='square' right="196px" height="60px" width="60px" onClick={this.props.delete}>
-                                <Delete />
-                            </FloatingButton>
-                            <FloatingButton shape='square' right="268px" height="60px" width="60px" onClick={this.props.hide}>
-                                Hide
-                            </FloatingButton>
+                                <FloatingButton contain shape='square' right="196px" height="60px" width="60px" onClick={this.props.delete}>
+                                    <Delete />
+                                </FloatingButton>
+                                <FloatingButton contain shape='square' right="268px" height="60px" width="60px" onClick={this.props.hide}>
+                                    {this.props.isHidden ? "Show" : "Hide"}
+                                </FloatingButton>
+                            </div>
                         </div>
                     </div>
 
                     <ControlsContainer
                         inlineStyles={this.state.editor.getCurrentInlineStyle().toJS()}
                         toggleControl={(str) => { this.toggleCommand(str) }}
+                        showHistory={this.props.showHistory} //TODO
+                        onHistory={this.props.openHistory}
                     />
                 </div>
 

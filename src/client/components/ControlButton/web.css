@@ -13,6 +13,7 @@
     vertical-align: middle;
     background-color: #E6E9ED;
     box-sizing: border-box;
+    cursor: pointer;
 }
 
 .controlBtn * { 

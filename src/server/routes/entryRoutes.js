@@ -19,9 +19,19 @@ router.get("/entry/:id", isLoggedIn, async (req, res) => {
 
 router.put("/entry/:id", isLoggedIn, async (req,res) => { 
     try { 
-        await EntryController.setDeleted(req.params.id, req.body.isDeleted);
-        var result = await EntryController.setHidden(req.params.id, req.body.isHidden);
-        res.json(result);
+        console.log(req.body);
+        console.log( await EntryController.getByID(req.params.id) );
+
+        let result; 
+        // result = await EntryController.setDeleted(req.params.id, req.body.isDeleted);
+        // result = await EntryController.setHidden(req.params.id, req.body.isHidden);
+        result = EntryController.modifyEntry(req.params.id, req.body.isDeleted, req.body.isHidden);
+        console.log(result);
+        result.then( (updatedEntry) => { 
+            console.log("Updated Entry: ");
+            console.log(updatedEntry);
+            res.json(sendPayload(updatedEntry));
+        })
     } catch (err) {
         console.log(err);
         res.json(sendError(err));
