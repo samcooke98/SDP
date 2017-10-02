@@ -17,6 +17,13 @@ import moment from "moment";
 import RevisionsMenu from "./EntryViewContainer/RevisionsMenu.js";
 import Dialog from "../components/Dialog.js";
 
+import {
+    Editor as DraftEditor, EditorState, RichUtils, ContentState, convertToRaw, convertFromRaw
+} from 'draft-js';
+import { initEditor, changeEditor, changeTitle } from '../redux/actions.js';
+import equal from "deep-equal"
+
+
 class EntryViewContainer extends React.Component {
     constructor(props) {
         super(props);
@@ -32,7 +39,8 @@ class EntryViewContainer extends React.Component {
             edited: false,
             curRevisions: 0,
 
-            waiting: false
+            currentRevisionID: 0,
+
         }
     }
 
@@ -51,148 +59,134 @@ class EntryViewContainer extends React.Component {
             console.log("Getting revision ID");
             this.props.getRevision(revisionID);
         }
+
+        if (revisionID != null)
+            this.setState({ currentRevisionID: revisionID })
+
+
     }
 
-    isPopulated = (props = this.props) => {
-        const journalID = props.match.params.id;
-        const entryID = props.match.params.entry;
-        const revisionID = props.match.params.revision;
-        console.log(props.journal);
-        console.log(props.entry);
-        console.log(props.revisions[revisionID])
-        if (props.journal && props.entry && props.revisions[revisionID])
-            return true;
-        else
-            return false;
-    }
 
 
     componentWillReceiveProps(nextProps) {
-        const curJournalID = this.props.match.params.id;
-        const curEntryID = this.props.match.params.entry;
-        const curRevisionID = this.props.match.params.revision;
+        let revisionID = nextProps.match.params.revisions;
+        //Do we have a defined revision? If not, set revisionID to the latest
+        if (!nextProps.match.params.revisions && nextProps.entry)
+            revisionID = nextProps.entry.revisions.slice(-1)[0];
 
-        const nextJournalID = nextProps.match.params.id;
-        const nextEntryID = nextProps.match.params.entry;
-        const nextRevisionID = nextProps.match.params.revision;
-
-        if (curJournalID != nextJournalID
-            || curEntryID != nextEntryID
-            || curRevisionID != nextRevisionID
-            || this.props.revisions != nextProps.revisions
-        ) {
-            //We have changed pages! OR we have updated our entities
-            const isPopulated = this.isPopulated(nextProps);
-            console.log("Populated:");
-            console.log(isPopulated);
-            console.log(nextProps)
-            this.setState({
-                ready: this.isPopulated(nextProps),
-                initialTitle: isPopulated ? nextProps.revisions[nextRevisionID].title : null,
-                initialContent: isPopulated ? nextProps.revisions[nextRevisionID].content : null
-            })
+        //Has the Revision Changed? 
+        if (this.props.revisions[this.state.currentRevisionID] != nextProps.revisions[revisionID]) {
+            console.log("Revision has changed!");
+            console.log("Reinitialising Editor");
+            console.log(nextProps.revisions[revisionID]);
+            this.props.initEditor(
+                nextProps.revisions[revisionID].title,
+                EditorState.createWithContent(convertFromRaw(JSON.parse(nextProps.revisions[revisionID].content)))
+            )
+            this.setState({ currentRevisionID: revisionID })
         }
+        // console.log("Set editor");
+        // if (!this.props.editorState) {
 
-        if (this.state.waiting) {
-            if (this.props.entry.revisions.length < nextProps.entry.revisions.length) {
-                console.log("Ready to navigate");
-                this.setState({waiting:false})
-                this.props.history.push( 
-                    `/journal/${nextJournalID}/${nextEntryID}/${nextProps.entry.revisions.slice(-1)[0]}`
-                )
-            }
-        }
+        // }
     }
 
-    goToLatest = () => {
-        this.setState({ waiting: true })
+    hasChanged = () => {
+        console.log('has Changed!');
+        const revisionObj = (this.props.revisions[this.state.currentRevisionID]);
+        if(revisionObj == undefined) return false; 
+
+        if( revisionObj.title != this.props.editorTitle) {
+            return true;
+        }
+
+        const initialContent = JSON.parse(revisionObj.content);
+        const currentContent = convertToRaw(this.props.editorState.getCurrentContent())
+        if (!equal(currentContent, initialContent))
+            return true; 
+    
+        return false;
     }
 
+    handleEditorChange = (newEditorState) => {
+        this.props.changeEditor(newEditorState)
+    }
 
+    handleTitleChange = (evt) => {
+        console.log("here");
+        console.log(evt.target.value);
+        const value = evt.target.value;
+        this.props.changeTitle(value)
+    }
 
-    //Still not happy with this function. 
     render() {
-        const journalID = this.props.match.params.id;
-        const entryID = this.props.match.params.entry;
-        const revisionID = this.props.match.params.revision;
-
-        if (revisionID == null) {
-            if (this.props.entry) {
-                return <Redirect to={`/journal/${journalID}/${entryID}/${this.props.entry.revisions.slice(-1)[0]}`} />
-            }
-            return <div> Loading ... </div>
-        }
-
-        if (this.state.changeToLatest) {
-            if (this.props.entry) {
-                this.setState({changeToLatest: false}) //anti-pattern really 
-                return <Redirect to={`/journal/${journalID}/${entryID}/${this.props.entry.revisions.slice(-1)[0]}`} />
-            }
-        }
+        console.log(this.props);
 
         return (<div style={{ flexGrow: 1, display: 'flex' }}>
             <Editor
-                ref={(editor) => { this.editor = editor }}
-                initialTitle={this.state.initialTitle || null}
-                initialText={this.state.initialContent ? JSON.parse(this.state.initialContent) : null}
-                save={() => {
-                    const { title, content } = this.editor.getData();
-                    this.goToLatest()
-                    this.props.saveRevision(this.props.match.params.entry, title, JSON.stringify(content))
-                }}
-                delete={this.openDeleteDialog}
-                hide={this.openHideDialog}
-                isHidden={false}
+                title={this.props.editorTitle}
+                titleChange={this.handleTitleChange}
+                date={"TODO"}
 
-                showHistory={true} //TODO:  
-                openHistory={() => this.setState({ historyModal: !this.state.historyModal })}
+                editorState={this.props.editorState || EditorState.createEmpty()}
+                onChange={this.handleEditorChange}
+                handleKeyCommand={() => console.log("TODO")}
+                contentChanged={this.hasChanged()} 
+
+                save={this.saveRevision} //TODO
+                delete={this.deleteCurrent} //TODO
+                hide={this.hideCurrent} //TODO
+                //TODO: History Button
+                //Toggle Rich Utils 
+                //New Entry Page 
+
             />
 
         </div>)
-
-        // return (
-        //     <div style={{ flexGrow: 1, display: 'flex' }}>
-        //         <Editor
-        //             ref={(editor) => { this.editor = editor }}
-        //             initialTitle={revision.title}
-        //             initialText={revisionText}
-        //             save={() => {
-        //                 const { title, content } = this.editor.getData();
-        //                 this.goToLatest()
-        //                 this.props.saveRevision(this.props.match.params.entry, title, JSON.stringify(content))
-        //             }}
-        //             delete={this.openDeleteDialog}
-        //             hide={this.openHideDialog}
-        //             isHidden={entry.isHidden}
-
-        //             showHistory={true} //TODO:  
-        //             openHistory={() => this.setState({ historyModal: !this.state.historyModal })}
-        //         />
-        //         {
-        //             this.state.historyModal &&
-        //             <RevisionsMenu
-        //                 onClose={() => this.setState({ historyModal: false })}
-        //                 revisions={this.props.revisions}
-        //                 entry={this.props.entry}
-        //                 journalID={this.props.match.params.id}
-        //                 entryID={this.props.match.params.entry}
-
-        //             />
-        //         }
-        //         {
-        //             this.state.dialog &&
-        //             <Dialog
-        //                 onClose={() => this.setState({ dialog: false })}
-        //                 text={this.state.dialogMessage}
-        //                 label={this.state.dialogTitle}
-        //                 actions={this.state.dialogActions}
-        //             />
-        //         }
-        //     </div >
-        // )
-        // }
-        // return <div> Loading ... </div>
     }
+    // return (
+    //     <div style={{ flexGrow: 1, display: 'flex' }}>
+    //         <Editor
+    //             ref={(editor) => { this.editor = editor }}
+    //             initialTitle={revision.title}
+    //             initialText={revisionText}
+    //             save={() => {
+    //                 const { title, content } = this.editor.getData();
+    //                 this.goToLatest()
+    //                 this.props.saveRevision(this.props.match.params.entry, title, JSON.stringify(content))
+    //             }}
+    //             delete={this.openDeleteDialog}
+    //             hide={this.openHideDialog}
+    //             isHidden={entry.isHidden}
+
+    //             showHistory={true} //TODO:  
+    //             openHistory={() => this.setState({ historyModal: !this.state.historyModal })}
+    //         />
+    //         {
+    //             this.state.historyModal &&
+    //             <RevisionsMenu
+    //                 onClose={() => this.setState({ historyModal: false })}
+    //                 revisions={this.props.revisions}
+    //                 entry={this.props.entry}
+    //                 journalID={this.props.match.params.id}
+    //                 entryID={this.props.match.params.entry}
+
+    //             />
+    //         }
+    //         {
+    //             this.state.dialog &&
+    //             <Dialog
+    //                 onClose={() => this.setState({ dialog: false })}
+    //                 text={this.state.dialogMessage}
+    //                 label={this.state.dialogTitle}
+    //                 actions={this.state.dialogActions}
+    //             />
+    //         }
+    //     </div >
+    // )
+    // }
+    // return <div> Loading ... </div>
+
 
     openDeleteDialog = () => {
         const entry = this.props.entry;
@@ -252,7 +246,11 @@ const mapStateToProps = (state, ownProps) => {
         //If the ID is defined, return the appropriate entry. Else return an empty object
         entry: state.data.entries[ownProps.match.params.entry],
         // entry: state.ui.journalEntry[ownProps.match.params.id] ? state.data.entries[state.ui.journalEntry[ownProps.match.params.id]] : null,
-        revisions: state.data.entryRevisions
+        revisions: state.data.entryRevisions,
+
+
+        editorState: state.data.editor.content,
+        editorTitle: state.data.editor.title
     }
 }
 
@@ -262,7 +260,11 @@ const mapDispatchToProps = (dispatch) => {
         getEntry: (id) => dispatch(getEntry(id)),
         getRevision: (id) => dispatch(getRevision(id)),
         saveRevision: (entryID, title, string) => dispatch(createRevision(entryID, title, string)),
-        modifyEntry: (entryID, isDeleted, isHidden) => dispatch(modifyEntry(entryID, isDeleted, isHidden))
+        modifyEntry: (entryID, isDeleted, isHidden) => dispatch(modifyEntry(entryID, isDeleted, isHidden)),
+
+        initEditor: (title, content) => dispatch(initEditor(title, content)),
+        changeEditor: (newState) => dispatch(changeEditor(newState)),
+        changeTitle: (newTitle) => dispatch(changeTitle(newTitle))
     }
 }
 

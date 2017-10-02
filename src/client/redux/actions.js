@@ -68,6 +68,20 @@ export const modifyEntry = createAction(actionTypes.MODIFY_ENTRY, async (id, isD
     put(`entry/${id}`, { isDeleted: isDeleted, isHidden: isHidden }).then((val) => normalize(normalizr.normalizeEntry, val))
 )
 
+
+
+import { EditorState} from 'draft-js' 
+export const initEditor = createAction( actionTypes.INIT_EDITOR, (title = '', content = null)=> ({ 
+    title , 
+    content: content != null ? content : EditorState.createEmpty()  
+}) )
+
+export const changeEditor = createAction( actionTypes.CHANGE_EDITOR, (newState) => ({ 
+    content: newState
+}))
+
+export const changeTitle = createAction( actionTypes.CHANGE_TITLE, (title) => ({title}) )
+
 // export const getUserDetails = createAction(actionTypes.GET_USER, async () => {
 //     return get("user").then( (val) => normalize(normalizr.normalizeUser, val ))
 // })

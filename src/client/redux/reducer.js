@@ -65,9 +65,14 @@ var functionalReducers = {
 
         })
     },
-    [actionTypes.MODIFY_ENTRY]: { 
-        onSuccess: (state, {payload}) => ({
+    [actionTypes.MODIFY_ENTRY]: {
+        onSuccess: (state, { payload }) => ({
         })
+    },
+
+
+    [actionTypes.INIT_EDITOR]: {
+
     }
 }
 
@@ -77,6 +82,40 @@ export default function rootReducer(state = initialState, action) {
         case actionTypes.LOGIN:
             return loginReducer(state, action)
             break;
+
+        case actionTypes.INIT_EDITOR:
+            return {
+                ...state,
+                data: {
+                    ...state.data,
+                    editor: {
+                        title: action.payload.title,
+                        content: action.payload.content
+                    }
+                }
+            }
+        case actionTypes.CHANGE_EDITOR:
+            return {
+                ...state,
+                data: {
+                    ...state.data,
+                    editor: {
+                        ...state.data.editor,
+                        content: action.payload.content
+                    }
+                }
+            }
+        case actionTypes.CHANGE_TITLE:
+            return {
+                ...state,
+                data: { 
+                    ...state.data,
+                    editor: { 
+                        ...state.data.editor,
+                        title: action.payload.title,
+                    }
+                }
+            }
         default:
             if (action.payload && action.payload.payload && action.payload.payload.entities) {
                 state = merge({}, state, { data: action.payload.payload.entities })
