@@ -12,6 +12,8 @@ import ControlsContainer from "../containers/ControlsContainer.js";
 import Save from "react-icons/lib/fa/floppy-o.js";
 import Delete from "react-icons/lib/fa/trash-o.js";
 import Hide from "react-icons/lib/fa/eye-slash.js";
+import Show from "react-icons/lib/fa/eye";
+
 import { Prompt } from "react-router-dom"
 
 /**
@@ -145,7 +147,7 @@ export default class Editor extends React.Component {
                                     <Delete />
                                 </FloatingButton>
                                 <FloatingButton contain shape='square' right="268px" height="60px" width="60px" onClick={this.props.hide}>
-                                    {this.props.isHidden ? "Show" : "Hide"}
+                                    {this.props.isHidden ? <Show/> : <Hide/>}
                                 </FloatingButton>
                             </div>
                         </div>

@@ -9,7 +9,6 @@ export default class FloatingButton extends React.Component {
             <div
                 className={
                     style[this.props.shape] + " " + style.floatBtn + " " + (this.props.contain ? style.contained : "")
-
                 }
                 style={
                     {
@@ -24,16 +23,11 @@ export default class FloatingButton extends React.Component {
                 }
                 onClick={this.props.onClick}
             >
-<<<<<<< HEAD
-                {this.props.children}
-=======
-            <span style={{textAlign: "center", verticalAlign: "middle", lineHeight: "55px",fontSize: "40px"}}>
-                {this.props.children}
-            </span>
->>>>>>> origin/master
+                <span style={{ textAlign: "center", verticalAlign: "middle", lineHeight: "55px", fontSize: "40px" }}>
+                    {this.props.children}
+                </span>
             </div>
         )
-
     }
 
     someFunc = () => {
