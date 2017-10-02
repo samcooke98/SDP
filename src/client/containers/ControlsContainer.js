@@ -39,7 +39,7 @@ export default class ControlsContainer extends React.Component {
         return (
             <div style={{
                 flexGrow: 0, height: "100%", width: "100px", boxShadow: "rgba(0, 0, 0, 0.25) 0px 2px 4px 2px", zIndex: 1,
-                display: 'flex', flexDirection: "column"
+                display: 'flex', flexDirection: "column",cursor: "pointer"
             }}>
                 {elementMap.map((value) => makeElement(this, value.component, value.action), this)}
                 {

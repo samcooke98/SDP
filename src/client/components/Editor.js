@@ -9,8 +9,9 @@ import moment from "moment";
 import FloatingButton from "../components/FloatingButton/FloatingButton.js";
 import ControlsContainer from "../containers/ControlsContainer.js";
 
-import Save from "react-icons/lib/md/save"
-import Delete from "react-icons/lib/md/delete"
+import Save from "react-icons/lib/fa/floppy-o.js";
+import Delete from "react-icons/lib/fa/trash-o.js";
+import Hide from "react-icons/lib/fa/eye-slash.js";
 import { Prompt } from "react-router-dom"
 
 /**

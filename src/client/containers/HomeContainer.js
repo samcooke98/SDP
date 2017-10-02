@@ -75,7 +75,7 @@ class HomeContainer extends React.Component {
     render() {
         return (
             <div>
-                <h1> Welcome back, {this.props.user.name} </h1>
+                <h1 style={{textAlign: "center", fontFamily: "Raleway"}}> Welcome back, {this.props.user.name}!</h1>
                 <div style={
                     {
                         display: 'flex',
