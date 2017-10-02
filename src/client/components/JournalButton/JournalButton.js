@@ -14,10 +14,10 @@ export default class JournalButton extends React.Component {
         console.log(this.props);
         return (
             <div className={styles.journalWrap}>
-                <div onClick={this.props.onPress} className={styles.journalbtn}>
+                <div style={{cursor: "pointer"}} onClick={this.props.onPress} className={styles.journalbtn}>
                     {/* <object data={require("./book.svg")} style={{fill: 'red'}}/>  */}
                     <SVG height="140" width="100" colour={this.props.colour} />
-                    <div style={{ display: 'flex', width: '100%', justifyContent: "center", alignItems: "center" }}>
+                    <div style={{ display: 'flex', width: '100%', justifyContent: "center", alignItems: "center"}}>
                         <span style={{ textAlign: 'center', flexGrow: 1 }}>
                             <Text tag='h3'> {this.props.title} </Text>
                             <Text>Created: {moment(this.props.date).format("DD/MM/YYYY")} </Text>

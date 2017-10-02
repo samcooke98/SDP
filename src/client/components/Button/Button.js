@@ -14,7 +14,8 @@ export default class Button extends React.Component {
                         display: 'block', marginLeft: "auto", marginRight: 'auto',
                         width: this.props.width,
                         height: this.props.height,
-                        backgroundColor: this.props.colour || ''
+                        backgroundColor: this.props.colour || '',
+                        cursor: "pointer"
                     }, this.props.style)}
                 className={styleClass}
             >

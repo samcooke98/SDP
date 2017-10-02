@@ -13,7 +13,8 @@ export default class JournalBar extends React.Component {
                 height: "60px",
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                marginBottom: "8px"
+                marginBottom: "8px",
+                cursor: "pointer"
             }}
                 onClick={this.props.onClick}
             >

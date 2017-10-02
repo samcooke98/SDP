@@ -15,7 +15,7 @@ export default class JournalBar extends React.Component {
                 display: 'flex',
                 flexShrink: 0
             }}>
-                <span style={{ display: "flex", alignItems: "center", width: "300px" }} onClick={this.props.arrowClick}>
+                <span style={{ display: "flex", alignItems: "center", width: "300px", cursor: "pointer"}} onClick={this.props.arrowClick}>
                     <BackArrow height={39} width={39} fill={this.props.textColor}/>
                     <p style={{ marginLeft: "6px", fontSize: "20px", fontFamily: "Raleway", textTransform: "uppercase", margin: 0, color: this.props.textColor }}>
                         Back to Journals

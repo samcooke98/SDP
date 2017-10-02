@@ -23,7 +23,7 @@ export default class Modal extends React.Component {
                 <div className={styles.container}>
                     <div className={styles.title}>
                         <h2>{this.props.label}</h2>
-                        <Close height={32} width={32} onClick={this.props.onClose} />
+                        <Close style={{cursor: "pointer"}} height={32} width={32} onClick={this.props.onClose} />
                     </div><div className={styles.content}>
                         {this.props.children}
                     </div>
