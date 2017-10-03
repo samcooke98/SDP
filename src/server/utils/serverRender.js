@@ -41,7 +41,7 @@ import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import reducer from '../../client/redux/reducer.js'
 import { Helmet } from "react-helmet";
-var userController = require('../controllers/UserController.js')
+var userController = require('../controllers/userController.js')
 import { configureStore} from "../../client/store.js"
 
 const renderApp = async (location, req) => {

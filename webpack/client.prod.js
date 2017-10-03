@@ -14,8 +14,8 @@ module.exports = {
 	],
 	output: {
 		filename: 'client-[chunkHash].js',
-		path: path.resolve(__dirname, '../build/static'),
-		publicPath: path.resolve(__dirname, "../build/static")
+		path: path.resolve(__dirname, '../build/static/'),
+		publicPath: '/' // path.resolve(__dirname, "../build/static")
 	},
 	target: 'web',
 	module: {
@@ -47,7 +47,12 @@ module.exports = {
 			{
 				test: /\.(png|svg|jpg|gif)$/,
 				use: [
-					'file-loader'
+					{
+						loader: 'file-loader',
+						options: {
+							emit: true,
+						}
+					}
 				]
 			},
 			{
@@ -63,7 +68,7 @@ module.exports = {
 				'NODE_ENV': JSON.stringify('production')
 			}
 		}),
-		new ManifestPlugin({fileName: "build-manifest.json"}),
+		new ManifestPlugin({ fileName: "build-manifest.json" }),
 		new UglifyJSPlugin(),
 		new webpack.optimize.UglifyJsPlugin(), //minify everything
 		new webpack.optimize.AggressiveMergingPlugin(), //Merge chunks 
