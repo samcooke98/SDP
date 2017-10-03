@@ -20,4 +20,15 @@ input {
     font-size: 32px;
     padding: 3px 3px;
     box-sizing: border-box;
+    text-overflow: ellipsis;
+}
+
+.journal { 
+    border: 0;
+    border-bottom: 1px solid grey;
+    border-radius: 0;
+}
+
+.error { 
+    border: 1px solid red;
 }

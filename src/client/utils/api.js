@@ -70,10 +70,18 @@ export async function del(endpoint) {
     })
 }
 
-export async function put(endpoint) {
+export async function put(endpoint, params) {
     return fetch(API_URL + endpoint, {
         method: "PUT",
-        credentials: "same-origin"
+        headers: {
+            //Eh, we can just use JSON for now really. Server handles it fine. 
+            //'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+            'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin',
+        //If we want to encode as www-form use formEncode 
+        body: JSON.stringify(params)
+
     }).then((response) => {
         if (response.status == 401) {
             return { success: false, msg: "Server returned unauthorised" }

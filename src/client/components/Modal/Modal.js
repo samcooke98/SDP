@@ -19,8 +19,8 @@ export default class Modal extends React.Component {
 
     render() {
         return (
-            <div className={styles.modal} onKeyPress={this.handleEscape}>
-                <div className={styles.container}>
+            <div className={styles.modal} onKeyPress={this.handleEscape} > {/*onMouseDown={this.props.onClose} */}
+                <div className={styles.container + " " + (this.props.wider && styles.wider) + " " + (this.props.contain && styles.sizeToContents)}>
                     <div className={styles.title}>
                         <h2>{this.props.label}</h2>
                         <Close style={{cursor: "pointer"}} height={32} width={32} onClick={this.props.onClose} />

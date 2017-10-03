@@ -6,9 +6,11 @@ import style from "./web.css"
 export default class FloatingButton extends React.Component {
     render() {
         return (
-            <div 
-                className={ style[this.props.shape] + " " + style.floatBtn}
-                style= {
+            <div
+                className={
+                    style[this.props.shape] + " " + style.floatBtn + " " + (this.props.contain ? style.contained : "")
+                }
+                style={
                     {
                         cursor: "pointer",
                         backgroundColor: this.props.colour,
@@ -21,12 +23,11 @@ export default class FloatingButton extends React.Component {
                 }
                 onClick={this.props.onClick}
             >
-            <span style={{textAlign: "center", verticalAlign: "middle", lineHeight: "55px",fontSize: "40px"}}>
-                {this.props.children}
-            </span>
+                <span style={{ textAlign: "center", verticalAlign: "middle", lineHeight: "55px", fontSize: "40px" }}>
+                    {this.props.children}
+                </span>
             </div>
         )
-
     }
 
     someFunc = () => {
@@ -35,7 +36,7 @@ export default class FloatingButton extends React.Component {
     }
 }
 
-FloatingButton.defaultProps = { 
+FloatingButton.defaultProps = {
     colour: "#2F80ED",
     shape: 'round'
 }

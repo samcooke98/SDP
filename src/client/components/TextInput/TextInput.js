@@ -6,7 +6,15 @@ export default class TextInput extends React.Component {
         return (
             <div className={styles.inputContainer} style={this.props.style}>
                 <p> {this.props.label} </p>
-                <input placeholder={this.props.placeholder} type={this.props.type} onChange={this.props.onChange} name={this.props.name} value={this.props.value} />
+                <input 
+                    placeholder={this.props.placeholder} 
+                    type={this.props.type} 
+                    onChange={this.props.onChange} 
+                    name={this.props.name} 
+                    value={this.props.value} 
+                    className={styles[this.props.variant] + " " + (this.props.error && styles.error)} 
+                    autoComplete={this.props.autocomplete || "on"}
+                />
                 {this.props.right}
             </div>
         )
@@ -20,7 +28,7 @@ export default class TextInput extends React.Component {
     }
 }
 
-TextInput.onChange = function(evt) {
+TextInput.onChange = function (evt) {
     const name = evt.target.name;
     const value = evt.target.value;
     this.setState({ [name]: value })

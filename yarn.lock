@@ -2135,6 +2135,16 @@ dotenv@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-4.0.0.tgz#864ef1379aced55ce6f95debecdce179f7a0cd1d"
 
+draft-js-export-html@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/draft-js-export-html/-/draft-js-export-html-1.2.0.tgz#1cbe2b78e1fed74fc29c7cdcbfd7540468eca209"
+  dependencies:
+    draft-js-utils "^1.2.0"
+
+draft-js-utils@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/draft-js-utils/-/draft-js-utils-1.2.0.tgz#f5cb23eb167325ffed3d79882fdc317721d2fd12"
+
 draft-js@^0.10.2:
   version "0.10.2"
   resolved "https://registry.yarnpkg.com/draft-js/-/draft-js-0.10.2.tgz#b722613cb306cfee910f9de1789f2cc3023772e7"
@@ -3052,6 +3062,10 @@ ieee754@^1.1.4:
 immediate@~3.0.5:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
+
+immutable@^3.8.1:
+  version "3.8.1"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.1.tgz#200807f11ab0f72710ea485542de088075f68cd2"
 
 immutable@~3.7.4:
   version "3.7.6"
@@ -5400,7 +5414,7 @@ punycode@^1.2.4, punycode@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
 
-q@^1.1.2:
+q@^1.1.2, q@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.0.tgz#dd01bac9d06d30e6f219aecb8253ee9ebdc308f1"
 

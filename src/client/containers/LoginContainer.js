@@ -44,7 +44,7 @@ class LoginContainer extends React.Component {
     componentWillReceiveProps(nextProps) {
         console.log("Received Props");
         if (nextProps.loggedIn)
-            this.props.history.push(this.props.location.state.referrer);
+            this.props.history.push((this.props.location.state || {}).referrer || "/home");
     }
 
     render() {
@@ -52,7 +52,7 @@ class LoginContainer extends React.Component {
         return (
             <Modal label="LOGIN" onClose={() => this.props.history.push("/")} >
                 <form onSubmit={this.submitForm}>
-                    <TextInput label="Email:" name="email" value={this.state.email} onChange={this.handleChange} />
+                    <TextInput label="Email:" name="email" value={this.state.email} onChange={this.handleChange}  />
                     <TextInput label="Password: " name="password" type='password' value={this.state.password} onChange={this.handleChange} />
                     <Button label='login' width="256px" height="48px" />
                 </form>

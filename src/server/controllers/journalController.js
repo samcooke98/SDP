@@ -1,6 +1,6 @@
 import Journal from "../models/journal.js";
 import { sendError, sendPayload } from "../utils/apiResponse.js";
-import * as EntryController from "./EntryController.js"
+import * as EntryController from "./entryController.js"
 /**
  * Helper function that creates and saves a new journal.
  * @param {String} title 

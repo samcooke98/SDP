@@ -8,7 +8,6 @@ import reducer from "./redux/reducer.js";
 import promiseMiddleware from 'redux-promise';
 
 //TODO: Redux Dev Tools 
-
 export function configureStore( initialState = {}) { 
     console.log(initialState);
 

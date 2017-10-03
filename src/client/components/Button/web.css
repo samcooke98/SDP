@@ -12,6 +12,8 @@ button {
     align-items: center;
 
     font-family: "Raleway";
+
+    cursor: pointer;
 }
 
 button > * { margin: 0; }

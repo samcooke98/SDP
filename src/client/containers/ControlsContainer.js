@@ -8,6 +8,7 @@ import ControlButton from "../components/ControlButton";
 import Bold from "react-icons/lib/fa/Bold";
 import Italic from "react-icons/lib/fa/Italic";
 import Underline from "react-icons/lib/fa/Underline";
+import History from "react-icons/lib/fa/history"
 
 const elementMap = [
     {
@@ -37,10 +38,22 @@ export default class ControlsContainer extends React.Component {
         console.log(this.props);
         return (
             <div style={{
-                flexGrow: 0,height:"100%", width: "100px", boxShadow: "rgba(0, 0, 0, 0.25) 0px 2px 4px 2px", zIndex: 1, cursor: "pointer"
+                flexGrow: 0, height: "100%", width: "100px", boxShadow: "rgba(0, 0, 0, 0.25) 0px 2px 4px 2px", zIndex: 1,
+                display: 'flex', flexDirection: "column", cursor: "pointer"
             }}>
                 {elementMap.map((value) => makeElement(this, value.component, value.action), this)}
-            </div>
+                {
+                    this.props.showHistory &&
+
+                    <ControlButton
+                        onClick={this.props.onHistory}
+                        active={false}
+                        style={{ marginTop: 'auto' }}
+                    >
+                        <History />
+                    </ControlButton>
+                }
+            </div >
         )
     }
 }
@@ -51,10 +64,10 @@ const onClick = (action) => (function () {
 })
 
 const makeElement = (that, icon, action) => (
-    <ControlButton 
+    <ControlButton
         onClick={onClick(action).bind(that)}
         active={(that.props.inlineStyles || []).includes(action.toUpperCase())}
     >
-    {icon}
-</ControlButton>
+        {icon}
+    </ControlButton>
 )

@@ -14,7 +14,11 @@ import Editor from "../components/Editor.js";
 import TextInput from "../components/TextInput/TextInput.js";
 import FloatingButton from "../components/FloatingButton/FloatingButton.js";
 
-import { EditorState } from "draft-js"
+import {
+    Editor as DraftEditor, EditorState, RichUtils, ContentState, convertToRaw, convertFromRaw
+} from 'draft-js';
+import { initEditor, changeEditor, changeTitle } from '../redux/actions.js';
+import equal from "deep-equal"
 
 //TODO: Block Navigation
 //TODO: Save state into localstorage, in case  (?) 
@@ -25,7 +29,6 @@ class NewEntryContainer extends React.Component {
 
         this.state = {
             activeControls: {},
-            editor: EditorState.createEmpty()
         }
     }
 
@@ -34,34 +37,94 @@ class NewEntryContainer extends React.Component {
         //Get data if it isn't already there! (ie: User Refreshed)
         let journalID = this.props.match.params.id;
         this.props.getJournal(journalID);
+        this.props.initEditor('', EditorState.createWithContent(ContentState.createFromText(
+            "Click here to start typing!")));
     }
 
-    createEntry = () => {
-        let { title, content } = this.editor.getData();
-        this.props.createEntry(title, JSON.stringify(content), this.props.match.params.id)
+    componentWillReceiveProps(nextProps) {
+        const journalID = this.props.match.params.id;
+        if (this.state.submitted) {
+            console.log(nextProps.entries)
+            if (nextProps.journal.entries != this.props.journal.entries) {
+                //We can navigate
+                console.log("here")
+                this.props.history.push(`/journal/${journalID}`)
+            }
+        }
     }
 
-    toggleCmd = (command) => {
-        //Change it in State
 
-        let newActive = Object.assign({}, this.state.activeControls)
-        newActive[command] = !newActive[command];
-        this.setState({ activeControls: newActive })
+    handleTitleChange = (evt) => {
+        console.log("here");
+        console.log(evt.target.value);
+        const value = evt.target.value;
+        this.props.changeTitle(value)
+    }
 
+    hasChanged = () => {
+        if (!this.props.editorState) return false;
+        if (this.state.submitted) return false; //If we have submitted, we haven't changed.        
+        const hasTitleChanged = (this.props.editorTitle != '')
+        const currentContent = (convertToRaw(this.props.editorState.getCurrentContent()))
+        const hasContentChanged = (currentContent.blocks[0].text != "Click here to start typing!") 
+
+
+        return (hasTitleChanged && hasContentChanged)
+    }
+
+    handleEditorChange = (newEditorState) => {
+        this.props.changeEditor(newEditorState)
+    }
+
+    save = () => {
+        console.log("Creating a new entry");
+        const journalID = this.props.match.params.id;
+
+        this.props.createEntry(this.props.editorTitle,
+            JSON.stringify(convertToRaw(this.props.editorState.getCurrentContent())),
+            journalID);
+
+        this.setState({ submitted: true });
+
+    }
+
+    handleKeyCommand = (command, editorState) => {
+        const newState = RichUtils.handleKeyCommand(editorState, command);
+        if (newState) {
+            this.props.changeEditor(newState);
+            return 'handled';
+        } else {
+            return 'not-handled';
+        }
     }
 
     render() {
         let date = moment().format("DD/MM/YYYY")
-
-        console.log(this.editor && this.editor.getCurrentInlineStyle && this.editor.getCurrentInlineStyle())
+        console.log("NEW ENTRY");
         return (
             <Editor
-                ref={(editor) => { this.editor = editor }}
-                save={this.createEntry}
-                delete={() => console.log('delete')}
-                hide={() => console.log("hide")}
-                initialText="Click here to start writing your entry"
-                notify={this.toggleCmd}
+                title={this.props.editorTitle}
+                titleChange={this.handleTitleChange}
+                date={moment.utc()}
+
+                editorState={this.props.editorState || EditorState.createEmpty()}
+                onChange={this.handleEditorChange}
+                handleKeyCommand={this.handleKeyCommand}
+                contentChanged={this.hasChanged()}
+
+                save={this.save}
+                //delete={this.openDeleteDialog}
+                //hide={this.openHideDialog}
+                showDelete={false}
+                showHide={false}
+
+                toggleControl={(str) => {this.handleEditorChange( RichUtils.toggleInlineStyle(this.props.editorState, str))}}
+
+
+                isHidden={false}
+                isDeleted={false}
+                showHistory={false}
+                openHistory={() => { }}
             />
         )
     }
@@ -71,13 +134,21 @@ class NewEntryContainer extends React.Component {
 const mapStateToProps = (state, ownProps) => {
     return {
         journal: state.data.journals[ownProps.match.params.id],
+
+        editorState: state.data.editor.content,
+        editorTitle: state.data.editor.title
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
         getJournal: (id) => dispatch(getJournal(id)),
-        createEntry: (title, content, journalID) => dispatch(createEntry(title, content, journalID))
+        createEntry: (title, content, journalID) => dispatch(createEntry(title, content, journalID)),
+
+        initEditor: (title, content) => dispatch(initEditor(title, content)),
+        changeEditor: (newState) => dispatch(changeEditor(newState)),
+        changeTitle: (newTitle) => dispatch(changeTitle(newTitle))
+
     }
 }
 

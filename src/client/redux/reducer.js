@@ -11,7 +11,11 @@ const initialState = {
         users: {},
         journals: {},
         entries: {},
-        entryRevisions: {}
+        entryRevisions: {},
+        editor: {
+            title: "",
+            content: null,
+        }
     },
     ui: {
         journalEntry: {}
@@ -31,7 +35,7 @@ const initialState = {
 var functionalReducers = {
     [actionTypes.REGISTER]: {
         onSuccess: (state, action) => ({ //Success returns the same as login 
-            ui: {   
+            ui: {
                 ...state.ui,
                 registrationSuccess: true,
                 registrationFail: ""
@@ -45,21 +49,30 @@ var functionalReducers = {
             }
         }),
     },
-    [actionTypes.GET_JOURNAL]: { 
-        onSuccess: (state,action) => state,
-        onFail: (state,action) => state //TODO: Error handling
+    [actionTypes.GET_JOURNAL]: {
+        onSuccess: (state, action) => state,
+        onFail: (state, action) => state //TODO: Error handling
     },
-    [actionTypes.SELECT_ENTRY]: { 
-        onSuccess: (state, {payload}) => ({ ...state, ui: {...state.ui, journalEntry: { ...state.ui.journalEntry, [payload.journal]: payload.entryID}}}),
-        onFail: (state, action) => {console.log("her")}
+    [actionTypes.SELECT_ENTRY]: {
+        onSuccess: (state, { payload }) => ({ ...state, ui: { ...state.ui, journalEntry: { ...state.ui.journalEntry, [payload.journal]: payload.entryID } } }),
+        onFail: (state, action) => { console.log("her") }
     },
     [actionTypes.SELECT_CONTROL]: {
-        onSuccess: (state, {payload}) => ({ ...state, misc: {...state.misc, controls: [...(state.misc.controls || []), payload.control]}})
+        onSuccess: (state, { payload }) => ({ ...state, misc: { ...state.misc, controls: [...(state.misc.controls || []), payload.control] } })
     },
-    [actionTypes.CREATE_JOURNAL]: { 
-        onSuccess: (state, {payload}) => ({
-            
+    [actionTypes.CREATE_JOURNAL]: {
+        onSuccess: (state, { payload }) => ({
+
         })
+    },
+    [actionTypes.MODIFY_ENTRY]: {
+        onSuccess: (state, { payload }) => ({
+        })
+    },
+
+
+    [actionTypes.INIT_EDITOR]: {
+
     }
 }
 
@@ -69,9 +82,45 @@ export default function rootReducer(state = initialState, action) {
         case actionTypes.LOGIN:
             return loginReducer(state, action)
             break;
+
+        case actionTypes.INIT_EDITOR:
+            return {
+                ...state,
+                data: {
+                    ...state.data,
+                    editor: {
+                        title: action.payload.title,
+                        content: action.payload.content
+                    }
+                }
+            }
+        case actionTypes.CHANGE_EDITOR:
+            return {
+                ...state,
+                data: {
+                    ...state.data,
+                    editor: {
+                        ...state.data.editor,
+                        content: action.payload.content
+                    }
+                }
+            }
+        case actionTypes.CHANGE_TITLE:
+            return {
+                ...state,
+                data: { 
+                    ...state.data,
+                    editor: { 
+                        ...state.data.editor,
+                        title: action.payload.title,
+                    }
+                }
+            }
         default:
-            if (action.payload && action.payload.payload && action.payload.payload.entities)
+            if (action.payload && action.payload.payload && action.payload.payload.entities) {
                 state = merge({}, state, { data: action.payload.payload.entities })
+                console.log("Merged");
+            }
     }
     if (functionalReducers[action.type]) {
         state = createReducer(state, action, functionalReducers[action.type].onSuccess, functionalReducers[action.type].onFail);

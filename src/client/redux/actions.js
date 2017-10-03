@@ -7,7 +7,7 @@
 // https://github.com/reduxactions/redux-actions
 
 import { createAction } from "redux-actions";
-import { post, get, del} from "../utils/api.js";
+import { post, get, del, put } from "../utils/api.js";
 import * as normalizr from "../utils/normalizr";
 import * as actionTypes from "./actionTypes.js";
 
@@ -15,53 +15,72 @@ import * as actionTypes from "./actionTypes.js";
 //Helper function. Give it a method to normalize, and the data. It will normalize if it should, or return raw data otherwise. 
 const normalize = (normalizeFunc, data) => data.success
     ? ({ payload: normalizeFunc(data.payload), success: data.success })
-    : ({ payload: data.payload, success: data.success});
+    : ({ payload: data.payload, success: data.success });
 
 
 //By naming the parameters after what the server expects, we can use shorthand syntax for object creation 
 export const login = createAction(actionTypes.LOGIN, async (username, password) => {
     console.log(username, password);
-    return post("login", { username:username, password:password }).then( (val) => normalize( normalizr.normalizeUser, val))
+    return post("login", { username: username, password: password }).then((val) => normalize(normalizr.normalizeUser, val))
 })
 
 export const getJournal = createAction(actionTypes.GET_JOURNAL, async (id) => {
-    return get(`journal/${id}`).then( (val) => normalize(normalizr.normalizeJournal, val))
+    return get(`journal/${id}`).then((val) => normalize(normalizr.normalizeJournal, val))
 })
 
-export const getEntry = createAction( actionTypes.GET_ENTRY, async(id) => 
-    get(`entry/${id}`).then( (val) => normalize(normalizr.normalizeEntry, val))
+export const getEntry = createAction(actionTypes.GET_ENTRY, async (id) =>
+    get(`entry/${id}`).then((val) => normalize(normalizr.normalizeEntry, val))
 )
 
-export const createRevision = createAction( actionTypes.CREATE_REVISION, async (entryID, title, content) => { 
-    return post(`entry/${entryID}/revision`, {title, content}).then((val) => normalize(normalizr.normalizeEntry, val) )
+export const createRevision = createAction(actionTypes.CREATE_REVISION, async (entryID, title, content) => {
+    return post(`entry/${entryID}/revision`, { title, content }).then((val) => normalize(normalizr.normalizeEntry, val))
 })
 
-export const selectEntry = createAction( actionTypes.SELECT_ENTRY, 
-    (entryID, journalID) => ({ 
+export const selectEntry = createAction(actionTypes.SELECT_ENTRY,
+    (entryID, journalID) => ({
         journal: journalID,
         entryID: entryID
-    }))  
+    }))
 
-export const selectControl = createAction( actionTypes.SELECT_CONTROL, (control) => ({ 
+export const selectControl = createAction(actionTypes.SELECT_CONTROL, (control) => ({
     control
-}) )
+}))
 
-export const createJournal = createAction( actionTypes.CREATE_JOURNAL, async (title, colour) =>  
-    post("journal", {title,colour}).then( (val) => normalize(normalizr.normalizeUser, val)) 
+export const createJournal = createAction(actionTypes.CREATE_JOURNAL, async (title, colour) =>
+    post("journal", { title, colour }).then((val) => normalize(normalizr.normalizeUser, val))
 )
 
 
 export const createUser = createAction(actionTypes.REGISTER, async (name, username, password) => {
-    return post("register", { username, name, password }).then( (val) => normalize(normalizr.normalizeUser, val))
+    return post("register", { username, name, password }).then((val) => normalize(normalizr.normalizeUser, val))
 })
 
-export const createEntry = createAction( actionTypes.CREATE_ENTRY, async (title, content, journalID) => 
-    post(`journal/${journalID}/entry`, {title,content}).then( (val) => normalize(normalizr.normalizeJournal, val)) 
+export const createEntry = createAction(actionTypes.CREATE_ENTRY, async (title, content, journalID) =>
+    post(`journal/${journalID}/entry`, { title, content }).then((val) => normalize(normalizr.normalizeJournal, val))
 )
 
-export const getRevision = createAction( actionTypes.GET_REVISION, async (id) => 
-    get(`revision/${id}`).then( (val) => normalize(normalizr.normalizeRevision, val))
+
+export const getRevision = createAction(actionTypes.GET_REVISION, async (id) =>
+    get(`revision/${id}`).then((val) => normalize(normalizr.normalizeRevision, val))
 )
+
+export const modifyEntry = createAction(actionTypes.MODIFY_ENTRY, async (id, isDeleted, isHidden) =>
+    put(`entry/${id}`, { isDeleted: isDeleted, isHidden: isHidden }).then((val) => normalize(normalizr.normalizeEntry, val))
+)
+
+
+
+import { EditorState} from 'draft-js' 
+export const initEditor = createAction( actionTypes.INIT_EDITOR, (title = '', content = null)=> ({ 
+    title , 
+    content: content != null ? content : EditorState.createEmpty()  
+}) )
+
+export const changeEditor = createAction( actionTypes.CHANGE_EDITOR, (newState) => ({ 
+    content: newState
+}))
+
+export const changeTitle = createAction( actionTypes.CHANGE_TITLE, (title) => ({title}) )
 
 // export const getUserDetails = createAction(actionTypes.GET_USER, async () => {
 //     return get("user").then( (val) => normalize(normalizr.normalizeUser, val ))

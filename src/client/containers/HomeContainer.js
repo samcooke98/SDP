@@ -5,7 +5,7 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { getJournal, createJournal } from "../redux/actions.js";
-import {withProtection} from "./Protector.js";
+import { withProtection } from "./Protector.js";
 
 import JournalButton from "../components/JournalButton/JournalButton.js"
 import FloatingButton from "../components/FloatingButton/FloatingButton.js"
@@ -54,9 +54,22 @@ class HomeContainer extends React.Component {
         this.props.history.push(`/journal/${id}`)
     }
 
+    generateErrors = (evt) => {
+        this.setState({
+            errorColour: (this.state.colour == '') ? "Select a Colour" : "",
+            errorName: (this.state.name == '') ? "Please enter a name" : ""
+        })
+    }
+
     createJournal = (evt) => {
-        this.setState({ dialog: false });
-        this.props.createJournal(this.state.name, this.state.colour);
+        evt.preventDefault();
+        //Only submit if the fields aren't blank. 
+        if (this.state.colour !== "" && this.state.name !== "") {
+            this.setState({ dialog: false });
+            this.props.createJournal(this.state.name, this.state.colour);
+        } else {
+            this.generateErrors();
+        }
     }
     //TODO: This doesn't render as per design, because it is flex - Should be grid or table 
     render() {
@@ -93,10 +106,15 @@ class HomeContainer extends React.Component {
                 {this.state.dialog &&
                     <Modal label="Create Journal" onClose={() => this.setState({ dialog: false })}>
                         <form onSubmit={this.createJournal}>
-                            <TextInput label="Name:" name="name" onChange={TextInput.onChange.bind(this)} />
-                            {/* <TextInput label="Colour:" name="colour" onChange={TextInput.onChange.bind(this)} /> */}
-                            <p style={{ margin: '0', color: "#333333", fontFamily: "Raleway", fontWeight: 'bold', fontSize: "28px", marginBottom: "5px" }}> 
-                                Colour: 
+                            <TextInput label="Name:" name="name" onChange={(evt) => {
+                                console.log("Here!");
+                                TextInput.onChange.bind(this)(evt);
+                                this.generateErrors(evt);
+
+                            }
+                            } error={this.state.errorName} />
+                            <p style={{ margin: '0', color: "#333333", fontFamily: "Raleway", fontWeight: 'bold', fontSize: "28px", marginBottom: "5px" }}>
+                                Colour:
                             </p>
                             <div style={{ display: 'flex', flexWrap: "wrap", justifyContent: 'left' }}>
                                 {colours.map((colour) => {
@@ -107,7 +125,7 @@ class HomeContainer extends React.Component {
                                     } />
                                 })}
                             </div>
-                            <div style={{height: "32px"}}/>
+                            <div style={{ height: "32px" }} />
                             <Button onClick={this.createJournal}
                                 label="Create"
                                 width="100%"
