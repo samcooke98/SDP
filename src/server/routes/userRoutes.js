@@ -2,7 +2,7 @@ import passport from 'passport';
 import {Router} from "express";
 var router = Router();
 
-import * as UserController from "../controllers/UserController.js";
+import * as UserController from "../controllers/userController.js";
 import { isLoggedIn } from "../utils/request.js"
 
 import { sendError, sendPayload } from "../utils/apiResponse.js";
