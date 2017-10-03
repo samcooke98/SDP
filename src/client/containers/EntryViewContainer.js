@@ -75,7 +75,9 @@ class EntryViewContainer extends React.Component {
             revisionID = nextProps.entry.revisions.slice(-1)[0];
 
         //Has the Revision Changed? 
-        if (this.props.revisions[this.state.currentRevisionID] != nextProps.revisions[revisionID]) {
+        if (this.props.revisions[this.state.currentRevisionID] != nextProps.revisions[revisionID]
+            && nextProps.revisions[revisionID] != undefined
+        ) {
             console.log("Revision has changed!");
             console.log("Reinitialising Editor");
             console.log(nextProps.revisions[revisionID]);
@@ -94,22 +96,32 @@ class EntryViewContainer extends React.Component {
     hasChanged = () => {
         console.log('has Changed!');
         const revisionObj = (this.props.revisions[this.state.currentRevisionID]);
-        if(revisionObj == undefined) return false; 
+        if (revisionObj == undefined) return false;
 
-        if( revisionObj.title != this.props.editorTitle) {
+        if (revisionObj.title != this.props.editorTitle) {
             return true;
         }
 
         const initialContent = JSON.parse(revisionObj.content);
         const currentContent = convertToRaw(this.props.editorState.getCurrentContent())
         if (!equal(currentContent, initialContent))
-            return true; 
-    
+            return true;
+
         return false;
     }
 
     handleEditorChange = (newEditorState) => {
         this.props.changeEditor(newEditorState)
+    }
+
+    handleKeyCommand = (command, editorState) => {
+        const newState = RichUtils.handleKeyCommand(editorState, command);
+        if (newState) {
+            this.props.changeEditor(newState);
+            return 'handled';
+        } else {
+            return 'not-handled';
+        }
     }
 
     handleTitleChange = (evt) => {
@@ -119,6 +131,15 @@ class EntryViewContainer extends React.Component {
         this.props.changeTitle(value)
     }
 
+    saveRevision = () => {
+        console.log("Saving");
+        const title = this.props.editorTitle;
+        const content = convertToRaw(this.props.editorState.getCurrentContent())
+        this.props.saveRevision(this.props.match.params.entry, title, JSON.stringify(content))
+    }
+
+
+
     render() {
         console.log(this.props);
 
@@ -126,21 +147,49 @@ class EntryViewContainer extends React.Component {
             <Editor
                 title={this.props.editorTitle}
                 titleChange={this.handleTitleChange}
-                date={"TODO"}
+                date={(this.props.revisions[this.state.currentRevisionID] || {}).createdAt || ""}
 
                 editorState={this.props.editorState || EditorState.createEmpty()}
                 onChange={this.handleEditorChange}
-                handleKeyCommand={() => console.log("TODO")}
-                contentChanged={this.hasChanged()} 
+                handleKeyCommand={this.handleKeyCommand}
+                contentChanged={this.hasChanged()}
 
-                save={this.saveRevision} //TODO
-                delete={this.deleteCurrent} //TODO
-                hide={this.hideCurrent} //TODO
-                //TODO: History Button
-                //Toggle Rich Utils 
-                //New Entry Page 
+                save={this.saveRevision}
+                delete={this.openDeleteDialog}
+                hide={this.openHideDialog}
+
+                isHidden={(this.props.entry || {}).isHidden}
+                isDeleted={(this.props.entry || {}).isDeleted}
+                showHistory={this.props.entry && (this.props.entry || {}).revisions > 1}  
+                openHistory={() => this.setState({ historyModal: !this.state.historyModal })}
+
+
+
+            //TODO: History Button
+            //Toggle Rich Utils 
+            //New Entry Page 
 
             />
+            {
+                this.state.historyModal &&
+                <RevisionsMenu
+                    onClose={() => this.setState({ historyModal: false })}
+                    revisions={this.props.revisions}
+                    entry={this.props.entry}
+                    journalID={this.props.match.params.id}
+                    entryID={this.props.match.params.entry}
+
+                />
+            }
+            {
+                this.state.dialog &&
+                <Dialog
+                    onClose={() => this.setState({ dialog: false })}
+                    text={this.state.dialogMessage}
+                    label={this.state.dialogTitle}
+                    actions={this.state.dialogActions}
+                />
+            }
 
         </div>)
     }
@@ -162,26 +211,7 @@ class EntryViewContainer extends React.Component {
     //             showHistory={true} //TODO:  
     //             openHistory={() => this.setState({ historyModal: !this.state.historyModal })}
     //         />
-    //         {
-    //             this.state.historyModal &&
-    //             <RevisionsMenu
-    //                 onClose={() => this.setState({ historyModal: false })}
-    //                 revisions={this.props.revisions}
-    //                 entry={this.props.entry}
-    //                 journalID={this.props.match.params.id}
-    //                 entryID={this.props.match.params.entry}
 
-    //             />
-    //         }
-    //         {
-    //             this.state.dialog &&
-    //             <Dialog
-    //                 onClose={() => this.setState({ dialog: false })}
-    //                 text={this.state.dialogMessage}
-    //                 label={this.state.dialogTitle}
-    //                 actions={this.state.dialogActions}
-    //             />
-    //         }
     //     </div >
     // )
     // }

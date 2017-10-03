@@ -16,7 +16,7 @@ export default function App(props) {
         <div>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>Reloaded</title> 
+                <title>Scriptum</title> 
             </Helmet> 
             {/* <Switch> */}
                 {routes.map((route, i) => (

@@ -29,7 +29,8 @@ export default class Editor extends React.Component {
 
 
     render() {
-        let date = moment.utc(this.props.date).format("DD/MM/YYYY");
+        //UTC time 
+        let date = moment(this.props.date).local().format("DD/MM/YYYY");
         return (
             <div style={{ flexGrow: 1 }}>
                 <div style={{ display: 'flex', flexDirection: 'row', flexGrow: 1, height: "100%" }}>
@@ -67,13 +68,16 @@ export default class Editor extends React.Component {
                                         <Save />
                                     </FloatingButton>
                                 }
-
-                                <FloatingButton contain shape='square' right="196px" height="60px" width="60px" onClick={this.props.delete}>
-                                    <Delete />
-                                </FloatingButton>
-                                <FloatingButton contain shape='square' right="268px" height="60px" width="60px" onClick={this.props.hide}>
-                                    {this.props.isHidden ? <Show /> : <Hide />}
-                                </FloatingButton>
+                                {this.props.showDelete &&
+                                    <FloatingButton contain shape='square' right="196px" height="60px" width="60px" onClick={this.props.delete}>
+                                        <Delete />
+                                    </FloatingButton>
+                                }
+                                {this.props.showHide &&
+                                    <FloatingButton contain shape='square' right="268px" height="60px" width="60px" onClick={this.props.hide}>
+                                        {this.props.isHidden ? <Show /> : <Hide />}
+                                    </FloatingButton>
+                                }
                             </div>
                         </div>
                     </div>
@@ -91,4 +95,7 @@ export default class Editor extends React.Component {
     }
 }
 
-
+Editor.defaultProps = { 
+    showHide: true,
+    showDelete: true,
+}
