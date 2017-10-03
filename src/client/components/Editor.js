@@ -84,7 +84,7 @@ export default class Editor extends React.Component {
 
                     <ControlsContainer
                         inlineStyles={this.props.editorState.getCurrentInlineStyle().toJS()}
-                        toggleControl={(str) => { this.toggleCommand(str) }}
+                        toggleControl={(str) => this.toggleControl(str)} 
                         showHistory={this.props.showHistory} //TODO
                         onHistory={this.props.openHistory}
                     />
@@ -92,6 +92,10 @@ export default class Editor extends React.Component {
 
             </div>
         )
+    }
+
+    toggleControl = ( str ) => { 
+        this.props.toggleControl(str)
     }
 }
 

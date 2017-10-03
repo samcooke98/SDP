@@ -142,6 +142,8 @@ class EntryViewContainer extends React.Component {
 
     render() {
         console.log(this.props);
+        console.log(this.props.entry && (this.props.entry || {}).revisions.length > 1);
+        
 
         return (<div style={{ flexGrow: 1, display: 'flex' }}>
             <Editor
@@ -160,10 +162,10 @@ class EntryViewContainer extends React.Component {
 
                 isHidden={(this.props.entry || {}).isHidden}
                 isDeleted={(this.props.entry || {}).isDeleted}
-                showHistory={this.props.entry && (this.props.entry || {}).revisions > 1}  
+                showHistory={this.props.entry && (this.props.entry || {}).revisions.length > 1}  
                 openHistory={() => this.setState({ historyModal: !this.state.historyModal })}
 
-
+                toggleControl={(str) => {this.handleEditorChange( RichUtils.toggleInlineStyle(this.props.editorState, str))}}
 
             //TODO: History Button
             //Toggle Rich Utils 

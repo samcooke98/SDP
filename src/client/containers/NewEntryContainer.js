@@ -118,6 +118,9 @@ class NewEntryContainer extends React.Component {
                 showDelete={false}
                 showHide={false}
 
+                toggleControl={(str) => {this.handleEditorChange( RichUtils.toggleInlineStyle(this.props.editorState, str))}}
+
+
                 isHidden={false}
                 isDeleted={false}
                 showHistory={false}
