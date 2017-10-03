@@ -5,9 +5,9 @@ import React from "react";
 
 import ControlButton from "../components/ControlButton";
 
-import Bold from "react-icons/lib/fa/Bold";
-import Italic from "react-icons/lib/fa/Italic";
-import Underline from "react-icons/lib/fa/Underline";
+import Bold from "react-icons/lib/fa/bold";
+import Italic from "react-icons/lib/fa/italic";
+import Underline from "react-icons/lib/fa/underline";
 import History from "react-icons/lib/fa/history"
 
 const elementMap = [
