@@ -27,7 +27,7 @@ class BaseContainer extends React.Component {
 
         return (
             <div style={{ minHeight: '100vh', maxHeight: '100vh', minWidth: '100vw', display: 'flex', flexDirection: 'column' }} >
-                    <Titlebar username={username} />
+                    <Titlebar username={username} loggedIn={this.props.loggedIn} />
                 <Switch>
                     {this.props.routes.map((route, i) => (
                         <RouteWithSubRoutes key={i} {...route} />
