@@ -3,11 +3,23 @@
 import React from "react";
 import styles from "./web.css";
 
-export default class HelloWorld extends React.Component{ 
+import User from "react-icons/lib/fa/User";
+
+export default class Titlebar extends React.Component{ 
+    constructor(props) {
+        super(props);
+    }
+
     render() { 
         return (
             <div className={styles.titlebar}> 
-                <h1>Scriptum</h1> 
+                <h1>Scriptum</h1>
+                <div className={styles.user}>
+                    <span>
+                        <User className={styles.usericon} />
+                        <span>{this.props.username}</span>
+                    </span>
+                </div>
             </div> 
         )
 
@@ -17,6 +29,12 @@ export default class HelloWorld extends React.Component{
         //'This' is automatically bound when writing functions like this
         return JSON.stringify(this.props);
     }
+}
+
+const UserTitle = (props) => {
+    return (
+        <span>{this.props.username}</span>
+    )
 }
 
 

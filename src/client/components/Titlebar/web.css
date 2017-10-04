@@ -24,3 +24,24 @@
     
     font-weight: bold;
 }
+
+.titlebar .user {
+    border: 2px solid #fff;
+    border-radius: 10px;
+    text-align: right;
+    padding: 10px;
+    font-family: 'Raleway', sans-serif;
+    margin-left:auto; 
+    margin-right:0;
+    font-weight: bold;
+}
+
+.titlebar .user span {
+    font-size: 30px;
+}
+
+.titlebar .user span .usericon {
+    font-size: 30px;
+    margin-top: -5px;
+    margin-right: 15px;
+}

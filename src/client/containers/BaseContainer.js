@@ -9,7 +9,7 @@ import { Layout } from "react-toolbox/lib/layout";
 
 import { RouteWithSubRoutes } from "../Routes.js";
 
-import Titlebar from "../components/Titlebar"
+import Titlebar from "../components/Titlebar/Titlebar.js"
 
 class BaseContainer extends React.Component {
     constructor(props) {
@@ -17,10 +17,17 @@ class BaseContainer extends React.Component {
     }
 
     render() {
-        console.log(this.props);
+        let username;
+        if (this.props.loggedIn) {
+            username = this.props.user.name;
+        }
+        else {
+            username = null;
+        }
+
         return (
             <div style={{ minHeight: '100vh', maxHeight: '100vh', minWidth: '100vw', display: 'flex', flexDirection: 'column' }} >
-                <Titlebar />
+                    <Titlebar username={username} />
                 <Switch>
                     {this.props.routes.map((route, i) => (
                         <RouteWithSubRoutes key={i} {...route} />
@@ -34,7 +41,8 @@ class BaseContainer extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        loggedIn: state.misc.loggedIn
+        loggedIn: state.misc.loggedIn,
+        user: state.data.users[state.misc.userID]
     }
 }
 //Typically would implement actions
