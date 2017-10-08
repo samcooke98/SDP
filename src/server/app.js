@@ -29,14 +29,19 @@ app.use(express.static(path.join(__dirname, 'static')))
 //Send Static from the Build directory 
 app.use(express.static(path.join(__dirname, "../static")))
 
+mongoose.Promise = global.Promise
 
 /* Setup Mongo Connection */
-mongoose.connect(process.env.MONGO_URL || "mongodb://localhost:27017/boilerplate", {
+const promise = mongoose.connect(process.env.MONGO_URL || "mongodb://localhost:27017/boilerplate", {
     useMongoClient: true
-}, (err) => {
-    if (err) console.log(err); else console.log("Connected to Mongo");
 });
-mongoose.Promise = global.Promise
+promise.then( (db) => { 
+    console.log("Connected to Mongo");
+    
+}, (err) => { 
+    console.error("Couldn't connect to MongoDB");
+    console.log(err);
+})
 
 
 export default app;
