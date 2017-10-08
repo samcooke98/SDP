@@ -1,7 +1,7 @@
 import React from "react";
 
 import styles from "./web.css";
-import User from "react-icons/lib/fa/User";
+import User from "react-icons/lib/fa/user";
 
 export default class UserTitle extends React.Component {
     constructor(props) {
