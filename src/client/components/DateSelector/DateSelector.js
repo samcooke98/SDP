@@ -10,7 +10,7 @@ export default class DateSelector extends React.Component {
                         FROM
                     </td>
                     <td>
-                        <div className={styles.picker}>SELECT</div>
+                        <div className={styles.picker}>28/08/17</div>
                     </td>
                 </tr>
                 <tr>
@@ -18,7 +18,7 @@ export default class DateSelector extends React.Component {
                         TO
                     </td>
                     <td>
-                        <div className={styles.picker}>SELECT</div>
+                        <div className={styles.picker}>28/08/17</div>
                     </td>
                 </tr>
             </table>
