@@ -22,13 +22,22 @@ class EntryList extends React.Component {
 
         this.dispatched = []
         this.state = {
-            isFilterOpen: false
+            isFilterOpen: false,
+            searchTerm: ""
         }
     }
 
     componentWillMount() {
         let journalID = this.props.match.params.id;
         this.props.getJournal(journalID);
+    }
+
+    onSearchChange(elem) {
+        this.setState({searchTerm: elem.target.value});
+    }
+
+    searchString = (entryTitle, searchTerm) => {
+        return entryTitle.toLowerCase().includes(searchTerm.toLowerCase());
     }
 
     generateList = () => {
@@ -45,15 +54,22 @@ class EntryList extends React.Component {
                 }
             }
 
-            let result = (this.journal.entries || []).map((id) => {
+            let filteredEntries = this.journal.entries;
+
+            let result = (filteredEntries || []).map((id) => {
                 var entry = this.props.entries[id]; if (!entry) return null;
                 var revisionID = entry.revisions[entry.revisions.length - 1];
                 let revision = this.props.revisions[revisionID] || {}
-                return <ListItem
-                    key={id}
-                    title={revision.title || ''}
-                    caption={moment(revision.createdAt).local().format("DD/MM/YYYY - hh:mm") || ''}
-                    onClick={() => this.props.history.push(`${this.props.match.url}/${id}`)} />
+                if ((this.state.searchTerm == "") || this.searchString(revision.title,this.state.searchTerm)) {
+                    return <ListItem
+                        key={id}
+                        title={revision.title || ''}
+                        caption={moment(revision.createdAt).local().format("DD/MM/YYYY - hh:mm") || ''}
+                        onClick={() => this.props.history.push(`${this.props.match.url}/${id}`)} />
+                }
+                else {
+                    return null;
+                }
             })
             return result;
         }
@@ -76,15 +92,16 @@ class EntryList extends React.Component {
                 flexDirection: "column",
                 padding: "12px", boxShadow: "blur", boxShadow: "4px 0px 4px -2px rgba(0,0,0,.25)", zIndex: 1,
             }}>
-                <TextInput placeholder="Search..." style={{ marginTop: "00px", marginBottom: "12px" }} />
-                {this.state.isFilterOpen &&
-                    <FilterOptions />
+                <TextInput name="searchTerm" placeholder="Search..." style={{ marginTop: "00px", marginBottom: "12px" }} onChange={this.onSearchChange.bind(this)}/>
+                
+                {this.state.isFilterOpen && <FilterOptions />}
 
-                }
                 <Button label="Filter Options" variant="clear" width="100%" height="48px" onClick={() => this.setState({ isFilterOpen: !this.state.isFilterOpen })} />
+                
                 <div style={{ flexGrow: 1, marginTop: "12px" }}>
                     {this.generateList()}
                 </div>
+
                 <Button
                     label="New Entry" style={{color: this.calcColour(this.journal.colour)}} colour={this.journal.colour} 
                     width="100%" height="70px"
