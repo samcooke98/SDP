@@ -5,8 +5,6 @@ import React from "react";
 import { withRouter, Switch, Link } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { Layout } from "react-toolbox/lib/layout";
-
 import { RouteWithSubRoutes } from "../Routes.js";
 
 import Titlebar from "../components/Titlebar/Titlebar.js"
