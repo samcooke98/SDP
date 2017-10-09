@@ -1,20 +1,17 @@
 import React from "react";
-
+import Checkbox from "./Checkbox/Checkbox.js";
+import DateSelector from "./DateSelector/DateSelector.js";
 
 export default class FilterOptions extends React.Component {
     render() {
         return (
             <div style={{
-                border: '1px solid black',
-                marginBottom: "10px"
+                marginBottom: "20px"
             }}>
-                SHOW HIDDEN
+                <Checkbox title="SHOW HIDDEN"/>
+                <Checkbox title="SHOW DELETED"/>
                 <br />
-                SHOW DELETED
-                <br />
-                FROM DATE
-                <br />
-                TO DATE
+                <DateSelector />
             </div>
         )
     }
