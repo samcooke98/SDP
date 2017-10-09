@@ -7,27 +7,39 @@ import * as EntryController from "../controllers/entryController.js";
 
 let router = new Router();
 
+const isPermitted = (req, res, next) => {
+    const entryID = req.params.id;
+    const userID = req.user._id;
 
-router.get("/entry/:id", isLoggedIn, async (req, res) => {
+    const journal = EntryController.getJournalID(entryID);
+    UserController.getUserByID(userID).then((userObj) => {
+        if (userObj.journals.indexOf(journalID) == -1) {
+            res.json(sendError("You aren't authorised to do that"));
+        } else {
+            next();
+        }
+    })
+}
+
+
+router.get("/entry/:id", isLoggedIn, isPermitted ,async (req, res) => {
     try {
-        res.json(sendPayload(await EntryController.getPopulated(req.params.id))) 
+        res.json(sendPayload(await EntryController.getPopulated(req.params.id)))
     } catch (err) {
         console.log(err);
         res.json(sendError(err))
     }
 })
 
-router.put("/entry/:id", isLoggedIn, async (req,res) => { 
-    try { 
+router.put("/entry/:id", isLoggedIn, isPermitted, async (req, res) => {
+    try {
         console.log(req.body);
-        console.log( await EntryController.getByID(req.params.id) );
+        console.log(await EntryController.getByID(req.params.id));
 
-        let result; 
-        // result = await EntryController.setDeleted(req.params.id, req.body.isDeleted);
-        // result = await EntryController.setHidden(req.params.id, req.body.isHidden);
+        let result;
         result = EntryController.modifyEntry(req.params.id, req.body.isDeleted, req.body.isHidden);
         console.log(result);
-        result.then( (updatedEntry) => { 
+        result.then((updatedEntry) => {
             console.log("Updated Entry: ");
             console.log(updatedEntry);
             res.json(sendPayload(updatedEntry));
@@ -38,12 +50,12 @@ router.put("/entry/:id", isLoggedIn, async (req,res) => {
     }
 })
 //Create a new revision
-router.post("/entry/:entryID/revision", async(req,res) => { 
-    try { 
-        res.json( sendPayload( 
+router.post("/entry/:entryID/revision", isLoggedIn, isPermitted, async (req, res) => {
+    try {
+        res.json(sendPayload(
             await EntryController.reviseEntry(req.params.entryID, req.body.title, req.body.content)
         ));
-    }catch(err) { 
+    } catch (err) {
         console.log(err);
         res.json(sendError(err));
     }
