@@ -14,6 +14,7 @@ const app = express();
 //Add the Routes from the ./routes/index.js to the App's middleware.
 //TODO: Investigate Webpack unravelling this for us? 
 for (var route in Routes) {
+    console.log("adding api route");
     app.use('/api', Routes[route]);
 }
 
@@ -22,7 +23,7 @@ for (var route in Routes) {
 //app.use("/api", resourceRoutes);
 
 //Handle React Stuff 
-app.use(  serverRenderer )
+app.use(serverRenderer)
 
 //Send Bundle
 app.use(express.static(path.join(__dirname, 'static')))
@@ -31,9 +32,20 @@ app.use(express.static(path.join(__dirname, "../static")))
 
 mongoose.Promise = global.Promise
 
+
 /* Setup Mongo Connection */
 const promise = mongoose.connect(process.env.MONGO_URL || "mongodb://localhost:27017/boilerplate", {
     useMongoClient: true
+<<<<<<< HEAD
+}, (err) => {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log("Connected to Mongo");
+    }
+}, );
+mongoose.Promise = global.Promise
+=======
 });
 promise.then( (db) => { 
     console.log("Connected to Mongo");
@@ -42,6 +54,7 @@ promise.then( (db) => {
     console.error("Couldn't connect to MongoDB");
     console.log(err);
 })
+>>>>>>> f5be4ad05b376d2e8ff6f35d7b9d9bafdd318fbe
 
 
 export default app;

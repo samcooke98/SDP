@@ -1,6 +1,18 @@
 import Entry from "../models/entry.js";
+import Journal from "../models/journal.js";
 import q from "q";
 import * as EntryContentController from "./entryContentController.js";
+
+
+export async function getJournalID(entryID) {
+    try {
+        const journal = await Journal.find({entries: {$in: [entryID] }})
+        return journal._id;
+    } catch (error) {
+        return null;        
+    }
+}
+
 
 export async function createEntry(title, content) {
     var entry = new Entry();
@@ -49,12 +61,12 @@ export async function setDeleted(id, deleted = null) {
 
 export function modifyEntry(id, deleted, hidden) {
     const deferred = q.defer();
-    Entry.findByIdAndUpdate(id, { $set: { isDeleted: deleted, isHidden: hidden }}, { new: true } , (err, entry) => {
+    Entry.findByIdAndUpdate(id, { $set: { isDeleted: deleted, isHidden: hidden } }, { new: true }, (err, entry) => {
         if (err) deferred.reject(err);
         console.log("---");
         console.log(entry);
         console.log("---");
         deferred.resolve(entry);
     })
-return deferred.promise;
+    return deferred.promise;
 }
