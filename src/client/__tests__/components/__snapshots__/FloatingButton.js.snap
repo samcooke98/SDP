@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`React Component: FloatingButton matches a snapshot 1`] = `
+<div
+  className="undefined undefined "
+  onClick={undefined}
+  style={
+    Object {
+      "backgroundColor": "#2F80ED",
+      "bottom": undefined,
+      "color": undefined,
+      "cursor": "pointer",
+      "height": undefined,
+      "right": undefined,
+      "width": undefined,
+    }
+  }
+>
+  <span
+    style={
+      Object {
+        "fontSize": "40px",
+        "lineHeight": "55px",
+        "textAlign": "center",
+        "verticalAlign": "middle",
+      }
+    }
+  />
+</div>
+`;

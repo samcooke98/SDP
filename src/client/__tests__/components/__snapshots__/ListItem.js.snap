@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`React Component: ListItem matches a snapshot 1`] = `
+<div
+  onClick={undefined}
+  style={
+    Object {
+      "alignItems": "center",
+      "cursor": "pointer",
+      "display": "flex",
+      "height": "60px",
+      "justifyContent": "space-between",
+      "marginBottom": "8px",
+    }
+  }
+>
+  <div>
+    <p
+      className={undefined}
+    >
+       
+       
+    </p>
+    <p
+      className={undefined}
+    >
+       
+       
+    </p>
+  </div>
+  <svg
+    fill="currentColor"
+    height={48}
+    preserveAspectRatio="xMidYMid meet"
+    style={
+      Object {
+        "color": undefined,
+        "verticalAlign": "middle",
+      }
+    }
+    viewBox="0 0 40 40"
+    width={48}
+  >
+    <g>
+      <path
+        d="m14.3 27.3l7.7-7.7-7.7-7.7 2.3-2.3 10 10-10 10z"
+      />
+    </g>
+  </svg>
+</div>
+`;

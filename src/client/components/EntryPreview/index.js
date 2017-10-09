@@ -17,6 +17,12 @@ export default class EntryPreview extends Component {
     }
 }
 
+EntryPreview.defaultProps = { 
+    preview: "Hello World!",
+    to: "/",
+    onClick: () => {},
+}
+
 function createMarkup() {
     return { __html: 'First &middot; Second' };
 }
