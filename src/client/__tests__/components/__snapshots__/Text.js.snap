@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`React Component: Text matches a snapshot 1`] = `
+<p
+  style={
+    Object {
+      "fontFamily": "Raleway, sans-serif",
+    }
+  }
+>
+   
+   
+</p>
+`;

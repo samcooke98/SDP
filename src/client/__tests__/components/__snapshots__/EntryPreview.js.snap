@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`React Component: EntryPreview matches a snapshot 1`] = `
+<div
+  className={undefined}
+>
+  <h3>
+     
+     - 
+     
+  </h3>
+  <span
+    className={undefined}
+    dangerouslySetInnerHTML={
+      Object {
+        "__html": "Hello World!",
+      }
+    }
+  />
+  <a
+    href="/"
+    onClick={[Function]}
+  >
+     Open Entry 
+  </a>
+</div>
+`;

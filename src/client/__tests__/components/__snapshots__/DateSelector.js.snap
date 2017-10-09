@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`React Component: DateSelector matches a snapshot 1`] = `
+<table
+  className={undefined}
+>
+  <tr>
+    <td>
+      FROM
+    </td>
+    <td>
+      <div
+        className={undefined}
+      >
+        28/08/17
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      TO
+    </td>
+    <td>
+      <div
+        className={undefined}
+      >
+        28/08/17
+      </div>
+    </td>
+  </tr>
+</table>
+`;

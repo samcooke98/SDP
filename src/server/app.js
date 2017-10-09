@@ -36,16 +36,6 @@ mongoose.Promise = global.Promise
 /* Setup Mongo Connection */
 const promise = mongoose.connect(process.env.MONGO_URL || "mongodb://localhost:27017/boilerplate", {
     useMongoClient: true
-<<<<<<< HEAD
-}, (err) => {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log("Connected to Mongo");
-    }
-}, );
-mongoose.Promise = global.Promise
-=======
 });
 promise.then( (db) => { 
     console.log("Connected to Mongo");
@@ -54,7 +44,6 @@ promise.then( (db) => {
     console.error("Couldn't connect to MongoDB");
     console.log(err);
 })
->>>>>>> f5be4ad05b376d2e8ff6f35d7b9d9bafdd318fbe
 
 
 export default app;

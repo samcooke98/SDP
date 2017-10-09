@@ -1,11 +1,11 @@
 import configureMockStore from 'redux-mock-store'
 import promiseMiddleware from 'redux-promise';
-
-import * as actions from '../../actions/TodoActions'
+import {applyMiddleware} from "redux"
+import * as actions from '../../redux/actions.js'
 
 import nock from 'nock';
 
-const mockStore = configureMockStore(promiseMiddleware)
+const mockStore = configureMockStore(applyMiddleware(promiseMiddleware))
 
 describe('Async actions', () => {
     afterEach(() => {

@@ -47,6 +47,7 @@
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
+    "react-test-renderer": "15.6.2",
     "react-toolbox": "^2.0.0-beta.12",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
@@ -98,5 +99,15 @@
     "start": "node ./build/server.js"
   },
   "author": "Samuel Cooke <hello@samcooke.com.au>",
-  "license": "ISC"
+  "license": "ISC",
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/config/polyfills.js"
+    ],
+    "transform": {
+      "^.+\\.(js|jsx)$": "<rootDir>/node_modules/babel-jest",
+      "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
+      "^(?!.*\\.(js|jsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
+    }
+  }
 }

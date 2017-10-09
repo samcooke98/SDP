@@ -6,6 +6,13 @@ let login = false;
 import router from "../../routes/entryContentRoutes.js"
 import express from 'express';
 
+const mockRequest =  () => {
+    return {
+        isLoggedIn: jest.fn((req, res, next) => {
+            
+        })
+    }
+}
 
 /*
 Routes: 
@@ -28,11 +35,16 @@ describe("/revision Routes", () => {
         })
 
         it("Should fail when we login (Invalid ID)", async () => {
-            const userSpy = jest.spyOn("req", "user");
             const data = await get('revision/abc');
             
-            expect(userSpy).toHaveBeenCalled();            
             expect(data).toHaveProperty("success", false);
+        })
+
+
+        it("Should work when we login (Mocked: Valid ID) ", async () => { 
+            const data = await get('revision/59cf50062fc6d3289877f404');
+            
+            expect(data).toHaveProperty("success", true);
         })
     })
 })
@@ -43,10 +55,4 @@ const post = (endpoint, payload) => fetch(`http://localhost:3001/${endpoint}`, {
 
 
 
-const mockRequest =  () => {
-    return {
-        isLoggedIn: jest.fn((req, res, next) => {
-            next();
-        })
-    }
-}
+
