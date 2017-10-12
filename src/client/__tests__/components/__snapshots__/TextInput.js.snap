@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`React Component: TextInput matches a snapshot 1`] = `
+<div
+  className={undefined}
+  style={undefined}
+>
+  <p>
+     
+     
+  </p>
+  <input
+    autoComplete="off"
+    className="undefined undefined"
+    name={undefined}
+    onChange={undefined}
+    placeholder={undefined}
+    type="text"
+    value={undefined}
+  />
+</div>
+`;

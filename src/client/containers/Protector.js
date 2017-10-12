@@ -4,7 +4,6 @@
 import React from "react";
 import { withRouter, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import Input from 'react-toolbox/lib/input';
 
 
 class Protector extends React.Component {

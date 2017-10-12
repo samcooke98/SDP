@@ -10,7 +10,7 @@ export default class ControlButton extends React.Component {
                 onMouseDown={(evt) => {
                     evt.preventDefault();
                     this.props.onClick(evt);
-                }
+                   }
                 }
                 className={styles.controlBtn + " " + (this.props.active ? styles.active : "")}
             >

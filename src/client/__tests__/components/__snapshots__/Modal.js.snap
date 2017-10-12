@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`React Component: Modal matches a snapshot 1`] = `
+<div
+  className={undefined}
+  onKeyPress={[Function]}
+>
+   
+  <div
+    className="undefined undefined undefined"
+  >
+    <div
+      className={undefined}
+    >
+      <h2 />
+      <svg
+        fill="currentColor"
+        height={32}
+        onClick={undefined}
+        preserveAspectRatio="xMidYMid meet"
+        style={
+          Object {
+            "color": undefined,
+            "cursor": "pointer",
+            "verticalAlign": "middle",
+          }
+        }
+        viewBox="0 0 40 40"
+        width={32}
+      >
+        <g>
+          <path
+            d="m31.6 10.7l-9.3 9.3 9.3 9.3-2.3 2.3-9.3-9.3-9.3 9.3-2.3-2.3 9.3-9.3-9.3-9.3 2.3-2.3 9.3 9.3 9.3-9.3z"
+          />
+        </g>
+      </svg>
+    </div>
+    <div
+      className={undefined}
+    />
+  </div>
+</div>
+`;

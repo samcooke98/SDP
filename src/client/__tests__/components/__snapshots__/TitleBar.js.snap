@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`React Component: TitleBar matches a snapshot 1`] = `
+<div
+  className={undefined}
+>
+  <h1>
+    Scriptum
+  </h1>
+</div>
+`;

@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`React Component: Button matches a snapshot 1`] = `
+<button
+  className="undefined undefined"
+  onClick={undefined}
+  style={
+    Object {
+      "backgroundColor": "",
+      "cursor": "pointer",
+      "display": "block",
+      "height": undefined,
+      "marginLeft": "auto",
+      "marginRight": "auto",
+      "width": undefined,
+    }
+  }
+>
+  <p
+    style={
+      Object {
+        "fontSize": "24px",
+      }
+    }
+  >
+     
+  </p>
+</button>
+`;
