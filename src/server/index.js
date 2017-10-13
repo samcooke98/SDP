@@ -91,3 +91,8 @@ server.listen(process.env.PORT || 3000, "0.0.0.0", (err) => {
 });
 
 
+process.on('unhandledRejection', (reason, promise) => {
+    console.log('Reason: ' + reason);
+    console.log(reason.stack)
+    console.log(promise);
+});

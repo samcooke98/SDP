@@ -42,7 +42,7 @@ class HomeContainer extends React.Component {
 
     }
 
-    componentWillMount() {
+    componentDidMount() {
         //Load the Journals if they don't already exist
         for (var id of this.props.user.journals) {
             if (!this.props.journalsObjs[id])
