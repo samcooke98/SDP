@@ -39,6 +39,10 @@ var functionalReducers = {
                 ...state.ui,
                 registrationSuccess: true,
                 registrationFail: ""
+            },
+            misc: {
+                loggedIn: true,
+                userID: action.payload.payload.result
             }
         }),
         onFail: (state, action) => ({
@@ -61,9 +65,9 @@ var functionalReducers = {
         onSuccess: (state, { payload }) => ({ ...state, misc: { ...state.misc, controls: [...(state.misc.controls || []), payload.control] } })
     },
     [actionTypes.CREATE_JOURNAL]: {
-        onSuccess: (state, { payload }) => ({
+        onSuccess: (state, { payload }) => ({}),
+        onFail: (state, { payload }) => ({})
 
-        })
     },
     [actionTypes.MODIFY_ENTRY]: {
         onSuccess: (state, { payload }) => ({
@@ -107,9 +111,9 @@ export default function rootReducer(state = initialState, action) {
         case actionTypes.CHANGE_TITLE:
             return {
                 ...state,
-                data: { 
+                data: {
                     ...state.data,
-                    editor: { 
+                    editor: {
                         ...state.data.editor,
                         title: action.payload.title,
                     }

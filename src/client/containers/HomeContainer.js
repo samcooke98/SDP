@@ -43,8 +43,10 @@ class HomeContainer extends React.Component {
     }
 
     componentDidMount() {
+        console.log("here");
         //Load the Journals if they don't already exist
         for (var id of this.props.user.journals) {
+            console.log(this.props.user.journals[id]);
             if (!this.props.journalsObjs[id])
                 this.props.getJournal(id);
         }
@@ -65,8 +67,15 @@ class HomeContainer extends React.Component {
         evt.preventDefault();
         //Only submit if the fields aren't blank. 
         if (this.state.colour !== "" && this.state.name !== "") {
-            this.setState({ dialog: false });
-            this.props.createJournal(this.state.name, this.state.colour);
+            this.props.createJournal(this.state.name, this.state.colour).then((val) => {
+                console.log("HERE");
+                console.log(val);
+                if (val.payload.success)
+                    this.setState({ dialog: false });
+                else
+                    this.setState({ errorName: "A journal already exists with this name and colour!" })
+
+            })
         } else {
             this.generateErrors();
         }
@@ -75,7 +84,7 @@ class HomeContainer extends React.Component {
     render() {
         return (
             <div>
-                <h1 style={{textAlign: "center", fontFamily: "Raleway"}}> Welcome back, {this.props.user.name}!</h1>
+                <h1 style={{ textAlign: "center", fontFamily: "Raleway" }}> Welcome back, {this.props.user.name}!</h1>
                 <div style={
                     {
                         display: 'flex',
@@ -107,10 +116,8 @@ class HomeContainer extends React.Component {
                     <Modal label="Create Journal" onClose={() => this.setState({ dialog: false })}>
                         <form onSubmit={this.createJournal}>
                             <TextInput label="Name:" name="name" onChange={(evt) => {
-                                console.log("Here!");
                                 TextInput.onChange.bind(this)(evt);
                                 this.generateErrors(evt);
-
                             }
                             } error={this.state.errorName} />
                             <p style={{ margin: '0', color: "#333333", fontFamily: "Raleway", fontWeight: 'bold', fontSize: "28px", marginBottom: "5px" }}>

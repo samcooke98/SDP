@@ -49,12 +49,23 @@ export async function getDetails(id) {
 }
 
 export async function createJournal(title, colour, user) {
+    const userDetails = await getDetails(user._id);
+    for (var i = 0; i < userDetails.journals.length; i++) {
+        const journal = userDetails.journals[i];
+        if (journal.title == title &&
+            journal.colour == colour
+        ) {
+            return sendError("This journal already exists");
+        }
+    }
+
     var journal = await JournalController.createJournal(title, colour);
 
+
     //Save the new Journal to the user document
-    user.journals.push(journal._id);
-    await user.save();
-    return await populate(user);
+    userDetails.journals.push(journal._id);
+    await userDetails.save();
+    return sendPayload(await getDetails(userDetails._id));
 }
 
 

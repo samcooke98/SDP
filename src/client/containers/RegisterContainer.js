@@ -56,6 +56,8 @@ class RegisterContainer extends React.Component {
         } else {
             this.setState({ name: { value: this.state.name.value, error: "" } })
         }
+
+        return isErrors;
     }
 
     submit = (evt) => {

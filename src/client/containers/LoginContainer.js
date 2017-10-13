@@ -37,22 +37,24 @@ class LoginContainer extends React.Component {
 
     submitForm = (evt) => {
         evt.preventDefault();
-        this.props.login(this.state.email, this.state.password)
+        this.props.login(this.state.email, this.state.password).then((val) => {
+            if (!val.payload.success)
+                this.setState({ error: "Sorry! That username or password is incorrect" });
+        })
     }
 
     //Handle Errors and Success
     componentWillReceiveProps(nextProps) {
-        console.log("Received Props");
         if (nextProps.loggedIn)
             this.props.history.push((this.props.location.state || {}).referrer || "/home");
     }
 
     render() {
-        console.log(this.props.location);
         return (
             <Modal label="LOGIN" onClose={() => this.props.history.push("/")} >
+                {this.state.error && <h3 style={{textAlign: 'center', color: '#ff0033'}}>{this.state.error}</h3 >}
                 <form onSubmit={this.submitForm}>
-                    <TextInput label="Email:" name="email" value={this.state.email} onChange={this.handleChange}  />
+                    <TextInput label="Email:" name="email" value={this.state.email} onChange={this.handleChange} />
                     <TextInput label="Password: " name="password" type='password' value={this.state.password} onChange={this.handleChange} />
                     <Button label='login' width="256px" height="48px" />
                 </form>
@@ -71,7 +73,7 @@ const mapStateToProps = (state) => {
 //Typically would implement actions
 const mapDispatchToProps = (dispatch) => {
     return {
-        login: (user, pass) => { dispatch(login(user, pass)) }
+        login: (user, pass) => dispatch(login(user, pass))
     }
 }
 
