@@ -77,7 +77,6 @@ var functionalReducers = {
 }
 
 export default function rootReducer(state = initialState, action) {
-    console.log(action);
     switch (action.type) {
         case actionTypes.LOGIN:
             return loginReducer(state, action)

@@ -13,8 +13,6 @@ import { Provider } from "react-redux";
 const store = configureStore(window.__PRELOADED_STATE__);
 
 const mountApp = document.getElementById('root-app');
-console.log(store);
-console.log(App);
 
 render(
     <Provider store={store}>
@@ -25,7 +23,6 @@ render(
     mountApp);
 
 if (module.hot) {
-    console.log("here");
     module.hot.accept('./App', () => {
         const NextApp = require('./App').default;
         render(
