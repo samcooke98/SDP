@@ -23,7 +23,9 @@ class EntryList extends React.Component {
         this.dispatched = []
         this.state = {
             isFilterOpen: false,
-            searchTerm: ""
+            searchTerm: "",
+            showHidden: false,
+            showDeleted: false
         }
     }
 
@@ -34,6 +36,14 @@ class EntryList extends React.Component {
 
     onSearchChange(elem) {
         this.setState({searchTerm: elem.target.value});
+    }
+
+    onHiddenChange(elem) {
+        this.setState({showHidden: elem.target.checked});
+    }
+
+    onDeletedChange(elem) {
+        this.setState({showDeleted: elem.target.checked});
     }
 
     searchString = (entryTitle, searchTerm) => {
@@ -94,7 +104,7 @@ class EntryList extends React.Component {
             }}>
                 <TextInput name="searchTerm" placeholder="Search..." style={{ marginTop: "00px", marginBottom: "12px" }} onChange={this.onSearchChange.bind(this)}/>
                 
-                {this.state.isFilterOpen && <FilterOptions />}
+                {this.state.isFilterOpen && <FilterOptions onDeletedChange={this.onDeletedChange.bind(this)} onHiddenChange={this.onHiddenChange.bind(this)} showHidden={this.state.showHidden} showDeleted={this.state.showDeleted}/>}
 
                 <Button label="Filter Options" variant="clear" width="100%" height="48px" onClick={() => this.setState({ isFilterOpen: !this.state.isFilterOpen })} />
                 
