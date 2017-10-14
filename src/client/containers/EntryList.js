@@ -71,11 +71,15 @@ class EntryList extends React.Component {
                 var revisionID = entry.revisions[entry.revisions.length - 1];
                 let revision = this.props.revisions[revisionID] || {}
                 if ((this.state.searchTerm == "") || this.searchString(revision.title,this.state.searchTerm)) {
-                    return <ListItem
-                        key={id}
-                        title={revision.title || ''}
-                        caption={moment(revision.createdAt).local().format("DD/MM/YYYY - hh:mm") || ''}
-                        onClick={() => this.props.history.push(`${this.props.match.url}/${id}`)} />
+                    if ((!entry.isHidden) || (this.state.showHidden)) {
+                        if ((!entry.isDeleted) || (this.state.showDeleted)) {
+                            return <ListItem
+                                key={id}
+                                title={revision.title || ''}
+                                caption={moment(revision.createdAt).local().format("DD/MM/YYYY - hh:mm") || ''}
+                                onClick={() => this.props.history.push(`${this.props.match.url}/${id}`)} />
+                        }
+                    }
                 }
                 else {
                     return null;
