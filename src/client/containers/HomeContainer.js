@@ -108,6 +108,13 @@ class HomeContainer extends React.Component {
                                 />)
                         }
                     })}
+                    {
+                        this.props.user.journals.length == 0 && 
+                        <h3 style={{textAlign: "center", width: '100%'}}> 
+                            You don't have any journals yet 
+                        </h3>
+
+                    }
                 </div>
                 <FloatingButton onClick={() => this.setState({ dialog: !this.state.dialog })}>
                     <Add />
