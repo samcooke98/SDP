@@ -11,7 +11,7 @@ export default class JournalButton extends React.Component {
 
 
     render() {
-        console.log(this.props);
+        console.log(this.props.date);
         return (
             <div className={styles.journalWrap}>
                 <div style={{cursor: "pointer"}} onClick={this.props.onPress} className={styles.journalbtn}>
@@ -20,7 +20,7 @@ export default class JournalButton extends React.Component {
                     <div style={{ display: 'flex', width: '100%', justifyContent: "center", alignItems: "center"}}>
                         <span style={{ textAlign: 'center', flexGrow: 1 }}>
                             <Text tag='h3'> {this.props.title} </Text>
-                            <Text>Created: {moment(this.props.date).format("DD/MM/YYYY")} </Text>
+                            <Text>Created: {moment.utc(this.props.date).format("DD/MM/YYYY")} </Text>
                         </span>
                         <span style={{ width: 0, overflow: 'visible' }}>
                             <Menu height={32} width={32} onClick={(evt) => { console.log("OPEN MENU TODO"); evt.stopPropagation() }}

@@ -9,29 +9,76 @@ import Button from "../components/Button/Button.js";
 import Modal from "../components/Modal/Modal.js";
 
 import { createUser } from "../redux/actions.js"
+import isEmail from 'validator/lib/isEmail';
+
 
 class RegisterContainer extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            name: "",
-            password: "",
-            passwordConfirm: "",
-            email: "",
+            name: { value: "", error: "" },
+            password: { value: "", error: "" },
+            passwordConfirm: { value: "", error: "" },
+            email: { value: "", error: "" },
             success: '',
         }
     }
 
+    genErrors = () => {
+
+        let isErrors = false;
+        //Passwords must match
+        if (this.state.password.value !== this.state.passwordConfirm.value) {
+            this.setState({
+                password: { value: this.state.password.value, error: "Oops! Your passwords don't seem to match. " },
+                passwordConfirm: { value: this.state.passwordConfirm.value, error: "Oops! Your passwords don't seem to match." }
+            })
+            isErrors = true;
+        } else {
+            this.setState({
+                password: { value: this.state.password.value, error: "" },
+                passwordConfirm: { value: this.state.passwordConfirm.value, error: "" },
+            })
+        }
+        //Email must be valid
+        if (!isEmail(this.state.email.value)) {
+            isErrors = true;
+            console.log("Setting State");
+            this.setState({ email: { value: this.state.email.value, error: "This doesn't look like an email" } });
+        } else {
+            this.setState({ email: { value: this.state.email.value, error: "" } });
+        }
+        //Name Can't be null
+        if (this.state.name.value == "") {
+            isErrors = true;
+            this.setState({ name: { value: this.state.name.value, error: "This can't be nothing!" } })
+        } else {
+            this.setState({ name: { value: this.state.name.value, error: "" } })
+        }
+
+        return isErrors;
+    }
+
     submit = (evt) => {
         evt.preventDefault();
-        this.props.register(this.state.name, this.state.email, this.state.password)
+
+        if (this.genErrors() == false) {
+
+            this.props.register(
+                this.state.name.value,
+                this.state.email.value,
+                this.state.password.value
+            )
+        } else {
+            console.log("errors can't submit")
+        }
     }
 
     handleChange = (evt) => {
         const name = evt.target.name;
         const value = evt.target.value;
-        this.setState({ [name]: value })
+        this.setState({ [name]: { value, error: this.state[name].error } })
     }
 
     componentWillReceiveProps(nextProps) {
@@ -46,12 +93,12 @@ class RegisterContainer extends React.Component {
                 {this.props.loggedIn && <Redirect to="/home" />}
                 <form onSubmit={this.submit}>
                     {this.state.msg && <p>{this.state.msg}</p>}
-                    <TextInput type='text' label="Name" name='name' value={this.state.name} onChange={this.handleChange} />
+                    <TextInput type='text' label="Name" name='name' value={this.state.name.value} onChange={this.handleChange} error={this.state.name.error} />
 
-                    <TextInput type='text' label="Email" name='email' value={this.state.email} onChange={this.handleChange} />
+                    <TextInput type='text' label="Email" name='email' value={this.state.email.value} onChange={this.handleChange} error={this.state.email.error} />
 
-                    <TextInput type='password' label="Password" name='password' value={this.state.password} onChange={this.handleChange} />
-                    <TextInput type='password' label="Confirm Password" name='passwordConfirm' value={this.state.passwordConfirm} onChange={this.handleChange} />
+                    <TextInput type='password' label="Password" name='password' value={this.state.password.value} onChange={this.handleChange} error={this.state.password.error} />
+                    <TextInput type='password' label="Confirm Password" name='passwordConfirm' value={this.state.passwordConfirm.value} onChange={this.handleChange} error={this.state.passwordConfirm.error} />
 
                     <Button label="Submit" width="260px" height="54px" variant='primary' />
                 </form>

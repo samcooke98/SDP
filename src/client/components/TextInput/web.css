@@ -30,5 +30,13 @@ input {
 }
 
 .error { 
-    border: 1px solid red;
+    border: 2px solid #ff0033;
+}
+
+p.errorP { 
+    font-weight: normal;
+    margin-top: 8px;
+    margin-bottom: 0px;
+    font-size: 14px; 
+    color: #ff0033;
 }

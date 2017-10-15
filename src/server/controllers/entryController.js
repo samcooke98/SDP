@@ -6,9 +6,15 @@ import * as EntryContentController from "./entryContentController.js";
 
 export async function getJournalID(entryID) {
     try {
-        const journal = await Journal.find({entries: {$in: [entryID] }})
-        return journal._id;
+        const journal = await Journal.find({entries: {$in: [entryID] }});
+        console.log("GET JOURNAL ID");
+        console.log(journal);
+        if(journal[0])
+            return journal[0]._id;
+        else 
+            return null; 
     } catch (error) {
+        console.warn(error);
         return null;        
     }
 }

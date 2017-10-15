@@ -10,10 +10,8 @@ let router = new Router();
 const isPermitted = async (req, res, next) => {
     const revisionID = req.params.id;
     try {
-        console.log("hello");
         const entryID = await EntryContentController.getEntryID(revisionID);
-        console.log("her");
-        const journalID = getJournalID(entryID);
+        const journalID = await getJournalID(entryID);
         console.log(req.user);
         if(req.user.journals.indexOf( journalID ) == -1) {
             res.json( sendError("You don't have permission to do that"))
