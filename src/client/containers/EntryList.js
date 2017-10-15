@@ -23,7 +23,9 @@ class EntryList extends React.Component {
         this.dispatched = []
         this.state = {
             isFilterOpen: false,
-            searchTerm: ""
+            searchTerm: "",
+            showHidden: false,
+            showDeleted: false
         }
     }
 
@@ -34,6 +36,14 @@ class EntryList extends React.Component {
 
     onSearchChange(elem) {
         this.setState({searchTerm: elem.target.value});
+    }
+
+    onHiddenChange(elem) {
+        this.setState({showHidden: elem.target.checked});
+    }
+
+    onDeletedChange(elem) {
+        this.setState({showDeleted: elem.target.checked});
     }
 
     searchString = (entryTitle, searchTerm) => {
@@ -61,11 +71,15 @@ class EntryList extends React.Component {
                 var revisionID = entry.revisions[entry.revisions.length - 1];
                 let revision = this.props.revisions[revisionID] || {}
                 if ((this.state.searchTerm == "") || this.searchString(revision.title,this.state.searchTerm)) {
-                    return <ListItem
-                        key={id}
-                        title={revision.title || ''}
-                        caption={moment(revision.createdAt).local().format("DD/MM/YYYY - hh:mm") || ''}
-                        onClick={() => this.props.history.push(`${this.props.match.url}/${id}`)} />
+                    if ((!entry.isHidden) || (this.state.showHidden)) {
+                        if ((!entry.isDeleted) || (this.state.showDeleted)) {
+                            return <ListItem
+                                key={id}
+                                title={revision.title || ''}
+                                caption={moment(revision.createdAt).local().format("DD/MM/YYYY - hh:mm") || ''}
+                                onClick={() => this.props.history.push(`${this.props.match.url}/${id}`)} />
+                        }
+                    }
                 }
                 else {
                     return null;
@@ -94,7 +108,7 @@ class EntryList extends React.Component {
             }}>
                 <TextInput name="searchTerm" placeholder="Search..." style={{ marginTop: "00px", marginBottom: "12px" }} onChange={this.onSearchChange.bind(this)}/>
                 
-                {this.state.isFilterOpen && <FilterOptions />}
+                {this.state.isFilterOpen && <FilterOptions onDeletedChange={this.onDeletedChange.bind(this)} onHiddenChange={this.onHiddenChange.bind(this)} showHidden={this.state.showHidden} showDeleted={this.state.showDeleted}/>}
 
                 <Button label="Filter Options" variant="clear" width="100%" height="48px" onClick={() => this.setState({ isFilterOpen: !this.state.isFilterOpen })} />
                 
