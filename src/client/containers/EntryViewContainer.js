@@ -184,6 +184,7 @@ class EntryViewContainer extends React.Component {
                     revisions={this.props.revisions}
                     entry={this.props.entry}
                     journalID={this.props.match.params.id}
+                    colour={this.props.journal.colour}
                     entryID={this.props.match.params.entry}
 
                 />
