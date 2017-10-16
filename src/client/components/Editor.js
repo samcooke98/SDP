@@ -63,11 +63,6 @@ export default class Editor extends React.Component {
                                 width: "216px",
                                 display: 'flex', justifyContent: 'right'
                             }}>
-                                {this.props.contentChanged &&
-                                    <FloatingButton contain shape='square' right="124px" height="60px" width="60px" onClick={this.props.save}>
-                                        <Save />
-                                    </FloatingButton>
-                                }
                                 {this.props.showDelete &&
                                     <FloatingButton contain shape='square' right="196px" height="60px" width="60px" onClick={this.props.delete}>
                                         <Delete />
@@ -76,6 +71,11 @@ export default class Editor extends React.Component {
                                 {this.props.showHide &&
                                     <FloatingButton contain shape='square' right="268px" height="60px" width="60px" onClick={this.props.hide}>
                                         {this.props.isHidden ? <Show /> : <Hide />}
+                                    </FloatingButton>
+                                }
+                                {this.props.contentChanged &&
+                                    <FloatingButton contain shape='square' right="124px" height="60px" width="60px" onClick={this.props.save}>
+                                        <Save />
                                     </FloatingButton>
                                 }
                             </div>
