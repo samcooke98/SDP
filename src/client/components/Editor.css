@@ -1,0 +1,27 @@
+.active {
+    background-color: "red";
+}
+
+.container {
+
+}
+
+.container > div {
+    flex-grow: 1;
+}
+
+.placeholder{ 
+    text-align: center;
+    color: #111111;
+
+}
+
+:global(.DraftEditor-root) {
+    /* background-color: yellow; */
+    border: 1px solid #f3f3f3;
+    padding: 8px;
+    min-height: 40vh;
+    display:flex;
+    flex-direction: column;
+    color: #333333;
+}

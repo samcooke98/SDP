@@ -16,7 +16,7 @@ import Show from "react-icons/lib/fa/eye";
 
 import { Prompt } from "react-router-dom"
 import equal from "deep-equal"
-
+import styles from './Editor.css'
 /**
  * Component for the DraftJS Editor
  */
@@ -24,9 +24,24 @@ import equal from "deep-equal"
 export default class Editor extends React.Component {
     constructor(props) {
         super(props);
-
+        this.state = {
+            editorFocus: false
+        }
     }
 
+    handleGeneralClick = (evt) => {
+        console.log(evt.target);
+        this.editor.focus();
+    }
+
+    isPlaceHolder = () => {
+        var contentState = this.props.editorState.getCurrentContent();
+        console.log(contentState.hasText())
+        if (!contentState.hasText()) {
+            return true
+        }
+        return false;
+    }
 
     render() {
         //UTC time 
@@ -34,10 +49,10 @@ export default class Editor extends React.Component {
         return (
             <div style={{ flexGrow: 1 }}>
                 <div style={{ display: 'flex', flexDirection: 'row', flexGrow: 1, height: "100%" }}>
-                    <div style={{ overflow: 'auto', flexGrow: 1 }}>
+                    <div style={{ overflow: 'auto', flexGrow: 1, flexGrow: 1, display: 'flex', flexDirection:'column' }} >
                         <div style={{
                             width: "600px", marginLeft: "auto", marginRight: "auto", paddingTop: '24px',
-                            fontFamily: "Raleway",
+                            fontFamily: "Raleway",display: 'flex', flexDirection:'column', flexGrow: 1
                         }}>
                             <Prompt when={this.props.contentChanged} message={location => (
                                 `You have unsaved changes! Pressing OK will discard your changes!`)}
@@ -53,11 +68,25 @@ export default class Editor extends React.Component {
 
                             />
                             <p> {date} </p>
-                            <DraftEditor
-                                editorState={this.props.editorState}
-                                onChange={this.props.onChange}
-                                handleKeyCommand={this.props.handleKeyCommand}
-                            />
+                            <div
+                                className={
+                                    `${(this.state.editorFocus ? styles["active"] : "")} ${styles.container} ${this.isPlaceHolder() ? styles['placeholder'] : ""}
+                                `}
+                                style={{flexGrow:1}}
+                                onClick={this.handleGeneralClick}
+                            >
+                                <DraftEditor
+                                    ref={(editor) => this.editor = editor}
+                                    onClick={(evt) => console.log(evt)}
+                                    editorState={this.props.editorState}
+                                    onChange={this.props.onChange}
+                                    handleKeyCommand={this.props.handleKeyCommand}
+                                    placeholder="Click here to start typing"
+                                    onFocus={(val) => this.setState({ editorFocus: true })}
+                                    onBlur={(val) => this.setState({ editorFocus: false })}
+                                //className={styles['active']}//this.state.editorFocus ? styles["active"] : ""}
+                                />
+                            </div>
                             <div style={{
                                 position: 'fixed', bottom: "42px", right: "138px",
                                 width: "216px",
@@ -84,7 +113,7 @@ export default class Editor extends React.Component {
 
                     <ControlsContainer
                         inlineStyles={this.props.editorState.getCurrentInlineStyle().toJS()}
-                        toggleControl={(str) => this.toggleControl(str)} 
+                        toggleControl={(str) => this.toggleControl(str)}
                         showHistory={this.props.showHistory} //TODO
                         onHistory={this.props.openHistory}
                     />
@@ -94,12 +123,12 @@ export default class Editor extends React.Component {
         )
     }
 
-    toggleControl = ( str ) => { 
+    toggleControl = (str) => {
         this.props.toggleControl(str)
     }
 }
 
-Editor.defaultProps = { 
+Editor.defaultProps = {
     showHide: true,
     showDelete: true,
 }
