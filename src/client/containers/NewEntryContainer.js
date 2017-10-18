@@ -37,8 +37,7 @@ class NewEntryContainer extends React.Component {
         //Get data if it isn't already there! (ie: User Refreshed)
         let journalID = this.props.match.params.id;
         this.props.getJournal(journalID);
-        this.props.initEditor('', EditorState.createWithContent(ContentState.createFromText(
-            "Click here to start typing!")));
+        this.props.initEditor('', EditorState.createEmpty());
     }
 
     componentWillReceiveProps(nextProps) {
