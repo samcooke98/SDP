@@ -21,7 +21,9 @@ import {
     Editor as DraftEditor, EditorState, RichUtils, ContentState, convertToRaw, convertFromRaw
 } from 'draft-js';
 import { initEditor, changeEditor, changeTitle } from '../redux/actions.js';
-import equal from "deep-equal"
+import equal from "deep-equal";
+
+// import Loading from '../components/L';
 
 
 class EntryViewContainer extends React.Component {
@@ -41,10 +43,13 @@ class EntryViewContainer extends React.Component {
 
             currentRevisionID: 0,
 
+            editorState: EditorState.createEmpty(),
+            title: ''
+
         }
     }
 
-    componentWillMount() {
+    componentDidMount() {
         //Get data if it isn't already there! (ie: User Refreshed)
         const journalID = this.props.match.params.id;
         if (this.props.journal && !this.props.journal[journalID])
@@ -68,35 +73,35 @@ class EntryViewContainer extends React.Component {
 
 
 
-    componentWillReceiveProps(nextProps) {
-        let revisionID = nextProps.match.params.revisions;
-        //Do we have a defined revision? If not, set revisionID to the latest
-        if (!nextProps.match.params.revisions && nextProps.entry)
-            revisionID = nextProps.entry.revisions.slice(-1)[0];
+    // componentWillReceiveProps(nextProps) {
+    //     let revisionID = nextProps.match.params.revisions;
+    //     //Do we have a defined revision? If not, set revisionID to the latest
+    //     if (!nextProps.match.params.revisions && nextProps.entry)
+    //         revisionID = nextProps.entry.revisions.slice(-1)[0];
 
-        //Has the Revision Changed? 
-        if (this.props.revisions[this.state.currentRevisionID] != nextProps.revisions[revisionID]
-            && nextProps.revisions[revisionID] != undefined
-        ) {
-            console.log("Revision has changed!");
-            console.log("Reinitialising Editor");
-            console.log(nextProps.revisions[revisionID]);
-            try {
-                this.props.initEditor(
-                    nextProps.revisions[revisionID].title,
-                    EditorState.createWithContent(convertFromRaw(JSON.parse(nextProps.revisions[revisionID].content)))
-                )
-            } catch (err) {
-                console.log(nextProps.revisions[revisionID].content);
-                console.log(err);
-            }
-            this.setState({ currentRevisionID: revisionID })
-        }
-        // console.log("Set editor");
-        // if (!this.props.editorState) {
+    //     //Has the Revision Changed? 
+    //     if (this.props.revisions[this.state.currentRevisionID] != nextProps.revisions[revisionID]
+    //         && nextProps.revisions[revisionID] != undefined
+    //     ) {
+    //         console.log("Revision has changed!");
+    //         console.log("Reinitialising Editor");
+    //         console.log(nextProps.revisions[revisionID]);
+    //         try {
+    //             this.props.initEditor(
+    //                 nextProps.revisions[revisionID].title,
+    //                 EditorState.createWithContent(convertFromRaw(JSON.parse(nextProps.revisions[revisionID].content)))
+    //             )
+    //         } catch (err) {
+    //             console.log(nextProps.revisions[revisionID].content);
+    //             console.log(err);
+    //         }
+    //         this.setState({ currentRevisionID: revisionID })
+    //     }
+    //     // console.log("Set editor");
+    //     // if (!this.props.editorState) {
 
-        // }
-    }
+    //     // }
+    // }
 
     hasChanged = () => {
         console.log('has Changed!');
@@ -133,7 +138,7 @@ class EntryViewContainer extends React.Component {
         console.log("here");
         console.log(evt.target.value);
         const value = evt.target.value;
-        this.props.changeTitle(value)
+        this.setState({title :value})
     }
 
     saveRevision = () => {
@@ -143,37 +148,46 @@ class EntryViewContainer extends React.Component {
         this.props.saveRevision(this.props.match.params.entry, title, JSON.stringify(content))
     }
 
-
+    componentDidUpdate(nextProps, nextState) { 
+        if(nextProps == this.props && nextState != this.state) { 
+            //State only update
+            console.log("State only updated");
+        } 
+    }
 
     render() {
+        if (!this.props.isLoaded) {
+            return <p> Loading </p> 
+        }
         console.log(this.props);
-        console.log(this.props.entry && (this.props.entry || {}).revisions.length > 1);
 
 
         return (<div style={{ flexGrow: 1, display: 'flex' }}>
-            <Editor
-                title={this.props.editorTitle}
-                titleChange={this.handleTitleChange}
-                date={(this.props.revisions[this.state.currentRevisionID] || {}).createdAt || ""}
 
-                editorState={this.props.editorState || EditorState.createEmpty()}
+            <Editor
+                //title={this.props.editorTitle}
+                title={this.state.title}
+                titleChange={this.handleTitleChange}
+                date={this.props.date}
+
+                //  editorState={this.props.editorState || EditorState.createEmpty()}
+                editorState={EditorState.createEmpty()}
+
                 onChange={this.handleEditorChange}
                 handleKeyCommand={this.handleKeyCommand}
-                contentChanged={this.hasChanged()}
+                //contentChanged={this.hasChanged()}
 
                 save={this.saveRevision}
                 delete={this.openDeleteDialog}
                 hide={this.openHideDialog}
 
-                isHidden={(this.props.entry || {}).isHidden}
-                isDeleted={(this.props.entry || {}).isDeleted}
-                showHistory={this.props.entry && (this.props.entry || {}).revisions.length > 1}
+                isHidden={this.props.isHidden}
+                isDeleted={this.props.isDeleted}
+                showHistory={this.props.hasRevisions}
                 openHistory={() => this.setState({ historyModal: !this.state.historyModal })}
 
                 toggleControl={(str) => { this.handleEditorChange(RichUtils.toggleInlineStyle(this.props.editorState, str)) }}
 
-            //TODO: History Button
-            //Toggle Rich Utils 
             //New Entry Page 
 
             />
@@ -254,18 +268,49 @@ class EntryViewContainer extends React.Component {
 
 
 const mapStateToProps = (state, ownProps) => {
-    console.log(ownProps);
-    return {
-        journal: state.data.journals[ownProps.match.params.id],
-        //If the ID is defined, return the appropriate entry. Else return an empty object
-        entry: state.data.entries[ownProps.match.params.entry],
-        // entry: state.ui.journalEntry[ownProps.match.params.id] ? state.data.entries[state.ui.journalEntry[ownProps.match.params.id]] : null,
-        revisions: state.data.entryRevisions,
+    const journalID = ownProps.match.params.id;
+    const entryID = ownProps.match.params.entry;
 
+    const journal = state.data.journals[journalID] || {};
+    const entry = state.data.entries[entryID] || {};
 
-        editorState: state.data.editor.content,
-        editorTitle: state.data.editor.title
+    const revisionID = ownProps.match.params.revision || (entry.revisions && entry.revisions[0]) || null;
+
+    const revision = state.data.entryRevisions[revisionID];
+
+    console.log(revision);
+    if (!journal || !entry || !revision) {
+        return {
+            isLoaded: false,
+            entryID,
+            journalID,
+            revisionID
+        }
+    } else {
+        return {
+            isLoaded: true,
+            title: revision.title,
+            date: revision.createdAt,
+            content: revision.content,
+
+            hasRevisions: (entry.revisions.length > 1),
+            isHidden: entry.isHidden,
+            isDeleted: entry.isDeleted
+
+        }
     }
+    // console.log(ownProps);
+    // return {
+    //     journal: state.data.journals[ownProps.match.params.id],
+    //     //If the ID is defined, return the appropriate entry. Else return an empty object
+    //     entry: state.data.entries[ownProps.match.params.entry],
+    //     // entry: state.ui.journalEntry[ownProps.match.params.id] ? state.data.entries[state.ui.journalEntry[ownProps.match.params.id]] : null,
+    //     revisions: state.data.entryRevisions,
+
+
+    //     editorState: state.data.editor.content,
+    //     editorTitle: state.data.editor.title
+    // }
 }
 
 const mapDispatchToProps = (dispatch) => {

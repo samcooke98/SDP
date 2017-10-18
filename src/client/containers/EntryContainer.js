@@ -63,9 +63,9 @@ const mapStateToProps = (state, ownProps) => {
     return {
         journalObjs: state.data.journals,
         entries: state.data.entries,
-        entry: state.ui.journalEntry[ownProps.match.params.id] ? state.data.entries[state.ui.journalEntry[ownProps.match.params.id]] : null,
+        // entry: state.ui.journalEntry[ownProps.match.params.id] ? state.data.entries[state.ui.journalEntry[ownProps.match.params.id]] : null,
 
-        selectedEntries: state.ui.journalEntry
+        // selectedEntries: state.ui.journalEntry
 
     }
 }

@@ -13,6 +13,8 @@ export default class FilterOptions extends React.Component {
                 <Checkbox title="SHOW MODIFIED" checked={this.props.showModified} onChange={this.props.onModifiedChange}/>
 
                 <br />
+                <input type='date' /> 
+                <input type='date' />
                 <DateSelector />
             </div>
         )
