@@ -24,6 +24,11 @@ export const routes = [
             },
             {
                 path: "/journal/:id",
+                exact: true,
+                component: Redirector,
+            },
+            {
+                path: "/journal/:id/:entry",
                 component: EntryContainer,
                 routes: [
                     {
@@ -38,15 +43,9 @@ export const routes = [
                     },
                     {
                         path: "/journal/:id/:entry/:revision",
-                        exact: true, 
+                        exact: true,
                         component: EntryViewContainer,
                     },
-                    {
-                        path: "/journal/:id",
-                        exact: true, strict: true,
-                        component: Redirector,
-                    },
-
                 ]
             },
             {

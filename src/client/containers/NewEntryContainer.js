@@ -55,8 +55,6 @@ class NewEntryContainer extends React.Component {
 
 
     handleTitleChange = (evt) => {
-        console.log("here");
-        console.log(evt.target.value);
         const value = evt.target.value;
         this.props.changeTitle(value)
     }
@@ -77,7 +75,7 @@ class NewEntryContainer extends React.Component {
     }
 
     save = () => {
-        console.log("Creating a new entry");
+        // console.log("Creating a new entry"/);
         const journalID = this.props.match.params.id;
 
         this.props.createEntry(this.props.editorTitle,

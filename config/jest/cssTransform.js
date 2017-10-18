@@ -4,7 +4,8 @@
 // http://facebook.github.io/jest/docs/tutorial-webpack.html
 
 module.exports = {
-  process() {
+  process( src, filename, config, options) {
+    console.log(src);
     return 'module.exports = {};';
   },
   getCacheKey() {

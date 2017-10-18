@@ -1,28 +1,25 @@
 import React from "react";
 import styles from "./web.css";
 
-export default class DateSelector extends React.Component {
-    render() {
+export default (props) => {
+    console.log(props);
         return (
-            <table className={styles.dateSelectorTable}>
-                <tr>
-                    <td>
-                        FROM
-                    </td>
-                    <td>
-                        <div className={styles.picker}>28/08/17</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        TO
-                    </td>
-                    <td>
-                        <div className={styles.picker}>28/08/17</div>
-                    </td>
-                </tr>
-            </table>
+            <div>
+                <span className={styles.container}>
+                    <label> FROM </label>
+                    <input className={styles.date} type="date" name='fromValue' value={props.fromValue} onChange={
+                        (evt) => props.onChange(evt, evt.target.name) 
+                    } min={"18-10-2017"}/>
+                </span>
+                <span className={styles.container}>
+                    <label> TO </label>
+                    <input 
+                        className={styles.date} type="date" name='toValue' value={props.toValue} onChange={
+                        (evt) => props.onChange(evt, evt.target.name) 
+                    }
+                        min={props.fromValue}
+                    />
+                </span>
+            </div>
         )
-
     }
-}

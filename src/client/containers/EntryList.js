@@ -13,6 +13,8 @@ import { withProtection } from "./Protector.js"
 
 import Colour from "color";
 import moment from "moment";
+import Spinner from "../components/Spinner/index.js";
+
 
 //TODO: Add active state
 //TODO: Add Filter 
@@ -25,73 +27,177 @@ class EntryList extends React.Component {
             isFilterOpen: false,
             searchTerm: "",
             showHidden: false,
-            showDeleted: false
+            showDeleted: false,
+            showModified: false,
+            entryList: [],
+            fromValue: '',
+            toValue: '',
         }
     }
 
-    componentWillMount() {
+
+    componentDidMount() {
         let journalID = this.props.match.params.id;
-        this.props.getJournal(journalID);
+        this.setState({ entryList: [<Spinner />] })
+        //Get the Journal and it's entries
+        this.props.getJournal(journalID).then(
+            (val) => {
+                const journal = val.payload.payload.entities.journals[val.payload.payload.result];
+                //Load entries (If we haven't already)
+                const promises = [];
+                for (var entryID of journal.entries) {
+                    if (!this.props.entries[entryID] && this.dispatched.indexOf(entryID) == -1) {
+                        promises.push(this.props.getEntry(entryID))
+                        //Store it in the dispatched index so that we don't flood requests
+                        this.dispatched.push(entryID);
+                    }
+                }
+                Promise.all(promises).then(this.updateList)
+            })
+    }
+
+    updateCheckbox = (name, elem) => {
+        this.setState({ [name]: elem.target.checked },
+            // () => {this.setState({entryList: this.generateList() }) )
+            () => {
+                const list = this.generateList();
+                console.log(list);
+                return this.setState({ entryList: list })
+            })
     }
 
     onSearchChange(elem) {
-        this.setState({searchTerm: elem.target.value});
-    }
-
-    onHiddenChange(elem) {
-        this.setState({showHidden: elem.target.checked});
-    }
-
-    onDeletedChange(elem) {
-        this.setState({showDeleted: elem.target.checked});
+        this.setState({ searchTerm: elem.target.value });
     }
 
     searchString = (entryTitle, searchTerm) => {
         return entryTitle.toLowerCase().includes(searchTerm.toLowerCase());
     }
 
-    generateList = () => {
-        console.log(this.props)
-        if (!this.journal.entries) {
-            return <div> LOADING  </div>
-        } else {
-            //Load entries (If we haven't already)
-            for (var entryID of this.journal.entries) {
-                if (!this.props.entries[entryID] && this.dispatched.indexOf(entryID) == -1) {
-                    this.props.getEntry(entryID)
-                    //Store it in the dispatched index so that we don't flood requests
-                    this.dispatched.push(entryID);
+    searchBody = (entryBody, searchTerm) => { 
+        console.log(entryBody);
+        console.log(typeof entryBody);
+        console.log('---');
+        console.log(searchTerm);
+
+        for( let block of JSON.parse(entryBody).blocks) { 
+            if(block.text) {
+                if(block.text.toLowerCase().includes(searchTerm.toLowerCase())){
+                    return true;
                 }
             }
-
-            let filteredEntries = this.journal.entries;
-
-            let result = (filteredEntries || []).map((id) => {
-                var entry = this.props.entries[id]; if (!entry) return null;
-                var revisionID = entry.revisions[entry.revisions.length - 1];
-                let revision = this.props.revisions[revisionID] || {}
-                if ((this.state.searchTerm == "") || this.searchString(revision.title,this.state.searchTerm)) {
-                    if ((!entry.isHidden) || (this.state.showHidden)) {
-                        if ((!entry.isDeleted) || (this.state.showDeleted)) {
-                            return <ListItem
-                                key={id}
-                                title={revision.title || ''}
-                                caption={moment(revision.createdAt).local().format("DD/MM/YYYY - hh:mm") || ''}
-                                onClick={() => this.props.history.push(`${this.props.match.url}/${id}`)} />
-                        }
-                    }
-                }
-                else {
-                    return null;
-                }
-            })
-            return result;
         }
+        return false;
+    }
+
+    generateList = () => {
+        console.log(this.props)
+        if (!this.journal || !this.journal.entries) return (<Spinner />);
+        let filteredEntries = this.journal.entries.map((id) => this.props.entries[id] || null);
+        filteredEntries = filteredEntries.filter((entry) => entry !== null)
+
+        if (filteredEntries.length == 0) {
+            return (
+                <p style={{ textAlign: 'center', flexGrow: 1 }}>
+                    You don't have any entries yet!
+                </p>
+            )
+        }
+
+        //Filter for Modified
+        filteredEntries = filteredEntries.filter(
+            (entry) => (entry.revisions.length == 1) || (this.state.showModified));
+
+        //Filter for Hidden
+        filteredEntries = filteredEntries.filter(
+            (entry) => (!entry.isHidden) || (this.state.showHidden));
+
+        //Filter for Deleted
+        filteredEntries = filteredEntries.filter(
+            (entry) => (!entry.isDeleted) || (this.state.showDeleted));
+
+        //Filtered for Search (title) 
+        filteredEntries = filteredEntries.filter(
+            (entry) => {
+                const revisionID = entry.revisions[entry.revisions.length - 1];
+                const revision = this.props.revisions[revisionID] || {};
+                return (this.state.searchTerm == "")
+                    || this.searchString(revision.title, this.state.searchTerm)
+                    || this.searchBody(revision.content, this.state.searchTerm)
+            }
+        )
+
+        //Filter date (from)
+        filteredEntries = filteredEntries.filter(
+            (entry) => moment(entry.createdAt).isSameOrAfter(moment(this.state.fromValue), 'day')
+                || this.state.fromValue == ''
+        )
+
+        //Filter date (to) 
+        filteredEntries = filteredEntries.filter(
+            (entry) => moment(entry.createdAt).isSameOrBefore(moment(this.state.toValue), 'day')
+                || this.state.toValue == ''
+        )
+
+        let result = filteredEntries.map(
+            (entry) => {
+                const revisionID = entry.revisions[entry.revisions.length - 1];
+                const revision = this.props.revisions[revisionID] || {};
+                return (<ListItem
+                    key={entry._id}
+                    active={this.props.activeEntryID == entry._id}
+                    title={revision.title || ''}
+                    caption={moment(revision.createdAt).local().format("DD/MM/YYYY - hh:mm a") || ''}
+                    onClick={() => this.props.history.push(`/journal/${this.props.match.params.id}/${entry._id}`)}
+                />)
+            }
+        )
+
+        const hasValues = result.filter((val) => val != null)
+        if (hasValues.length == 0 && this.state.searchTerm != "") {
+            return (
+                <p style={{ textAlign: 'center', flexGrow: 1 }}>
+                    No search results!
+                </p>
+            )
+        } else if (hasValues.length == 0) {
+            return (
+                <p style={{ textAlign: 'center' }}>
+                    No results found with your current filter settings!
+                    </p>
+            )
+        }
+
+        return result.reverse();
+
 
     }
 
     calcColour = (_bgColor) => Colour(_bgColor).light() ? "#333333" : "#F8F8F8";
 
+    componentDidUpdate(prevProps, prevState) {
+        console.log(" ---- CDU -----")
+        console.log(prevProps.journal);
+        console.log(prevProps.journal.entries);
+
+        console.log(this.props.journal);
+        console.log(this.props.journal.entries);
+
+    }
+
+    handleDateChange = (evt, name) => {
+        const value = evt.target.value;
+        console.log(value, name);
+        console.log(value);
+        if (name == "fromValue" && this.state.fromValue == '') {
+            console.log("setting both");
+            this.setState({ fromValue: value, toValue: value })
+        } else if (name == "fromValue" && value == "") {
+            this.setState({ fromValue: value, toValue: value })
+        } else {
+            this.setState({ [name]: value })
+        }
+    }
 
     render() {
         this.journal = this.props.journal;
@@ -106,20 +212,42 @@ class EntryList extends React.Component {
                 flexDirection: "column",
                 padding: "12px", boxShadow: "blur", boxShadow: "4px 0px 4px -2px rgba(0,0,0,.25)", zIndex: 1,
             }}>
-                <TextInput name="searchTerm" placeholder="Search..." style={{ marginTop: "00px", marginBottom: "12px" }} onChange={this.onSearchChange.bind(this)}/>
-                
-                {this.state.isFilterOpen && <FilterOptions onDeletedChange={this.onDeletedChange.bind(this)} onHiddenChange={this.onHiddenChange.bind(this)} showHidden={this.state.showHidden} showDeleted={this.state.showDeleted}/>}
+                <div style={{flexShrink: '0'}}>
+                    <TextInput name="searchTerm" placeholder="Search..." style={{ marginTop: "00px", marginBottom: "12px" }} onChange={this.onSearchChange.bind(this)} />
 
-                <Button label="Filter Options" variant="clear" width="100%" height="48px" onClick={() => this.setState({ isFilterOpen: !this.state.isFilterOpen })} />
-                
-                <div style={{ flexGrow: 1, marginTop: "12px" }}>
-                    {this.generateList()}
+                    {this.state.isFilterOpen
+                        // || true //remove before commiting
+                        &&
+                        <FilterOptions
+                            onDeletedChange={(elem) => this.updateCheckbox("showDeleted", elem)}
+                            onHiddenChange={(elem) => this.updateCheckbox("showHidden", elem)}
+                            onModifiedChange={(elem) => this.updateCheckbox("showModified", elem)}
+
+                            showModified={this.state.showModified}
+                            showHidden={this.state.showHidden}
+                            showDeleted={this.state.showDeleted}
+
+                            handleUpdate={this.handleDateChange}
+                            fromValue={this.state.fromValue}
+                            toValue={this.state.toValue}
+
+                        />
+                    }
+
+                    <Button label={this.state.isFilterOpen ? "CLOSE" : "Filter Options"} variant="clear" width="100%" height="48px" onClick={() => this.setState({ isFilterOpen: !this.state.isFilterOpen })} />
+                </div>
+                <div style={{ flexGrow: 1, marginTop: "12px", overflow: 'auto' }}>
+                    {
+                        // this.state.entryList
+                        this.generateList()
+                    }
                 </div>
 
                 <Button
-                    label="New Entry" style={{color: this.calcColour(this.journal.colour)}} colour={this.journal.colour} 
+                    label="New Entry" colour={this.journal.colour}
                     width="100%" height="70px"
-                    onClick={() => this.props.history.push(`${this.props.match.url}/new`)}
+                    onClick={() => this.props.history.push(`/journal/${this.props.match.params.id}/new`)}
+                    style={{ flexShrink: '0', color: this.calcColour(this.journal.colour) }}
                 />
             </div>
         )
@@ -133,11 +261,13 @@ EntryList.defaultProps = {
 
 const mapStateToProps = (state, ownProps) => {
     // let entries = state.data.journals[ownProps.match.params.id].
+    // console.log(ownProps.match.params);
     return {
         journalID: ownProps.match.params.id,
         journal: state.data.journals[ownProps.match.params.id] || {},
         entries: state.data.entries,
-        revisions: state.data.entryRevisions
+        revisions: state.data.entryRevisions,
+        activeEntryID: ownProps.match.params.entry,
     }
 }
 //Typically would implement actions

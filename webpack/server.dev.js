@@ -24,6 +24,7 @@ module.exports = {
 			/^react-toolbox/, //Regex actually works, strings didn't seem to be 
 			/^react-css-themr/,
 			/^react-icons/,
+			/^loaders.css/
 		]
 	}), "./src/server/app.js"],
 	node: {
@@ -72,6 +73,10 @@ module.exports = {
 		new webpack.NamedModulesPlugin(),
 		new webpack.NoEmitOnErrorsPlugin(),
 		// new CleanWebpackPlugin(path.resolve(__dirname, "build")),
+		new webpack.DefinePlugin({
+			'process.env.REACT_SPINKIT_NO_STYLES': true,
+		}),
+		
 
 	]
 };
