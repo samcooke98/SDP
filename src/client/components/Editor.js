@@ -1,6 +1,6 @@
 import React from "react";
 import {
-    Editor as DraftEditor,
+    Editor as OGDraftEditor,
     EditorState, RichUtils, ContentState, convertToRaw, convertFromRaw
 } from 'draft-js';
 import { is } from "immutable";
@@ -17,10 +17,19 @@ import Show from "react-icons/lib/fa/eye";
 import { Prompt } from "react-router-dom"
 import equal from "deep-equal"
 
-/**
- * Component for the DraftJS Editor
- */
+import DraftEditor from 'draft-js-plugins-editor';
 
+import createMarkdownShortcutsPlugin from 'draft-js-markdown-shortcuts-plugin';
+import createLinkifyPlugin from 'draft-js-linkify-plugin';
+import createImagePlugin from 'draft-js-image-plugin';
+import dragNDropPlugin from 'draft-js-drag-n-drop-plugin'
+
+const plugins = [
+    createLinkifyPlugin(),    
+    createMarkdownShortcutsPlugin(),
+    createImagePlugin(),
+    dragNDropPlugin(),
+]
 export default class Editor extends React.Component {
     constructor(props) {
         super(props);
@@ -57,6 +66,8 @@ export default class Editor extends React.Component {
                                 editorState={this.props.editorState}
                                 onChange={this.props.onChange}
                                 handleKeyCommand={this.props.handleKeyCommand}
+                                plugins={plugins}
+
                             />
                             <div style={{
                                 position: 'fixed', bottom: "42px", right: "138px",
