@@ -1,10 +1,24 @@
-.dateSelectorTable {
-	font-family: 'Raleway';
-	text-align: center;
-	width: 80%;
+.container { 
+	display: flex;
+
 }
 
-.picker {
-	border: 1px solid black;
-	border-radius: 5px;
+.container label { 
+	/* flex-grow: 1; */
+	width: 75px;
+}
+
+.container input { 
+	flex-grow: 3;	
+}
+
+.container input { 
+	width: 100px;
+	height: 20px;
+	font-size: 16px;
+	margin-bottom: 8px;
+	margin-left: 4px;
+
+	font-family: 'Roboto';
+	padding: 4px;
 }

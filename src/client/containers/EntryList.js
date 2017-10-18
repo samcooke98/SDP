@@ -13,6 +13,8 @@ import { withProtection } from "./Protector.js"
 
 import Colour from "color";
 import moment from "moment";
+import Spinner from "../components/Spinner/index.js";
+
 
 //TODO: Add active state
 //TODO: Add Filter 
@@ -27,16 +29,16 @@ class EntryList extends React.Component {
             showHidden: false,
             showDeleted: false,
             showModified: false,
-            entryList: []
+            entryList: [],
+            fromValue: '',
+            toValue: '',
         }
     }
 
-    componentWillMount() {
-    }
 
     componentDidMount() {
         let journalID = this.props.match.params.id;
-        this.setState({ entryList: [<p key={0}> Loading </p>] })
+        this.setState({ entryList: [<Spinner />] })
         //Get the Journal and it's entries
         this.props.getJournal(journalID).then(
             (val) => {
@@ -54,10 +56,6 @@ class EntryList extends React.Component {
             })
     }
 
-    updateList = () => {
-        // this.setState({ entryList: this.generateList() })
-    }
-
     updateCheckbox = (name, elem) => {
         this.setState({ [name]: elem.target.checked },
             // () => {this.setState({entryList: this.generateList() }) )
@@ -72,15 +70,16 @@ class EntryList extends React.Component {
         this.setState({ searchTerm: elem.target.value });
     }
 
-
     searchString = (entryTitle, searchTerm) => {
         return entryTitle.toLowerCase().includes(searchTerm.toLowerCase());
     }
 
     generateList = () => {
         console.log(this.props)
-        if (!this.journal || !this.journal.entries) return (<p> Loading </p>);
-        let filteredEntries = this.journal.entries;
+        if (!this.journal || !this.journal.entries) return (<Spinner />);
+        let filteredEntries = this.journal.entries.map((id) => this.props.entries[id]);
+        filteredEntries.filter( (entry) => (entry.revisions.length == 1) || (this.state.showModified) );
+        // filteredEntries.filter( (entry) )
 
         if (filteredEntries.length == 0) {
             return (
@@ -90,9 +89,10 @@ class EntryList extends React.Component {
             )
         }
 
+        // filteredEntries.filter( (id) => {return this.props.entries})
+
         let result = (filteredEntries || []).map((id) => {
             var entry = this.props.entries[id];
-
 
             if (!entry) return null;
             var revisionID = entry.revisions[entry.revisions.length - 1];
@@ -102,11 +102,14 @@ class EntryList extends React.Component {
                 if ((entry.revisions.length == 1) || (this.state.showModified)) {
                     if ((!entry.isHidden) || (this.state.showHidden)) {
                         if ((!entry.isDeleted) || (this.state.showDeleted)) {
-                            return <ListItem
-                                key={id}
-                                title={revision.title || ''}
-                                caption={moment(revision.createdAt).local().format("DD/MM/YYYY - hh:mm a") || ''}
-                                onClick={() => this.props.history.push(`${this.props.match.url}/${id}`)} />
+                            if ((this.state.fromValue == "") || (entry.createdAt < this.state.fromValue)) {
+                                return <ListItem
+                                    key={id}
+                                    title={revision.title || ''}
+                                    caption={moment(revision.createdAt).local().format("DD/MM/YYYY - hh:mm a") || ''}
+                                    onClick={() => this.props.history.push(`${this.props.match.url}/${id}`)} />
+                            }
+
                         }
                     }
                 }
@@ -151,6 +154,20 @@ class EntryList extends React.Component {
 
     }
 
+    handleDateChange = (evt, name) => {
+        const value = evt.target.value;
+        console.log(value, name);
+        console.log(value);
+        if (name == "fromValue" && this.state.fromValue == '') {
+            console.log("setting both");
+            this.setState({ fromValue: value, toValue: value })
+        } else if (name == "fromValue" && value == "") {
+            this.setState({ fromValue: value, toValue: value })
+        } else {
+            this.setState({ [name]: value })
+        }
+    }
+
     render() {
         this.journal = this.props.journal;
         // this.entries = this.journal.entries;
@@ -166,14 +183,22 @@ class EntryList extends React.Component {
             }}>
                 <TextInput name="searchTerm" placeholder="Search..." style={{ marginTop: "00px", marginBottom: "12px" }} onChange={this.onSearchChange.bind(this)} />
 
-                {this.state.isFilterOpen &&
+                {this.state.isFilterOpen
+                    || true //remove before commiting
+                    &&
                     <FilterOptions
                         onDeletedChange={(elem) => this.updateCheckbox("showDeleted", elem)}
                         onHiddenChange={(elem) => this.updateCheckbox("showHidden", elem)}
                         onModifiedChange={(elem) => this.updateCheckbox("showModified", elem)}
+
                         showModified={this.state.showModified}
                         showHidden={this.state.showHidden}
                         showDeleted={this.state.showDeleted}
+
+                        handleUpdate={this.handleDateChange}
+                        fromValue={this.state.fromValue}
+                        toValue={this.state.toValue}
+
                     />
                 }
 
