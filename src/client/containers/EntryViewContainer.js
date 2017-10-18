@@ -23,6 +23,8 @@ import {
 import { initEditor, changeEditor, changeTitle } from '../redux/actions.js';
 import equal from "deep-equal";
 
+import Spinner from "../components/Spinner";
+
 // import Loading from '../components/L';
 
 
@@ -68,66 +70,31 @@ class EntryViewContainer extends React.Component {
         if (revisionID != null)
             this.setState({ currentRevisionID: revisionID })
 
-
     }
-
-
-
-    // componentWillReceiveProps(nextProps) {
-    //     let revisionID = nextProps.match.params.revisions;
-    //     //Do we have a defined revision? If not, set revisionID to the latest
-    //     if (!nextProps.match.params.revisions && nextProps.entry)
-    //         revisionID = nextProps.entry.revisions.slice(-1)[0];
-
-    //     //Has the Revision Changed? 
-    //     if (this.props.revisions[this.state.currentRevisionID] != nextProps.revisions[revisionID]
-    //         && nextProps.revisions[revisionID] != undefined
-    //     ) {
-    //         console.log("Revision has changed!");
-    //         console.log("Reinitialising Editor");
-    //         console.log(nextProps.revisions[revisionID]);
-    //         try {
-    //             this.props.initEditor(
-    //                 nextProps.revisions[revisionID].title,
-    //                 EditorState.createWithContent(convertFromRaw(JSON.parse(nextProps.revisions[revisionID].content)))
-    //             )
-    //         } catch (err) {
-    //             console.log(nextProps.revisions[revisionID].content);
-    //             console.log(err);
-    //         }
-    //         this.setState({ currentRevisionID: revisionID })
-    //     }
-    //     // console.log("Set editor");
-    //     // if (!this.props.editorState) {
-
-    //     // }
-    // }
 
     hasChanged = () => {
         console.log('has Changed!');
-        const revisionObj = (this.props.revisions[this.state.currentRevisionID]);
-        if (revisionObj == undefined) return false;
+        //Check with the props to see if it matches
 
-        if (revisionObj.title != this.props.editorTitle) {
+        const initialContent = JSON.parse(this.props.content);
+        const currentContent = convertToRaw(this.state.editorState.getCurrentContent())
+        if (!equal(currentContent, initialContent)
+            || this.props.title !== this.state.title
+        ) {
+            console.log(' The State has changed ');
             return true;
         }
-
-        const initialContent = JSON.parse(revisionObj.content);
-        const currentContent = convertToRaw(this.props.editorState.getCurrentContent())
-        if (!equal(currentContent, initialContent))
-            return true;
-
         return false;
     }
 
     handleEditorChange = (newEditorState) => {
-        this.props.changeEditor(newEditorState)
+        this.setState({ editorState: newEditorState })
     }
 
     handleKeyCommand = (command, editorState) => {
         const newState = RichUtils.handleKeyCommand(editorState, command);
         if (newState) {
-            this.props.changeEditor(newState);
+            this.handleEditorChange(newState);
             return 'handled';
         } else {
             return 'not-handled';
@@ -138,44 +105,57 @@ class EntryViewContainer extends React.Component {
         console.log("here");
         console.log(evt.target.value);
         const value = evt.target.value;
-        this.setState({title :value})
+        this.setState({ title: value })
     }
 
     saveRevision = () => {
         console.log("Saving");
-        const title = this.props.editorTitle;
-        const content = convertToRaw(this.props.editorState.getCurrentContent())
-        this.props.saveRevision(this.props.match.params.entry, title, JSON.stringify(content))
+        const title = this.state.title;
+        const content = convertToRaw(this.state.editorState.getCurrentContent())
+        this.props.saveRevision(this.props.match.params.entry, title, JSON.stringify(content)).then( 
+            (val) => { 
+                console.log("Handling Errors");
+                console.log(val);
+                if(val.payload.success) { 
+                    // this.props.history.push(`${this.props.match.params.entry}/`)
+                } else { 
+
+                }
+            }
+        )
     }
 
-    componentDidUpdate(nextProps, nextState) { 
-        if(nextProps == this.props && nextState != this.state) { 
+    componentDidUpdate(nextProps, nextState) {
+        if (nextProps != this.props && this.props.isLoaded) {
             //State only update
-            console.log("State only updated");
-        } 
+            console.log("Props have changed - Updating State");
+            this.setState({
+                title: this.props.title,
+                editorState: EditorState.createWithContent(
+                    convertFromRaw(JSON.parse(this.props.content))
+                )
+            })
+        }
     }
 
-    render() {
+    render() { //Dialog for Revision history + loader when submitting 
         if (!this.props.isLoaded) {
-            return <p> Loading </p> 
+            return <Spinner/>
         }
-        console.log(this.props);
-
+        console.log("---- Rendering Entry View  ----");
 
         return (<div style={{ flexGrow: 1, display: 'flex' }}>
 
             <Editor
-                //title={this.props.editorTitle}
                 title={this.state.title}
                 titleChange={this.handleTitleChange}
                 date={this.props.date}
 
-                //  editorState={this.props.editorState || EditorState.createEmpty()}
-                editorState={EditorState.createEmpty()}
+                editorState={this.state.editorState}
 
                 onChange={this.handleEditorChange}
                 handleKeyCommand={this.handleKeyCommand}
-                //contentChanged={this.hasChanged()}
+                contentChanged={this.hasChanged()}
 
                 save={this.saveRevision}
                 delete={this.openDeleteDialog}
@@ -197,14 +177,14 @@ class EntryViewContainer extends React.Component {
                     onClose={() => this.setState({ historyModal: false })}
                     revisions={this.props.revisions}
                     entry={this.props.entry}
-                    journalID={this.props.match.params.id}
-                    colour={this.props.journal.colour}
-                    entryID={this.props.match.params.entry}
+                    journalID={this.props.journalID}
+                    colour={this.props.colour}
+                    entryID={this.props.entryID}
 
                 />
             }
             {
-                this.state.dialog &&
+                this.state.dialog && 
                 <Dialog
                     onClose={() => this.setState({ dialog: false })}
                     text={this.state.dialogMessage}
@@ -212,13 +192,11 @@ class EntryViewContainer extends React.Component {
                     actions={this.state.dialogActions}
                 />
             }
-
         </div>)
     }
 
     openDeleteDialog = () => {
-        const entry = this.props.entry;
-        const deleted = this.props.entry.isDeleted;
+        const deleted = this.props.isDeleted;
         //open dialog 
         this.setState({
             dialog: true,
@@ -231,7 +209,9 @@ class EntryViewContainer extends React.Component {
                 },
                 {
                     label: deleted ? "Restore" : "Delete", onClick: (evt) => {
-                        this.props.modifyEntry(entry._id, !entry.isDeleted, entry.isHidden);
+                        this.props.modifyEntry(
+                            this.props.entryID, !this.props.isDeleted, this.props.isHidden
+                        );
                         this.setState({ dialog: false });
                     }
                 },
@@ -241,8 +221,7 @@ class EntryViewContainer extends React.Component {
     }
 
     openHideDialog = () => {
-        const entry = this.props.entry;
-        const hidden = this.props.entry.isHidden;
+        const hidden = this.props.isHidden;
         //open dialog 
         this.setState({
             dialog: true,
@@ -255,7 +234,7 @@ class EntryViewContainer extends React.Component {
                 },
                 {
                     label: hidden ? "Unhide" : "Hide", onClick: (evt) => {
-                        this.props.modifyEntry(entry._id, entry.isDeleted, !entry.isHidden);
+                        this.props.modifyEntry(this.props.entryID, this.props.isDeleted, !this.props.isHidden);
                         this.setState({ dialog: false });
                     }
                 },
@@ -274,7 +253,9 @@ const mapStateToProps = (state, ownProps) => {
     const journal = state.data.journals[journalID] || {};
     const entry = state.data.entries[entryID] || {};
 
-    const revisionID = ownProps.match.params.revision || (entry.revisions && entry.revisions[0]) || null;
+    const revisionID = ownProps.match.params.revision 
+        || (entry.revisions && entry.revisions[entry.revisions.length - 1]) 
+        || null;
 
     const revision = state.data.entryRevisions[revisionID];
 
@@ -295,7 +276,16 @@ const mapStateToProps = (state, ownProps) => {
 
             hasRevisions: (entry.revisions.length > 1),
             isHidden: entry.isHidden,
-            isDeleted: entry.isDeleted
+            isDeleted: entry.isDeleted,
+            colour: journal.colour,
+            revisions: entry.revisions.map( id => state.data.entryRevisions[id]),
+
+            isDeleted: entry.isDeleted,
+            isHidden: entry.isHidden,
+
+            journalID,
+            entryID,
+            revisionID
 
         }
     }
