@@ -79,7 +79,7 @@ class EntryList extends React.Component {
 
     generateList = () => {
         console.log(this.props)
-
+        if (!this.journal || !this.journal.entries) return (<p> Loading </p>);
         let filteredEntries = this.journal.entries;
 
         if (filteredEntries.length == 0) {
@@ -150,7 +150,7 @@ class EntryList extends React.Component {
         console.log(this.props.journal.entries);
 
     }
- 
+
     render() {
         this.journal = this.props.journal;
         // this.entries = this.journal.entries;
@@ -179,7 +179,7 @@ class EntryList extends React.Component {
 
                 <Button label="Filter Options" variant="clear" width="100%" height="48px" onClick={() => this.setState({ isFilterOpen: !this.state.isFilterOpen })} />
 
-                <div style={{ flexGrow: 1, marginTop: "12px" }}>
+                <div style={{ flexGrow: 1, marginTop: "12px", overflow: 'auto' }}>
                     {
                         // this.state.entryList
                         this.generateList()
