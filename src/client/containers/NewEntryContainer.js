@@ -78,6 +78,9 @@ class NewEntryContainer extends React.Component {
         // console.log("Creating a new entry"/);
         const journalID = this.props.match.params.id;
 
+        console.log(this.editor.getTitle());
+        console.log(this.editor.getContent());
+
         this.props.createEntry(this.props.editorTitle,
             JSON.stringify(convertToRaw(this.props.editorState.getCurrentContent())),
             journalID);
@@ -104,7 +107,7 @@ class NewEntryContainer extends React.Component {
                 title={this.props.editorTitle}
                 titleChange={this.handleTitleChange}
                 date={moment.utc()}
-
+                ref={(editor) => this.editor = editor}
                 editorState={this.props.editorState || EditorState.createEmpty()}
                 onChange={this.handleEditorChange}
                 handleKeyCommand={this.handleKeyCommand}

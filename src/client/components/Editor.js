@@ -1,6 +1,5 @@
 import React from "react";
 import {
-    Editor as OGDraftEditor,
     EditorState, RichUtils, ContentState, convertToRaw, convertFromRaw
 } from 'draft-js';
 import { is } from "immutable";
@@ -23,9 +22,15 @@ import createMarkdownShortcutsPlugin from 'draft-js-markdown-shortcuts-plugin';
 import createLinkifyPlugin from 'draft-js-linkify-plugin';
 import createImagePlugin from 'draft-js-image-plugin';
 import dragNDropPlugin from 'draft-js-drag-n-drop-plugin'
+// import 'draft-js-linkify-plugin/lib/plugin.css';
 
+// import 'draft-js-image-plugin/lib/plugin.css';
+``
+
+const linkifyPlugin = createLinkifyPlugin();
+console.log(linkifyPlugin);
 const plugins = [
-    createLinkifyPlugin(),    
+    // linkifyPlugin,
     createMarkdownShortcutsPlugin(),
     createImagePlugin(),
     dragNDropPlugin(),
@@ -34,8 +39,23 @@ export default class Editor extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            editorState: EditorState.createEmpty()
+        };
+
     }
 
+    onChange = (editorState) => {
+        this.setState({
+            editorState,
+        });
+    };
+
+    componentDidUpdate(prevProps,prevState){
+        if(prevProps != this.props){
+            console.log("Props Changed");
+        }
+    }
 
     render() {
         //UTC time 
@@ -63,9 +83,9 @@ export default class Editor extends React.Component {
                             />
                             <p> {date} </p>
                             <DraftEditor
-                                editorState={this.props.editorState}
-                                onChange={this.props.onChange}
-                                handleKeyCommand={this.props.handleKeyCommand}
+                                editorState={this.state.editorState}
+                                onChange={this.onChange}
+                                handleKeyCommand={this.handleKeyCommand}
                                 plugins={plugins}
 
                             />
@@ -95,7 +115,7 @@ export default class Editor extends React.Component {
 
                     <ControlsContainer
                         inlineStyles={this.props.editorState.getCurrentInlineStyle().toJS()}
-                        toggleControl={(str) => this.toggleControl(str)} 
+                        toggleControl={(str) => this.toggleControl(str)}
                         showHistory={this.props.showHistory} //TODO
                         onHistory={this.props.openHistory}
                     />
@@ -105,12 +125,12 @@ export default class Editor extends React.Component {
         )
     }
 
-    toggleControl = ( str ) => { 
+    toggleControl = (str) => {
         this.props.toggleControl(str)
     }
 }
 
-Editor.defaultProps = { 
+Editor.defaultProps = {
     showHide: true,
     showDelete: true,
 }
