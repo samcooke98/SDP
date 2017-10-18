@@ -10,6 +10,8 @@ export default class FilterOptions extends React.Component {
             }}>
                 <Checkbox title="SHOW HIDDEN" checked={this.props.showHidden} onChange={this.props.onHiddenChange}/>
                 <Checkbox title="SHOW DELETED" checked={this.props.showDeleted} onChange={this.props.onDeletedChange}/>
+                <Checkbox title="SHOW MODIFIED" checked={this.props.showModified} onChange={this.props.onModifiedChange}/>
+
                 <br />
                 <DateSelector />
             </div>
