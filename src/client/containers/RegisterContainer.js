@@ -92,7 +92,7 @@ class RegisterContainer extends React.Component {
             <Modal label='REGISTRATION' onClose={() => this.props.history.push('/')}>
                 {this.props.loggedIn && <Redirect to="/home" />}
                 <form onSubmit={this.submit}>
-                    {this.state.msg && <p>{this.state.msg}</p>}
+                    {this.state.msg && <h3 style={{textAlign: 'center', color: '#ff0033'}}>{this.state.msg}</h3 >}
                     <TextInput type='text' label="Name" name='name' value={this.state.name.value} onChange={this.handleChange} error={this.state.name.error} />
 
                     <TextInput type='text' label="Email" name='email' value={this.state.email.value} onChange={this.handleChange} error={this.state.email.error} />

@@ -18,17 +18,17 @@ export default class RevisionsMenu extends Component {
                 onClose={this.props.onClose}
                 wider
             >
-                {this.props.entry.revisions.map((revisionID) => {
+                {this.props.revisions.map((revision) => {
                     const journalID = this.props.journalID;
                     const entryID = this.props.entryID;
                     return (
                         <EntryPreview
-                            key={revisionID}
-                            date={moment(this.props.revisions[revisionID].createdAt).local().format("DD/MM/YYYY - hh:mm")}
-                            title={this.props.revisions[revisionID].title}
+                            key={revision._id}
+                            date={moment(revision.createdAt).local().format("DD/MM/YYYY - hh:mm")}
+                            title={revision.title}
                             preview={
-                                stateToHTML(convertFromRaw(JSON.parse(this.props.revisions[revisionID].content)))}
-                            to={`/journal/${journalID}/${entryID}/${revisionID}`}
+                                stateToHTML(convertFromRaw(JSON.parse(revision.content)))}
+                            to={`/journal/${journalID}/${entryID}/${revision._id}`}
                             colour={this.props.colour}
                             onClick={this.props.onClose}
                         />
