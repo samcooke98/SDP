@@ -74,54 +74,86 @@ class EntryList extends React.Component {
         return entryTitle.toLowerCase().includes(searchTerm.toLowerCase());
     }
 
+    searchBody = (entryBody, searchTerm) => { 
+        console.log(entryBody);
+        console.log(typeof entryBody);
+        console.log('---');
+        console.log(searchTerm);
+
+        for( let block of JSON.parse(entryBody).blocks) { 
+            if(block.text) {
+                if(block.text.toLowerCase().includes(searchTerm.toLowerCase())){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     generateList = () => {
         console.log(this.props)
         if (!this.journal || !this.journal.entries) return (<Spinner />);
-        let filteredEntries = this.journal.entries.map((id) => this.props.entries[id]);
-        filteredEntries.filter( (entry) => (entry.revisions.length == 1) || (this.state.showModified) );
-        // filteredEntries.filter( (entry) )
+        let filteredEntries = this.journal.entries.map((id) => this.props.entries[id] || null);
+        filteredEntries = filteredEntries.filter((entry) => entry !== null)
 
         if (filteredEntries.length == 0) {
             return (
                 <p style={{ textAlign: 'center', flexGrow: 1 }}>
                     You don't have any entries yet!
-                    </p>
+                </p>
             )
         }
 
-        // filteredEntries.filter( (id) => {return this.props.entries})
+        //Filter for Modified
+        filteredEntries = filteredEntries.filter(
+            (entry) => (entry.revisions.length == 1) || (this.state.showModified));
 
-        let result = (filteredEntries || []).map((id) => {
-            var entry = this.props.entries[id];
+        //Filter for Hidden
+        filteredEntries = filteredEntries.filter(
+            (entry) => (!entry.isHidden) || (this.state.showHidden));
 
-            if (!entry) return null;
-            var revisionID = entry.revisions[entry.revisions.length - 1];
-            let revision = this.props.revisions[revisionID] || {};
+        //Filter for Deleted
+        filteredEntries = filteredEntries.filter(
+            (entry) => (!entry.isDeleted) || (this.state.showDeleted));
 
-            if ((this.state.searchTerm == "") || this.searchString(revision.title, this.state.searchTerm)) {
-                if ((entry.revisions.length == 1) || (this.state.showModified)) {
-                    if ((!entry.isHidden) || (this.state.showHidden)) {
-                        if ((!entry.isDeleted) || (this.state.showDeleted)) {
-                            if ((this.state.fromValue == "") || (entry.createdAt < this.state.fromValue)) {
-                                return <ListItem
-                                    key={id}
-                                    title={revision.title || ''}
-                                    caption={moment(revision.createdAt).local().format("DD/MM/YYYY - hh:mm a") || ''}
-                                    onClick={() => this.props.history.push(`${this.props.match.url}/${id}`)} />
-                            }
-
-                        }
-                    }
-                }
-            } else {
-                return null;
+        //Filtered for Search (title) 
+        filteredEntries = filteredEntries.filter(
+            (entry) => {
+                const revisionID = entry.revisions[entry.revisions.length - 1];
+                const revision = this.props.revisions[revisionID] || {};
+                return (this.state.searchTerm == "")
+                    || this.searchString(revision.title, this.state.searchTerm)
+                    || this.searchBody(revision.content, this.state.searchTerm)
             }
-        })
-        // debugger;
-        console.log("here");
+        )
+
+        //Filter date (from)
+        filteredEntries = filteredEntries.filter(
+            (entry) => moment(entry.createdAt).isSameOrAfter(moment(this.state.fromValue), 'day')
+                || this.state.fromValue == ''
+        )
+
+        //Filter date (to) 
+        filteredEntries = filteredEntries.filter(
+            (entry) => moment(entry.createdAt).isSameOrBefore(moment(this.state.toValue), 'day')
+                || this.state.toValue == ''
+        )
+
+        let result = filteredEntries.map(
+            (entry) => {
+                const revisionID = entry.revisions[entry.revisions.length - 1];
+                const revision = this.props.revisions[revisionID] || {};
+                return (<ListItem
+                    key={entry._id}
+                    active={this.props.activeEntryID == entry._id}
+                    title={revision.title || ''}
+                    caption={moment(revision.createdAt).local().format("DD/MM/YYYY - hh:mm a") || ''}
+                    onClick={() => this.props.history.push(`/journal/${this.props.match.params.id}/${entry._id}`)}
+                />)
+            }
+        )
+
         const hasValues = result.filter((val) => val != null)
-        console.log(result);
-        console.log(hasValues)
         if (hasValues.length == 0 && this.state.searchTerm != "") {
             return (
                 <p style={{ textAlign: 'center', flexGrow: 1 }}>
@@ -129,7 +161,6 @@ class EntryList extends React.Component {
                 </p>
             )
         } else if (hasValues.length == 0) {
-            console.log('115')
             return (
                 <p style={{ textAlign: 'center' }}>
                     No results found with your current filter settings!
@@ -181,29 +212,30 @@ class EntryList extends React.Component {
                 flexDirection: "column",
                 padding: "12px", boxShadow: "blur", boxShadow: "4px 0px 4px -2px rgba(0,0,0,.25)", zIndex: 1,
             }}>
-                <TextInput name="searchTerm" placeholder="Search..." style={{ marginTop: "00px", marginBottom: "12px" }} onChange={this.onSearchChange.bind(this)} />
+                <div style={{flexShrink: '0'}}>
+                    <TextInput name="searchTerm" placeholder="Search..." style={{ marginTop: "00px", marginBottom: "12px" }} onChange={this.onSearchChange.bind(this)} />
 
-                {this.state.isFilterOpen
-                    || true //remove before commiting
-                    &&
-                    <FilterOptions
-                        onDeletedChange={(elem) => this.updateCheckbox("showDeleted", elem)}
-                        onHiddenChange={(elem) => this.updateCheckbox("showHidden", elem)}
-                        onModifiedChange={(elem) => this.updateCheckbox("showModified", elem)}
+                    {this.state.isFilterOpen
+                        // || true //remove before commiting
+                        &&
+                        <FilterOptions
+                            onDeletedChange={(elem) => this.updateCheckbox("showDeleted", elem)}
+                            onHiddenChange={(elem) => this.updateCheckbox("showHidden", elem)}
+                            onModifiedChange={(elem) => this.updateCheckbox("showModified", elem)}
 
-                        showModified={this.state.showModified}
-                        showHidden={this.state.showHidden}
-                        showDeleted={this.state.showDeleted}
+                            showModified={this.state.showModified}
+                            showHidden={this.state.showHidden}
+                            showDeleted={this.state.showDeleted}
 
-                        handleUpdate={this.handleDateChange}
-                        fromValue={this.state.fromValue}
-                        toValue={this.state.toValue}
+                            handleUpdate={this.handleDateChange}
+                            fromValue={this.state.fromValue}
+                            toValue={this.state.toValue}
 
-                    />
-                }
+                        />
+                    }
 
-                <Button label="Filter Options" variant="clear" width="100%" height="48px" onClick={() => this.setState({ isFilterOpen: !this.state.isFilterOpen })} />
-
+                    <Button label={this.state.isFilterOpen ? "CLOSE" : "Filter Options"} variant="clear" width="100%" height="48px" onClick={() => this.setState({ isFilterOpen: !this.state.isFilterOpen })} />
+                </div>
                 <div style={{ flexGrow: 1, marginTop: "12px", overflow: 'auto' }}>
                     {
                         // this.state.entryList
@@ -212,9 +244,10 @@ class EntryList extends React.Component {
                 </div>
 
                 <Button
-                    label="New Entry" style={{ color: this.calcColour(this.journal.colour) }} colour={this.journal.colour}
+                    label="New Entry" colour={this.journal.colour}
                     width="100%" height="70px"
-                    onClick={() => this.props.history.push(`${this.props.match.url}/new`)}
+                    onClick={() => this.props.history.push(`/journal/${this.props.match.params.id}/new`)}
+                    style={{ flexShrink: '0', color: this.calcColour(this.journal.colour) }}
                 />
             </div>
         )
@@ -228,11 +261,13 @@ EntryList.defaultProps = {
 
 const mapStateToProps = (state, ownProps) => {
     // let entries = state.data.journals[ownProps.match.params.id].
+    // console.log(ownProps.match.params);
     return {
         journalID: ownProps.match.params.id,
         journal: state.data.journals[ownProps.match.params.id] || {},
         entries: state.data.entries,
-        revisions: state.data.entryRevisions
+        revisions: state.data.entryRevisions,
+        activeEntryID: ownProps.match.params.entry,
     }
 }
 //Typically would implement actions

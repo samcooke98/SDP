@@ -9,7 +9,7 @@ export default (props) => {
                     <label> FROM </label>
                     <input className={styles.date} type="date" name='fromValue' value={props.fromValue} onChange={
                         (evt) => props.onChange(evt, evt.target.name) 
-                    }/>
+                    } min={"18-10-2017"}/>
                 </span>
                 <span className={styles.container}>
                     <label> TO </label>
