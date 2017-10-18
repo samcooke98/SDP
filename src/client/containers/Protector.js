@@ -22,7 +22,6 @@ class Protector extends React.Component {
 
 
 const mapStateToProps = (state) => {
-    console.log(state)
     return {
         loggedIn: state.misc.loggedIn
     }
@@ -43,8 +42,6 @@ export function withProtection(WrappedComponent) {
     return withRouter(connect(mapStateToProps, mapDispatchToProps)
         (class extends React.Component {
             render() {
-                console.log("HERE");
-                console.log(this.props.location);
                 if (!this.props.loggedIn)
                     return <Redirect to={{
                         pathname: "/login",

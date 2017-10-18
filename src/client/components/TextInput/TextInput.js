@@ -8,14 +8,17 @@ export default class TextInput extends React.Component {
             <div className={styles.inputContainer} style={this.props.style}>
                 <p> {this.props.label} </p>
                 <input
-                    placeholder={this.props.placeholder} 
-                    type={this.props.type} 
-                    onChange={this.props.onChange} 
-                    name={this.props.name} 
-                    value={this.props.value} 
-                    className={styles[this.props.variant] + " " + (this.props.error && styles.error)} 
+                    placeholder={this.props.placeholder}
+                    type={this.props.type}
+                    onChange={this.props.onChange}
+                    name={this.props.name}
+                    value={this.props.value}
+                    className={styles[this.props.variant] + " " + (this.props.error && styles.error)}
                     autoComplete={this.props.autocomplete || "off"}
                 />
+                {this.props.error && this.props.error !== true &&
+                     <p className={styles.errorP}> {this.props.error} </p>
+                }
                 {this.props.right}
             </div>
         )

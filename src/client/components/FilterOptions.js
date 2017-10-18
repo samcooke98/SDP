@@ -8,8 +8,8 @@ export default class FilterOptions extends React.Component {
             <div style={{
                 marginBottom: "20px"
             }}>
-                <Checkbox title="SHOW HIDDEN"/>
-                <Checkbox title="SHOW DELETED"/>
+                <Checkbox title="SHOW HIDDEN" checked={this.props.showHidden} onChange={this.props.onHiddenChange}/>
+                <Checkbox title="SHOW DELETED" checked={this.props.showDeleted} onChange={this.props.onDeletedChange}/>
                 <br />
                 <DateSelector />
             </div>

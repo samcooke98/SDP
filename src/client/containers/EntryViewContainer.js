@@ -81,10 +81,15 @@ class EntryViewContainer extends React.Component {
             console.log("Revision has changed!");
             console.log("Reinitialising Editor");
             console.log(nextProps.revisions[revisionID]);
-            this.props.initEditor(
-                nextProps.revisions[revisionID].title,
-                EditorState.createWithContent(convertFromRaw(JSON.parse(nextProps.revisions[revisionID].content)))
-            )
+            try {
+                this.props.initEditor(
+                    nextProps.revisions[revisionID].title,
+                    EditorState.createWithContent(convertFromRaw(JSON.parse(nextProps.revisions[revisionID].content)))
+                )
+            } catch (err) {
+                console.log(nextProps.revisions[revisionID].content);
+                console.log(err);
+            }
             this.setState({ currentRevisionID: revisionID })
         }
         // console.log("Set editor");
@@ -143,7 +148,7 @@ class EntryViewContainer extends React.Component {
     render() {
         console.log(this.props);
         console.log(this.props.entry && (this.props.entry || {}).revisions.length > 1);
-        
+
 
         return (<div style={{ flexGrow: 1, display: 'flex' }}>
             <Editor
@@ -162,10 +167,10 @@ class EntryViewContainer extends React.Component {
 
                 isHidden={(this.props.entry || {}).isHidden}
                 isDeleted={(this.props.entry || {}).isDeleted}
-                showHistory={this.props.entry && (this.props.entry || {}).revisions.length > 1}  
+                showHistory={this.props.entry && (this.props.entry || {}).revisions.length > 1}
                 openHistory={() => this.setState({ historyModal: !this.state.historyModal })}
 
-                toggleControl={(str) => {this.handleEditorChange( RichUtils.toggleInlineStyle(this.props.editorState, str))}}
+                toggleControl={(str) => { this.handleEditorChange(RichUtils.toggleInlineStyle(this.props.editorState, str)) }}
 
             //TODO: History Button
             //Toggle Rich Utils 
@@ -179,6 +184,7 @@ class EntryViewContainer extends React.Component {
                     revisions={this.props.revisions}
                     entry={this.props.entry}
                     journalID={this.props.match.params.id}
+                    colour={this.props.journal.colour}
                     entryID={this.props.match.params.entry}
 
                 />
@@ -195,30 +201,6 @@ class EntryViewContainer extends React.Component {
 
         </div>)
     }
-    // return (
-    //     <div style={{ flexGrow: 1, display: 'flex' }}>
-    //         <Editor
-    //             ref={(editor) => { this.editor = editor }}
-    //             initialTitle={revision.title}
-    //             initialText={revisionText}
-    //             save={() => {
-    //                 const { title, content } = this.editor.getData();
-    //                 this.goToLatest()
-    //                 this.props.saveRevision(this.props.match.params.entry, title, JSON.stringify(content))
-    //             }}
-    //             delete={this.openDeleteDialog}
-    //             hide={this.openHideDialog}
-    //             isHidden={entry.isHidden}
-
-    //             showHistory={true} //TODO:  
-    //             openHistory={() => this.setState({ historyModal: !this.state.historyModal })}
-    //         />
-
-    //     </div >
-    // )
-    // }
-    // return <div> Loading ... </div>
-
 
     openDeleteDialog = () => {
         const entry = this.props.entry;

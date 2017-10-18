@@ -12,6 +12,8 @@ export default class Checkbox extends React.Component {
                     id={this.id}
                     type="checkbox"
                     className={styles.checkbox}
+                    defaultChecked={this.props.checked}
+                    onChange={this.props.onChange}
                 />
                 {this.props.title}
             </label>

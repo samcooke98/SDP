@@ -15,8 +15,8 @@ export async function getById( id ) {
 export async function getEntryID ( revisionID ) { 
     try {
         const journal = await Entry.find({revisions: {$in: [revisionID] }})
-        return journal._id;
+        return journal[0]._id;
     } catch (error) {
         return null;        
     }
-}
+} 

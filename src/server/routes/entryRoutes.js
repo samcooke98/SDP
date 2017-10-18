@@ -4,16 +4,23 @@ import { isLoggedIn } from "../utils/request.js";
 
 
 import * as EntryController from "../controllers/entryController.js";
+import * as UserController from "../controllers/userController.js";
 
 let router = new Router();
 
-const isPermitted = (req, res, next) => {
+const isPermitted = async (req, res, next) => {
     const entryID = req.params.id;
     const userID = req.user._id;
 
-    const journal = EntryController.getJournalID(entryID);
+    const journal = await EntryController.getJournalID(entryID);
     UserController.getUserByID(userID).then((userObj) => {
-        if (userObj.journals.indexOf(journalID) == -1) {
+        console.log("----");
+        console.log(userID);
+        console.log(userObj);
+        console.log(entryID);
+        console.log(journal)
+        console.log("-- End -- ");
+        if (userObj.journals.indexOf(journal) == -1) {
             res.json(sendError("You aren't authorised to do that"));
         } else {
             next();
@@ -50,10 +57,10 @@ router.put("/entry/:id", isLoggedIn, isPermitted, async (req, res) => {
     }
 })
 //Create a new revision
-router.post("/entry/:entryID/revision", isLoggedIn, isPermitted, async (req, res) => {
+router.post("/entry/:id/revision", isLoggedIn, isPermitted, async (req, res) => {
     try {
         res.json(sendPayload(
-            await EntryController.reviseEntry(req.params.entryID, req.body.title, req.body.content)
+            await EntryController.reviseEntry(req.params.id, req.body.title, req.body.content)
         ));
     } catch (err) {
         console.log(err);

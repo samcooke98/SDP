@@ -1,16 +1,44 @@
+.hr {
+    width: 80%;
+    background-color: black;
+    height: 1px;
+    margin: 0px;
+    padding: 0px;
+    margin-top: 5px;
+}
 
+.title {
+    margin: 0;
+    padding: 0;
+}
+
+.date {
+    font-size: 14px;
+}
+
+.viewButton {
+    float: right;
+    border-radius: 70px;
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+    font-weight: 500;
+}
 
 .card { 
+    font-family: 'Raleway';
     width: 100%;
     background-color: #F8F8F8;
     box-sizing: border-box;
-    padding: 4px;
     margin-bottom: 12px;
-
-    height: 150px; 
     overflow: hidden;
+    height: 230px;
     display: flex;
     flex-direction: column;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-right: 40px;
+    padding-left: 40px;
 }
 
 .content { 

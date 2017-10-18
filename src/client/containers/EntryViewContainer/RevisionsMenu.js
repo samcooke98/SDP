@@ -24,11 +24,12 @@ export default class RevisionsMenu extends Component {
                     return (
                         <EntryPreview
                             key={revisionID}
-                            date={moment(this.props.revisions[revisionID].createdAt).local().format("hh:mm - DD/MM/YYYY")}
+                            date={moment(this.props.revisions[revisionID].createdAt).local().format("DD/MM/YYYY - hh:mm")}
                             title={this.props.revisions[revisionID].title}
                             preview={
                                 stateToHTML(convertFromRaw(JSON.parse(this.props.revisions[revisionID].content)))}
                             to={`/journal/${journalID}/${entryID}/${revisionID}`}
+                            colour={this.props.colour}
                             onClick={this.props.onClose}
                         />
                     )

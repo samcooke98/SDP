@@ -11,7 +11,7 @@ var Journal = new Schema({
     title: { type: String, required: true}, 
     isArchived: { type: Boolean, default:false},
     colour: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now() },
+    createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date },
     entries: [{type: Schema.ObjectId, ref: "Entry"}]
 });
