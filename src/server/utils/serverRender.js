@@ -101,7 +101,7 @@ const generateHTML = (reactDOM, preloadedState, helmet) => {
     ${helmet.meta.toString()}
     ${helmet.link.toString()}
     <link rel="manifest" href="/manifest.json">
-    <link rel="stylesheet" type='text/css' href='styles.css'>
+    <link rel="stylesheet" type='text/css' href='/styles.css'>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
     <style>html, body{margin:0;padding:0;}</style>

@@ -19,11 +19,13 @@ export default class JournalBar extends React.Component {
             }}
                 onClick={this.props.onClick}
             >
-                <div>
+                <div style={{ width: "240px", height: "60px" }}>
                     <p className={style.title}> {this.props.title} </p>
                     <p className={style.caption}> {this.props.caption} </p>
                 </div>
-                <Arrow height={48} width={48} />
+                <span style={{ width: "48px" }}>
+                    <Arrow height={48} width={48} />
+                </span>
             </div>
         )
 

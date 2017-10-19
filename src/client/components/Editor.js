@@ -72,7 +72,7 @@ export default class Editor extends React.Component {
                                 className={
                                     `${(this.state.editorFocus ? styles["active"] : "")} ${styles.container} ${this.isPlaceHolder() ? styles['placeholder'] : ""}
                                 `}
-                                style={{flexGrow:1}}
+                            style={{flexGrow:1}}
                                 onClick={this.handleGeneralClick}
                             >
                                 <DraftEditor
