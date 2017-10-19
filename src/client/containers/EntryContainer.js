@@ -19,7 +19,7 @@ class EntryContainer extends React.Component {
         super(props);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         // console.log(this.props);
         let journalID = this.props.match.params.id;
         this.props.getJournal(journalID);

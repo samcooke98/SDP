@@ -44,11 +44,10 @@ import { Helmet } from "react-helmet";
 var userController = require('../controllers/userController.js')
 import { configureStore} from "../../client/store.js"
 
+
 const renderApp = async (location, req) => {
     // const store = configureStore();
     const store = createStore(reducer);
-
-    const css = new Set();
 
     const context = {};
     if (req.user) {
@@ -57,7 +56,8 @@ const renderApp = async (location, req) => {
         store.dispatch({
             type: "LOGIN",
             payload: {
-                success: true, payload: {
+                success: true, 
+                payload: {
                     result: req.user._id,
                     entities: {
                         users: { [req.user._id]: req.user },
@@ -110,7 +110,7 @@ const generateHTML = (reactDOM, preloadedState, helmet) => {
     <body ${helmet.bodyAttributes.toString()}>
     <div id='root-app'>${reactDOM}</div>
     <script>window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState)}</script>            
-    <script src="${(process.env.NODE_ENV === "production") ? manifest['main.js'] : "/client.bundle.js"}"></script>
+    <script src="${(process.env.NODE_ENV === "production") ? '/' + manifest['main.js'] : "/client.bundle.js"}"></script>
     </body>
     </html>`
 }

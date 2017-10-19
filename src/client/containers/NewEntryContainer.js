@@ -32,7 +32,7 @@ class NewEntryContainer extends React.Component {
         }
     }
 
-    componentWillMount() {
+    componentDidMount() {
         // console.log(this.props);
         //Get data if it isn't already there! (ie: User Refreshed)
         let journalID = this.props.match.params.id;
