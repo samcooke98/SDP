@@ -16,7 +16,11 @@ import Show from "react-icons/lib/fa/eye";
 
 import { Prompt } from "react-router-dom"
 import equal from "deep-equal"
+// import DraftEditor from 'draft-js-plugins-editor';
+
 import styles from './Editor.css'
+
+// const plugi
 /**
  * Component for the DraftJS Editor
  */

@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from "react-redux";
 import {Redirect} from "react-router-dom";
 import {  getEntry, getJournal } from "../redux/actions.js";
+import {withProtection} from "./Protector.js"
 import Spinner from "../components/Spinner/"
 /**
  * This handles redirecting on the route journal view
@@ -20,13 +21,16 @@ class Redirector extends React.Component {
     componentDidMount() { 
         console.log("update");
         if(this.props.needsLoading)
-            this.props.getJournal().then( (journal) => {
-                console.log(journal);
-                const promises = this.props.journal.entries.map( (id) => this.props.getEntry(id));
-                console.log(promises);
-                Promise.all(promises).then( 
-                    () => this.setState({loaded: true})   
-                )
+            this.props.getJournal().then( (response) => {
+                // if(response.success) {
+                    console.log(response);
+                    const journal = response.payload.payload.entities.journals[response.payload.payload.result]
+                    const promises = journal.entries.map( (id) => this.props.getEntry(id));
+                    console.log(promises);
+                    Promise.all(promises).then( 
+                        // () => this.setState({loaded: true})   
+                    )
+                // }
             })
         else { 
             this.setState({loaded: true})
@@ -37,7 +41,7 @@ class Redirector extends React.Component {
 
     render() {
         console.log(this.props);
-        if(!this.state.loaded) { 
+        if(this.props.needsLoading) { 
             return <Spinner />
         }
         const {journal} = this.props 
@@ -49,7 +53,7 @@ class Redirector extends React.Component {
             let journalEntry = this.props.entries;
             journalEntry = journalEntry.filter( 
                 (entry) => {
-                    // console.log(entry)
+                    console.log(entry)
                     // console.log(!entry.isHidden, !entry.isDeleted, entry.length == 1)
                     return !entry.isHidden && !entry.isDeleted && entry.revisions.length == 1; 
                 }
@@ -58,7 +62,7 @@ class Redirector extends React.Component {
             console.log(journalEntry);
             console.log(journalEntry[0]._id)
             console.log(this.props.entries);
-            return <Redirect to={`${this.props.location.pathname}/${journalEntry[0]._id}`} />
+            return <Redirect to={`${this.props.location.pathname}/${journalEntry[journalEntry.length - 1]._id}`} />
         } else { 
             return <Redirect to={`${this.props.location.pathname}/new`} />
         }
@@ -66,10 +70,13 @@ class Redirector extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+    console.log(ownProps);
     const journalID = ownProps.match.params.id;
     const journal = state.data.journals[journalID];
-    
-    if(!journal) return {
+   
+    const entries = journal && journal.entries.map( (id) => state.data.entries[id] || null ) || []
+    console.log(entries)
+    if(!journal || entries.includes(null)) return {
         needsLoading: true,
     }
 
@@ -77,7 +84,7 @@ const mapStateToProps = (state, ownProps) => {
         needsLoading: false, 
         journal: journal,
         entryIDs: journal.entries || [],
-        entries: journal.entries.map( (id) => state.data.entries[id] || null )
+        entries: entries
     }
 }
 
@@ -90,5 +97,5 @@ const mapDispatchToProps = (dispatch, ownProps ) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Redirector);
+export default (connect(mapStateToProps, mapDispatchToProps)(Redirector));
 
